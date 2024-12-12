@@ -6,11 +6,7 @@ plugins {
 }
 
 group = 'com.sns'
-<<<<<<< HEAD
 version = '0.0.1-SNAPSHOT'
-=======
-version = '0.0.1_SNAPSHOT'
->>>>>>> bc1878038406977d88b7a759e639f7be870375d3
 
 java {
 	toolchain {
@@ -40,13 +36,6 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-<<<<<<< HEAD
-=======
-	
-	implementation group: 'org.glassfish.web', name: 'jakarta.servlet.jsp.jstl', version: '2.0.0'
-	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
-	
->>>>>>> bc1878038406977d88b7a759e639f7be870375d3
 }
 
 tasks.named('test') {
