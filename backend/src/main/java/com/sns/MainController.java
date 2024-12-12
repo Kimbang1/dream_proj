@@ -19,4 +19,8 @@ public class MainController {
 		return test;
 	}
 	
+	@GetMapping("/tester")
+	public String test() {
+		return "진짜 테스트용";
+	}
 }
