@@ -21,7 +21,7 @@ public class MainController {
 	
 	@GetMapping("/tester")
 	public String test() {
-		return "plz";
+		return "plz...";
 	}
 	
 }
