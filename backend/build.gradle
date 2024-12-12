@@ -6,11 +6,7 @@ plugins {
 }
 
 group = 'com.sns'
-<<<<<<< HEAD
 version = '0.0.1-SNAPSHOT'
-=======
-version = '0.0.1_SNAPSHOT'
->>>>>>> bc1878038406977d88b7a759e639f7be870375d3
 
 java {
 	toolchain {
