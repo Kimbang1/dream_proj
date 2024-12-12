@@ -2,7 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.sns">
+<mapper namespace="com.sns.dao.SNSDao">
 
+	<select id="mtdSelect" resultType="com.sns.dto.SNSDto">
+		select * from kse_test order by num desc
+	</select>
+	
+	<insert id="mtdInsert" parameterType="com.sns.dto.SNSDto">
+		insert into kse_test
+		(username, age, dazim)
+		values
+		(#{username}, #{age}, #{dazim})
+	</insert>
 
 </mapper>
