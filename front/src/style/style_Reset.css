@@ -1,0 +1,67 @@
+@charset "UTF-8";
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap");
+
+/*///////////////////////// CSS 리셋 파일 시작 /////////////////////////*/
+
+* {
+  color: #222; /* 기본 글 색상 */
+  font-family: "Nanum Gothic", sans-serif; /* 나눔고딕체 적용  */
+  text-decoration: none; /* 밑줄 제거  */
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* 구글 웹폰트 사용법
+선택자 {
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 400;
+  레귤러 글꼴
+}
+
+선택자 {
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 700;
+  진한 글꼴
+}
+
+선택자 {
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 800;
+  가장 진한 글꼴
+}
+*/
+
+/*  body {  background-color: #fff; }      배경색이 적용될 때 사용함 */
+
+a:link {
+  color: #333;
+} /* a요소에서 href속성이 적용된 텍스트의 색상 */
+a:visited {
+  color: #333;
+} /* href속성값이 적용된 링크를 방문한 것 */
+a:hover {
+  color: #333;
+} /* 하이퍼텍스트에 마우스를 위치하면 색상이 #333으로 변경됨 */
+a:active {
+  color: #333;
+} /* :hover 상태에서 마우스왼쪽 버튼을 누르는 순간 적용 */
+
+img {
+  /* 이미지요소 옆의 요소는 이미지의 세로기준 윗쪽 정렬됨 */
+  vertical-align: top;
+}
+
+ul {
+  /* 불릿기호 표시하지 않음 */
+  list-style: none;
+}
+
+.dFlex {
+  /* HTML요소의 속성으로 플렉스 레이아웃 적용 */
+  display: flex;
+}
+
+
+
+/*///////////////////////// CSS 리셋 파일 끝 /////////////////////////*/
