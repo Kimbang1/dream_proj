@@ -1,5 +1,3 @@
-import logo from "./logo.svg";
-import "./App.css";
 import { useEffect, useState } from "react";
 
 function App() {
@@ -17,7 +15,7 @@ function App() {
 
   return (
     <div>
-      <img src={logo} className="App-logo" alt="logo" />
+     
       <form method="post" action="/linkchk">
         <span>이름</span>
         <input type="text" name="username" id="username" />
