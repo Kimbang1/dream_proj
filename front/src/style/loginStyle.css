@@ -1,0 +1,54 @@
+@charset "UTF-8";
+@import url(style_Reset.css);
+
+div#background {
+  background-color: #4c5158;
+  background-image: url(/public/images/Ocean.jpg);
+  background-repeat: no-repeat;
+  background-size: 100%;
+  height: 1000px;
+}
+
+div#loginBox {
+  width: 500px;
+  margin: 10px auto;
+  margin-top: 90px;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  background-color: #292929;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+div#loginBox span {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  width: 200px;
+  margin-top: 30px;
+  margin-left: 100px;
+}
+input.loginFrame {
+  margin: 20px auto 0;
+  width: 60%;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid #f80;
+}
+
+input.loginFrame:nth-child(2) {
+  margin-top: 20px;
+}
+button#signBtn {
+  cursor: pointer;
+  width: 20%;
+  height: 40px;
+  margin: 20px auto;
+  border-radius: 10px;
+  border: 1px solid #f80;
+  background-color: #2d3f50;
+  /* background-color: #2d3f50; */
+  color: white;
+  font-size: 18px;
+}
