@@ -1,0 +1,94 @@
+@charset "UTF-8";
+
+/* div.wrap {
+  width: 307px;
+  height: 1000px;
+  border: 1px solid #aaa;
+} */
+
+div.LogoArea {
+  width: 80%;
+  height: 30px;
+  margin: 10px auto;
+}
+
+div.LogoArea img {
+  cursor: pointer;
+  width: 100%; /* 이미지의 너비를 부모 요소에 맞게 100%로 설정 */
+  height: auto; /* 자동으로 비율을 유지 */
+}
+
+div.gnbArea {
+  width: 80%;
+  height: 30px;
+  margin: 130px auto;
+}
+
+div.menu {
+  cursor: pointer;
+  border-radius: 6px;
+  text-align: center; /* 이미지 가운데 정렬 */
+  margin-top: 10px;
+  padding: 10px; /* 내부 여백 추가 */
+  transition: background-color 0.3s ease; /* 부드러운 전환 효과 */
+}
+
+div.menu:hover {
+  background-color: rgba(170, 170, 170, 0.2);
+  border: 1px solid #f80;
+  border-radius: 6px;
+}
+
+div.menu img {
+  cursor: pointer;
+  width: 100%; /* 이미지가 부모 div에 맞게 크기 조정 */
+  height: auto; /* 비율 유지 */
+  max-width: 40px; /* 최대 크기를 설정하여 비율을 유지 */
+}
+
+div.menu:nth-child(6) img {
+  width: 80%; /* 크기를 80%로 설정하여 비율을 맞춤 */
+  height: auto;
+  border-radius: 50%;
+  border: 1px solid #f80;
+}
+
+div.Manager {
+  margin-top: 40%;
+}
+
+/* 화면이 좁아질 때(반응형) 이미지 비율을 유지하면서 크기를 조정 */
+@media screen and (max-width: 750) {
+  div.wrap {
+    width: 100%; /* 화면이 좁아지면 사이드바 전체 너비를 100%로 */
+    height: auto; /* 높이는 자동으로 조정 */
+  }
+
+  div.menu {
+    margin-top: 10px;
+    padding: 5px; /* 화면이 작아지면 내부 여백을 줄임 */
+  }
+
+  div.menu img {
+    max-width: 30px; /* 작은 화면에서는 아이콘을 더 작게 표시 */
+  }
+
+  div.menu:nth-child(6) img {
+    width: 60%; /* 프로필 이미지의 크기를 줄임 */
+  }
+}
+
+/* 화면이 커졌을 때(반응형) 이미지 비율을 유지하면서 크기를 조정 */
+@media screen and (min-width: 750) {
+  div.wrap {
+    width: 307px; /* 기본 사이드바 크기 */
+  }
+
+  div.menu img {
+    max-width: 40px; /* 이미지 크기를 확장하여 비율 유지 */
+  }
+
+  div.menu:nth-child(6) img {
+    width: 80%; /* 프로필 이미지 크기 확대 */
+  }
+}

@@ -1,0 +1,63 @@
+div#Back {
+  background-color: #4c5158;
+  background-image: url(/public/images/Ocean.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+div#loginBox {
+  width: 500px;
+  margin: 10px auto;
+  margin-top: 90px;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+input.loginFrame {
+  margin: 20px auto 0;
+  width: 60%;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid #f80;
+}
+hr{
+    margin: 10px;
+    width: 100%;
+}
+div#socialArea{
+display: flex;
+flex-direction: row;
+}
+button.social{
+    cursor: pointer;
+    margin: 0 10px;
+    justify-content: space-around;
+    border: 1px solid #f80;
+    width: 15vh;
+    height: 30px;
+    border-radius: 5px;
+}
+button.loginBtn {
+  cursor: pointer;
+  width: 300px;
+  height: 40px;
+  margin: 20px auto;
+  border-radius: 10px;
+  border: 1px solid #f80;
+  background-color: #2d3f50;
+  /* background-color: #2d3f50; */
+  color: white;
+  font-size: 18px;
+}

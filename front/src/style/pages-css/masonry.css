@@ -1,0 +1,42 @@
+@charset "UTF-8";
+
+
+.masonry {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-auto-rows: 10px;
+  gap: 20px;
+}
+
+.item {
+  background-color: #ffffff;
+  padding: 0; /* 패딩 제거 */
+  box-sizing: border-box;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: transform 0.3s;
+  display: block;
+  overflow: hidden; /* 이미지가 넘칠 경우 숨김 */
+}
+
+.item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지 비율 유지하며 채우기 */
+}
+
+.item:hover {
+  transform: translateY(-10px);
+}
+
+.height1 {
+  grid-row: span 15;
+}
+
+.height2 {
+  grid-row: span 20;
+}
+
+.height3 {
+  grid-row: span 25;
+}

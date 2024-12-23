@@ -1,0 +1,41 @@
+
+
+div#wrap {
+  width: 100%;
+  display: flex;
+  margin: 10px auto;
+}
+
+div#left {
+  flex: 2 !important;
+  /* border: 1px solid #f80; */
+  margin-left: 10px;
+}
+
+div#right {
+  flex: 9;
+  /* border: 1px solid #aaa; */
+  margin-right: 10px;
+  position: relative;
+}
+div#line {
+  margin-top: 2%;
+  border: 1px solid #aaa;
+}
+div#head {
+  z-index: 999; /*메이슨리 화면에서 하버시 헤더가리지 않게*/
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+}
+div.mainview {
+  /* border: 1px solid #000; */
+  margin: 5%;
+}
+div.footerview {
+  width: 100%;
+  border: 1px solid #000;
+  z-index: 999;
+  position: fixed;
+
+}

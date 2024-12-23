@@ -1,24 +1,24 @@
-@charset "UTF-8";
+/*css 리셋 스타일*/
 @import url(style_Reset.css);
 
-div#wrap {
-  width: 100%;
-  display: flex;
-  margin: 10px auto;
-}
+/*헤더와 바텀Nav 그리고 왼쪽과 오른쪽 asied 바*/
+@import url(layout-css/bottomNav.css);
+@import url(layout-css/header.css);
+@import url(layout-css/leftaside.css);
+@import url(layout-css/smallheader.css);
 
-div#left {
-  flex: 2 !important;
-  /* border: 1px solid #aaa; */
-  margin-left: 10px;
-}
+/**/
+@import url(Mainview-css/Mainviewstyle.css);
 
-div#right {
-  flex: 8;
-  border: 1px solid #aaa;
-  margin-right: 10px;
-}
-div#head {
-  position: sticky;
-  top: 0;
-}
+/*랜딩페이지 css*/
+@import url(pages-css/landing.css);
+
+/*갤러리와 메이슨리 게시물 css*/
+@import url(pages-css/masonry.css);
+@import url(pages-css/Post.css);
+
+/*검색페이지 css*/
+
+/*로그인 로그아웃 css*/
+@import url(user/JoinStyle.css);
+@import url(user/LoginStyle.css);
