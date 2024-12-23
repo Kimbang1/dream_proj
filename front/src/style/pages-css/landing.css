@@ -57,12 +57,11 @@ div.images {
 }
 
 /*태블릿 사이즈*/
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 767px) {
   div#wrap {
     height: 100%;
   }
   div.wordArea {
-  
     padding: 20px;
   }
   div.wordArea h1 {
@@ -95,8 +94,9 @@ div.images {
   }
 }
 /* 모바일 사이즈 */
-@media screen and (max-width: 375px) {
+@media screen and (max-width: 390px) {
   div#wrap {
+    display: flex;
     flex-direction: column; /* 세로 방향으로 정렬 */
     height: auto; /* 화면 크기에 맞게 조정 */
   }
@@ -134,4 +134,3 @@ div.images {
     font-size: 14px;
   }
 }
-

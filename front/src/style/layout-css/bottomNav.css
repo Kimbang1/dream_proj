@@ -1,27 +1,28 @@
 
-.wrapper{
+
+nav#footerFrame{
     border: 1px solid #000;
     position: fixed;
     bottom: 0;
-    left: 0;
+    left: 10px;
     right: 0;
     height: 45px;
+    display: flex;
+    background-color: white;
 }
 
-nav{    /*nav 태그 아래의 자식들을 수평정렬 하기 위한 설정*/
-    overflow: hidden;
+div.icon{
+    flex: 1;
+    width: 50px;
 }
-/*nav태그 아래의 div 태그들을 수평정렬 및 세로길이 설정*/
-nav > div{
-    /*수평 정렬인데 5개의 button을 각가 20%씩*/
-    text-align: center;
-    float: left;
-    width: 20px;
-
-    /*세로 길이 설정*/
-    height: 45px;
-    line-height: 45px;
+div.icon :nth-child(1){
+    margin-left: 20%;
+}
+div.icon :nth-child(5){
+    border: 1px solid #f80;
+    border-radius: 50%;
 }
 div.icon img{
+    cursor: pointer;
     width:50%;
 }

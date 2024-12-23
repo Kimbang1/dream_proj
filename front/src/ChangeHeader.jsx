@@ -7,7 +7,7 @@ import { useMediaQuery } from "react-responsive";
   클때랑 작을때
   */
 function ChageHeader() {
-  const isSmallscrean = useMediaQuery({ maxWidth: 640 });
+  const isSmallscrean = useMediaQuery({ maxWidth: 375 });
   return <>{isSmallscrean ? <SmallHeader /> : <Header />}</>;
 }
 

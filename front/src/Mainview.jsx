@@ -6,9 +6,10 @@ import { useMediaQuery } from "react-responsive";
 import Gallery from "./Pages/views/Gallery";
 import Bottom from "./componunts/layout/BottomNav";
 function App() {
-  const HiddenAside = useMediaQuery({ maxWidth: 750 });
+  const HiddenAside = useMediaQuery({ maxWidth: 640});
 
-  const sft = useMediaQuery({ maxWidth: 750 });
+  const sft = useMediaQuery({ maxWidth: 640 });
+
   /*
   하단 1택
   작을때 추가
@@ -22,15 +23,14 @@ function App() {
     <div id="wrap">
       <div id="left">{!HiddenAside && <Leftaside />}</div>
 
-      <div id="line"></div>
+      <div id="line"> </div>
+
       <div id="right">
         <div id="head">
           <ChangeHeader />
         </div>
 
-        <div className="mainview">
-          <Gallery />
-        </div>
+        <div className="mainview"><Gallery/></div>
 
         <div className="footerview">{sft && <Bottom />}</div>
       </div>

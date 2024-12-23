@@ -1,3 +1,4 @@
+/* 공통 스타일 */
 div#Back {
   background-color: #4c5158;
   background-image: url(/public/images/Ocean.jpg);
@@ -5,59 +6,119 @@ div#Back {
   background-size: cover;
   background-position: center;
   height: 100vh;
-  width: 100%;
+  width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
+
 div#loginBox {
-  width: 500px;
+  width: 90%;
+  max-width: 500px;
   margin: 10px auto;
-  margin-top: 90px;
   border: 1px solid #aaa;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.7);
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 input.loginFrame {
-  margin: 20px auto 0;
-  width: 60%;
+  margin: 10px auto;
+  width: 80%;
   height: 40px;
   border-radius: 10px;
   border: 1px solid #f80;
 }
-hr{
-    margin: 10px;
-    width: 100%;
+
+hr {
+  margin: 10px;
+  width: 100%;
 }
-div#socialArea{
-display: flex;
-flex-direction: row;
+
+div#socialArea {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: calc(80% - 20px);
+  margin: 10px;
 }
-button.social{
-    cursor: pointer;
-    margin: 0 10px;
-    justify-content: space-around;
-    border: 1px solid #f80;
-    width: 15vh;
-    height: 30px;
-    border-radius: 5px;
+
+button.social {
+  cursor: pointer;
+  margin: 0 10px;
+  border: 1px solid #f80;
+  width: calc((80% - 40px) / 3);
+  height: 40px;
+  border-radius: 5px;
 }
+
+div.loginBtnArea {
+  margin-left: 11%;
+  width: 80%;
+}
+
 button.loginBtn {
   cursor: pointer;
-  width: 300px;
-  height: 40px;
-  margin: 20px auto;
+  width: 85%; /* 기본 너비 */
+  height: 50px;
   border-radius: 10px;
   border: 1px solid #f80;
   background-color: #2d3f50;
-  /* background-color: #2d3f50; */
   color: white;
   font-size: 18px;
+  font-weight: bold;
+}
+
+/* 태블릿 스타일 (너비 391px ~ 770px) */
+@media screen and (max-width: 770px) and (min-width: 391px) {
+  div#loginBox {
+    max-width: 400px; /* 태블릿용으로 조금 작게 */
+  }
+
+  input.loginFrame {
+    width: 85%; /* 입력 필드 크기 유동적으로 조정 */
+  }
+
+  button.social {
+    width: calc((85% - 40px) / 3);
+  }
+
+  button.loginBtn {
+    width: 85%; /* 태블릿에서 버튼 크기 유동 조정 */
+  }
+}
+
+/* 모바일 스타일 (너비 390px 이하) */
+@media screen and (max-width: 390px) {
+  div#loginBox {
+    max-width: 300px;
+    padding: 15px;
+  }
+
+  input.loginFrame {
+    width: 90%;
+    height: 35px;
+  }
+
+  div#socialArea {
+    width: calc(90% - 20px);
+  }
+
+  button.social {
+    width: calc((90% - 40px) / 3);
+    height: 35px;
+  }
+
+  button.loginBtn {
+    width: 90%;
+    height: 45px;
+    font-size: 16px;
+  }
 }

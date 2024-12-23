@@ -40,7 +40,7 @@ function Login() {
           }}
         />
 
-        <div id="loginBtnArea">
+        <div className="loginBtnArea">
           <button className="loginBtn" onClick={handleMainviewClick}>
             로그인
           </button>
@@ -52,7 +52,7 @@ function Login() {
           <button class="social">google</button> {/*onClick={}*/}
         </div>
         <hr />
-        <div id="NewLicense">
+        <div className="loginBtnArea">
           <button className="loginBtn" onClick={handleJoinClick}>
             새 계정 만들기
           </button>

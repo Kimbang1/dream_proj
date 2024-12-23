@@ -72,8 +72,3 @@ div.functionArea img {
   margin-left: 20px;
 }
 
-@media screen and (max-width: 512px) {
-  div.functionArea img {
-    width: 20px;
-  }
-}
