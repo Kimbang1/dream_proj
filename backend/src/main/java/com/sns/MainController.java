@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,23 +20,42 @@ import com.sns.dao.SNSDao;
 import com.sns.dao.UserDao;
 import com.sns.dto.SNSDto;
 import com.sns.dto.UserDto;
+import com.sns.social.KakaoApi;
 
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor 	// final이 붙은 필드에 의존성 자동 주입
 @RestController
 public class MainController {
 	
 	@Autowired
-	SNSDao snsDao;
+	private SNSDao snsDao;
 	
 	@Autowired
-	UserDao userDao;
+	private UserDao userDao;
 	
-//	@RequestMapping("/social_res")
-//	public ResponseEntity<?> mtdSocialRes(@RequestParam("code") String code, HttpServletResponse response){
-//		
-//		return "완료";
-//	}
+	private final KakaoApi kakaoApi;
+	
+	@RequestMapping("/social_res")
+	public String mtdSocialRes(@RequestParam("code") String code, HttpServletResponse response){
+		// ^ 인가 코드 받기
+		
+		// 2. 토큰 받기
+		String accessToken = kakaoApi.getAccessToken(code);
+		
+		// 3. 사용자 정보 받기
+		Map<String, Object> userInfo = kakaoApi.getUserInfo(accessToken);
+		
+		String email = (String)userInfo.get("email");
+		String nickname = (String)userInfo.get("nickname");
+		
+		System.out.println("email : " + email);
+		System.out.println("nickname : " + nickname);
+		System.out.println("accessToken : " + accessToken);
+		
+		return "성공";
+	}
 	
 	@RequestMapping("/res")
 	public String mtdRes() {
@@ -76,7 +96,7 @@ public class MainController {
 		// uuid 생성
 		String create_uuid = UUID.randomUUID().toString();
 		userDto.setUuid(create_uuid);
-		System.out.println(create_uuid);
+//		System.out.println(create_uuid);
 		
 		try {
 			userDao.mtdInsert(userDto);
