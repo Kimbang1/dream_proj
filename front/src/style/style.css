@@ -7,9 +7,11 @@
 @import url(layout-css/leftaside.css);
 @import url(layout-css/smallheader.css);
 
-/**/
+/*메인뷰 css*/
 @import url(Mainview-css/Mainviewstyle.css);
 
+/*유저 상세 페이지*/
+@import url(user/UserMainpage.css);
 /*랜딩페이지 css*/
 @import url(pages-css/landing.css);
 

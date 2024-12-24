@@ -1,9 +1,9 @@
 import React from "react";
 
-
 function SmallHeader() {
   return (
     <div id="smallHeda">
+      
       <div className="logo">
         <img src="/images/logo4.png" alt="로고사진  " />
       </div>

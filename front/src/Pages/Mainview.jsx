@@ -1,12 +1,13 @@
 import React from "react";
-import "./style/style.css";
-import ChangeHeader from "./ChangeHeader";
-import Leftaside from "./componunts/layout/Leftaside";
 import { useMediaQuery } from "react-responsive";
-import Gallery from "./Pages/views/Gallery";
-import Bottom from "./componunts/layout/BottomNav";
+import "../style/Style.css";
+import ChangeHeader from "./ChangeHeader";
+import Leftaside from "../componunts/layout/Leftaside";
+import Bottom from "../componunts/layout/BottomNav";
+import Gallery from "../Pages/views/Gallery";
+
 function App() {
-  const HiddenAside = useMediaQuery({ maxWidth: 640});
+  const HiddenAside = useMediaQuery({ maxWidth: 640 });
 
   const sft = useMediaQuery({ maxWidth: 640 });
 
@@ -30,7 +31,9 @@ function App() {
           <ChangeHeader />
         </div>
 
-        <div className="mainview"><Gallery/></div>
+        <div className="mainview">
+          <Gallery />
+        </div>
 
         <div className="footerview">{sft && <Bottom />}</div>
       </div>

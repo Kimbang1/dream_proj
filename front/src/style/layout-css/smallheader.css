@@ -1,43 +1,56 @@
-
-@media screen and(max-width : 375px) {
-  
-
 div#smallHeda {
-  border: 1px solid #000;
-  width: 100%;
-  height: 50px;
-  /* margin: 10px auto; */
-  margin-right: 30px;
+  width: 100%; /* 전체 헤더의 너비 */
+  margin: 0 auto;
   display: flex;
-  justify-content: space-around;
+  box-sizing: border-box;
+  /* border: 1px solid #000;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px; */ /*나중에 크기 조절할 여유 생기면 ㄱ*/
+  justify-content: space-around; /* 요소 간 일정 간격 유지 */
+  align-items: center; /* 세로 정렬 */
+  position: sticky; /* 스크롤 시 고정 */
+  top: 0; /* 페이지 상단에 고정 */
+  z-index: 1000; /* 다른 요소보다 위에 배치 */
+  background-color: #fff; /* 배경색 추가 (필수) */
 }
+
 div.logo {
-  flex: 2;
-border-right:2px solid  #aaa;
+  /* 로고의 크기 비율 */
+  display: flex;
+  justify-content: center; /* 로고 중앙 정렬 */
 }
 div.logo img {
-cursor: pointer;
-width: 100%;
-  height: 100%;
+  cursor: pointer;
+  max-width: 100%; /* 로고 이미지 최대 너비 */
+  max-height: 100%; /* 로고 이미지 최대 높이 */
+  width: auto; /* 비율 유지 */
+  height: auto; /* 비율 유지 */
 }
 
 div.managerOption {
-  flex: 3;
-  margin: 0 20px;
+  /* 관리자 옵션 영역의 크기 비율 */
+  margin-left: 40px;
+  margin-right: 10px;
+  display: flex;
+  justify-content: center; /* 중앙 정렬 */
+  align-items: center; /* 세로 정렬 */
 }
 div.managerOption img {
-    cursor: pointer;
-  height: 100%;
-  margin-left: 50%;
+  cursor: pointer;
+  max-height: 40px; /* 이미지 크기 제한 */
+  height: auto;
+  margin: 0 10px; /* 이미지 간 간격 */
 }
 
 div.left {
+  /* flex: 2; 왼쪽 아이콘 영역의 크기 비율 */
   display: flex;
-  justify-content: space-around;
+  justify-content: space-around; /* 아이콘 간 간격 유지 */
+  align-items: center; /* 세로 정렬 */
 }
 div.left img {
-  height: 100%;
+  width: 40px; /* 고정 크기 설정 */
+  height: 40px; /* 정사각형 비율 유지 */
   cursor: pointer;
-  margin: 0 10px;
-}
+  margin: 0 5px; /* 좌우 간격 */
 }

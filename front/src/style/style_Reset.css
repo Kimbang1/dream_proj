@@ -11,11 +11,15 @@
   margin: 0;
   box-sizing: border-box;
 }
-html,body{
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
+}
+body {
+  min-height: 100vh;
 }
 
 /* 구글 웹폰트 사용법
@@ -67,7 +71,5 @@ ul {
   /* HTML요소의 속성으로 플렉스 레이아웃 적용 */
   display: flex;
 }
-
-
 
 /*///////////////////////// CSS 리셋 파일 끝 /////////////////////////*/

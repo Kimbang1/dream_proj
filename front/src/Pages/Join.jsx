@@ -12,11 +12,10 @@ function Join() {
   const [Phon, setPhon] = useState("");
   const [Bday, setBday] = useState("");
 
-
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   //useNavigate사용을 위한 선언
 
-  const handleLoginClick = ()=>{
+  const handleLoginClick = () => {
     navigate("/Login"); //회원
   };
   return (
@@ -95,7 +94,7 @@ function Join() {
         />
 
         <button id="signBtn" onClick={handleLoginClick /*수정예정*/}>
-          회원정보 입력 완료
+          입력 완료
         </button>
       </div>
     </div>

@@ -1,25 +1,30 @@
 import React from "react";
 
 import { useMediaQuery } from "react-responsive";
+import { useNavigate } from "react-router-dom";
 
 function Leftaside() {
   const hiddenAside = useMediaQuery({ maxWidth: 750 });
+
+  const navigate = useNavigate();
+  const handlehomeClick = () => {
+    navigate("/Mainview");
+  };
+  const handleUserPg = () => {
+    navigate("/UserMainpage");
+  };
 
   return (
     <div className="wrap">
       {!hiddenAside && (
         <form action="">
           <div className="LogoArea">
-            <img src="/images/logo4.png" alt="로고" />
+            <img onClick={handlehomeClick} src="/images/logo4.png" alt="로고" />
           </div>
 
           <div className="gnbArea">
             <div className="menu">
-              <img src="/images/home.png" alt="홈" />
-            </div>
-
-            <div className="menu">
-              <img src="/images/trade.png" alt="뷰 체인지" />
+              <img onClick={handlehomeClick} src="/images/home.png" alt="홈" />
             </div>
 
             <div className="menu">
@@ -35,7 +40,7 @@ function Leftaside() {
             </div>
 
             <div className="menu">
-              <img src="/images/cat.jpg" alt="프로필" />
+              <img onClick={handleUserPg} src="/images/cat.jpg" alt="프로필" />
             </div>
 
             <div className="Manager">

@@ -79,7 +79,7 @@ div.Manager {
 }
 
 /* 화면이 커졌을 때(반응형) 이미지 비율을 유지하면서 크기를 조정 */
-@media screen and (min-width: 750) {
+@media screen and (min-width: 370) {
   div.wrap {
     width: 307px; /* 기본 사이드바 크기 */
   }
