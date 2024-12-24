@@ -1,24 +1,46 @@
 package com.sns;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sns.dao.SNSDao;
+import com.sns.dao.UserDao;
 import com.sns.dto.SNSDto;
+import com.sns.dto.UserDto;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 public class MainController {
 	
 	@Autowired
 	SNSDao snsDao;
+	
+	@Autowired
+	UserDao userDao;
+	
+//	@RequestMapping("/social_res")
+//	public ResponseEntity<?> mtdSocialRes(@RequestParam("code") String code, HttpServletResponse response){
+//		
+//		return "완료";
+//	}
+	
+	@RequestMapping("/res")
+	public String mtdRes() {
+		return "완료";
+	}
 	
 	@GetMapping("/test")
 	public List<String> hello() {
@@ -45,6 +67,48 @@ public class MainController {
 	public List<SNSDto> select() {
 		List<SNSDto> list = snsDao.mtdSelect();
 		return list;
+	}
+	
+	@RequestMapping("/join_proc")
+	public ResponseEntity<?> mtdJoinProc(UserDto userDto, HttpServletResponse response) {
+		String redirect_uri;
+		
+		// uuid 생성
+		String create_uuid = UUID.randomUUID().toString();
+		userDto.setUuid(create_uuid);
+		System.out.println(create_uuid);
+		
+		try {
+			userDao.mtdInsert(userDto);
+			redirect_uri="http://localhost:8081/res";
+			response.sendRedirect(redirect_uri);
+		} catch(IOException ioe) {
+			System.out.println("회원가입 처리 중 IOE : " + ioe.getMessage());
+		} catch(Exception e) {
+			// 오류 발생 시 error 페이지로 넘기기
+			System.out.println("회원가입 처리 중 오류 : " + e.getMessage());
+			redirect_uri="http://localhost:8081/custom_error";
+			try {
+				response.sendRedirect(redirect_uri);
+			} catch (IOException e1) {
+			}
+			return ResponseEntity.ok().build();
+		}
+		
+		return ResponseEntity.ok().build();
+	}
+	
+	@RequestMapping("/kakao")
+	public ResponseEntity<?> mtdKakao(HttpServletResponse response) {
+		String rest_api_key = "8f8065c3d2d2cc8e683269c8d075800c";
+		String redirect_uri = "http://localhost:8081/social_res";
+		String uri = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + rest_api_key + "&redirect_uri=" + redirect_uri;
+		try {
+			response.sendRedirect(uri);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok().build();
 	}
 	
 }
