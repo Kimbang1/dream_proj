@@ -47,9 +47,11 @@ public class MainController {
 		// 3. 사용자 정보 받기
 		Map<String, Object> userInfo = kakaoApi.getUserInfo(accessToken);
 		
+		String id = (String)userInfo.get("id");
 		String email = (String)userInfo.get("email");
 		String nickname = (String)userInfo.get("nickname");
 		
+		System.out.println("id : " + id);
 		System.out.println("email : " + email);
 		System.out.println("nickname : " + nickname);
 		System.out.println("accessToken : " + accessToken);
