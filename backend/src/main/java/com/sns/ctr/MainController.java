@@ -1,4 +1,4 @@
-package com.sns;
+package com.sns.ctr;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -36,28 +36,6 @@ public class MainController {
 	private UserDao userDao;
 	
 	private final KakaoApi kakaoApi;
-	
-	@RequestMapping("/social_res")
-	public String mtdSocialRes(@RequestParam("code") String code, HttpServletResponse response){
-		// ^ 인가 코드 받기
-		
-		// 2. 토큰 받기
-		String accessToken = kakaoApi.getAccessToken(code);
-		
-		// 3. 사용자 정보 받기
-		Map<String, Object> userInfo = kakaoApi.getUserInfo(accessToken);
-		
-		String id = (String)userInfo.get("id");
-		String email = (String)userInfo.get("email");
-		String nickname = (String)userInfo.get("nickname");
-		
-		System.out.println("id : " + id);
-		System.out.println("email : " + email);
-		System.out.println("nickname : " + nickname);
-		System.out.println("accessToken : " + accessToken);
-		
-		return "성공";
-	}
 	
 	@RequestMapping("/res")
 	public String mtdRes() {
@@ -131,6 +109,37 @@ public class MainController {
 			e.printStackTrace();
 		}
 		return ResponseEntity.ok().build();
+	}
+	
+	@RequestMapping("/social_res")
+	public String mtdSocialRes(@RequestParam("code") String code, HttpServletResponse response){
+		// ^ 인가 코드 받기
+		
+		// 2. 토큰 받기
+		String accessToken = kakaoApi.getAccessToken(code);
+		
+		// 3. 사용자 정보 받기
+		Map<String, Object> userInfo = kakaoApi.getUserInfo(accessToken);
+		
+		String id = (String)userInfo.get("id");
+		String email = (String)userInfo.get("email");
+		String nickname = (String)userInfo.get("nickname");
+		
+		System.out.println("id : " + id);
+		System.out.println("email : " + email);
+		System.out.println("nickname : " + nickname);
+		System.out.println("accessToken : " + accessToken);
+		
+		return "성공";
+	}
+	
+	@GetMapping("/select_test")
+	public ResponseEntity<?> mtdSelectTest(@RequestParam("email") String email) {
+		UserDto userDto = userDao.mtdFindByEmail(email);
+		System.out.println(userDto.getEmail());
+		System.out.println(userDto.getTag_id());
+		System.out.println(userDto.getUuid());
+		return ResponseEntity.ok(userDto);
 	}
 	
 }

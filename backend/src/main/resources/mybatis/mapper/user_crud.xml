@@ -31,5 +31,9 @@
 		</choose>
 		)
 	</insert>
+	
+	<select id="mtdFindByEmail" resultType="com.sns.dto.UserDto">
+		select * from user where email = #{email}
+	</select>
 
 </mapper>
