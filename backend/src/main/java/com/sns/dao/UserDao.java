@@ -1,5 +1,6 @@
 package com.sns.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -11,6 +12,8 @@ import com.sns.dto.UserDto;
 public interface UserDao {
 	public int mtdInsert(UserDto userDto);
 	
-	public Optional<UserDto> mtdFindByEmail(@Param("email") String email);
+	public UserDto mtdFindByEmail(@Param("email") String email);
+	
+	public UserDto mtdFindByUuid(@Param("uuid") String uuid);
 	
 }
