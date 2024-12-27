@@ -35,9 +35,16 @@ public class AuthController {
 	
 	@PostMapping("/login")
 	public ResponseEntity<HashMap<String, String>> login(@RequestBody HashMap<String, String> requestBody) {
+		// requestBody에서 email, password, provider값 가져옴
+		String email = requestBody.get("email");
+		String password = requestBody.get("password");
+		String provider = requestBody.get("provider");
+		
+		// 인증 토큰 생성
 		UsernamePasswordAuthenticationToken authenticationToken =
 				new UsernamePasswordAuthenticationToken(requestBody.get("email"), requestBody.get("password"));
 		
+		// 인증 처리
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		
@@ -89,8 +96,19 @@ public class AuthController {
 				
 				responseBody.put("msg", "Expired Token Re Create");
 				responseBody.put("refreshToken", sNewRefreshToken);
+			} else {
+				log.info("Invalid JWT Token");
+				responseBody.put("error", "Invalid JWT Token");
 			}
+			break;
+		
+		default:
+			log.info("Invalid JWT Token");
+			responseBody.put("error", "Invalid JWT Token");
+			break;
 		}
+		
+		return new ResponseEntity<>(responseBody, httpHeaders, HttpStatus.OK);
 	}
 	
 }

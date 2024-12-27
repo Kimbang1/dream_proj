@@ -181,6 +181,7 @@ public class JwtProvider {
 		}
 		return null;
 	}
+
 	
 	// prefix Token Type Add
 	public String addTokenType(String token) {

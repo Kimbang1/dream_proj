@@ -16,4 +16,6 @@ public interface UserDao {
 	
 	public UserDto mtdFindByUuid(@Param("uuid") String uuid);
 	
+	public UserDto mtdFindByEmailAndProvider(@Param("email") String email, @Param("provider") String provider);
+	
 }

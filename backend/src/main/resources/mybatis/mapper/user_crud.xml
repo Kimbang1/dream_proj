@@ -39,5 +39,9 @@
 	<select id="mtdFindByUuid" resultType="com.sns.dto.UserDto">
 		select * from user where uuid = #{uuid}
 	</select>
+	
+	<select id="mtdFindByEmailAndProvider" resultType="com.sns.dto.UserDto">
+		select * from user where email = #{email} and provider = #{provider}
+	</select>
 
 </mapper>
