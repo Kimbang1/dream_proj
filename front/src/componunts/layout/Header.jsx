@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 
-
 function Header() {
   const [searchMonitor, setSearchMonitor] = useState(""); // 검색어 상태 관리
-
+  console.log("searchMonitor", searchMonitor);
   // 검색 대상 데이터 배열
-  const monitorsData =[]
+  const monitorsData = [];
 
   // 검색어 변경 이벤트 핸들러
   const onChange = (e) => {
@@ -39,7 +38,7 @@ function Header() {
 
       <div className="functionArea">
         <img className="imges" src="/images/bell.png" alt="종모양" />
-        <img className="imges" src="/images/+.png" alt="+" />
+        <img className="imges" src="/images/plus.png" alt="+" />
       </div>
     </div>
   );

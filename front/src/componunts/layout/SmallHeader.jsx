@@ -1,11 +1,19 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 function SmallHeader() {
+  
+  const navigate = useNavigate();
+  const handlehomeClick = () => {
+    navigate("/Mainview");
+  };
   return (
     <div id="smallHeda">
-      
       <div className="logo">
-        <img src="/images/logo4.png" alt="로고사진  " />
+        <img
+          onClick={handlehomeClick}
+          src="/images/logo4.png"
+          alt="로고사진  "
+        />
       </div>
 
       <div className="managerOption">

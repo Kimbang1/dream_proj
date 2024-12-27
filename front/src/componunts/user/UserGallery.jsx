@@ -1,14 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
-
-function Gallery1() {
+// import axios from "axios"; // axios를 사용해 API 호출
+function UserGallery() {
   // 상태 변수 `items`: 초기 데이터를 관리하며, 화면에 표시할 항목들을 저장
   const [items, setItems] = useState(
     Array.from({ length: 10 }, (_, i) => ({
-      src: `/test_img/img${i + 1}.jpg`, // 이미지 URL
+      src: `${i + 1}.jpg`, // 이미지 URL
       heightClass: `height${(i % 3) + 1}`, // 3개의 높이 클래스 중 하나
     }))
   );
-  // `loader`: DOM 참조를 위한 useRef 객체 (Intersection Observer가 감지할 대상 요소를 참조)
+
+  // `loader`: DOM 참조를 위한 useRef 객체
   const loader = useRef(null);
 
   // `loadMoreItems` 함수: 현재 `items` 상태에 10개의 새로운 아이템을 추가
@@ -16,14 +17,18 @@ function Gallery1() {
     setItems((prevItems) => [
       ...prevItems, // 기존 아이템 유지
       ...Array.from({ length: 10 }, (_, i) => ({
-        src: `/test_img/img${i + 1}.jpg`, // 새 이미지 URL
+        src: `${prevItems.length + i + 1}.jpg`, // 새 이미지 URL
         heightClass: `height${((prevItems.length + i) % 3) + 1}`, // 높이 클래스 순환
-      })), // 새로운 아이템 추가
+      })),
     ]);
   };
 
   // `useEffect`: Intersection Observer를 설정
   useEffect(() => {
+    if (!loader.current) return; // `loader`가 아직 연결되지 않았다면 종료
+
+    const currentLoder = loader.current; //`loder.current`를 변수로 저장
+
     // Intersection Observer 생성
     const observer = new IntersectionObserver(
       (entries) => {
@@ -35,20 +40,15 @@ function Gallery1() {
       { threshold: 1.0 } // 타겟 요소가 100% 화면에 나타났을 때 트리거
     );
 
-    // loader 요소가 존재하면 Observer 연결
-    if (loader.current) {
-      observer.observe(loader.current);
-    }
+    observer.observe(currentLoder); // `loader` 참조 연결
 
-    // 컴포넌트가 언마운트되거나 loader가 변경될 때 Observer를 해제
     return () => {
-      if (loader.current) observer.unobserve(loader.current);
+      if (currentLoder) observer.unobserve(currentLoder); // 컴포넌트 언마운트 시 observer 해제
     };
-  }, []); // 빈 배열을 사용해 컴포넌트가 처음 렌더링될 때 한 번만 실행
+  }, []);
 
-  // 렌더링
   return (
-    <>
+    <div className="userGalleryView">
       {/* 사진이 없으면 로딩 메시지를 표시 */}
       {items.length === 0 ? (
         <p style={{ textAlign: "center", marginTop: "20px" }}>
@@ -71,8 +71,8 @@ function Gallery1() {
           />
         </div>
       )}
-    </>
+    </div>
   );
 }
 
-export default Gallery1;
+export default UserGallery;

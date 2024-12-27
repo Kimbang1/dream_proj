@@ -12,6 +12,14 @@ function Join() {
   const [Phon, setPhon] = useState("");
   const [Bday, setBday] = useState("");
 
+  // console.log("이름:", Name);
+  // console.log("이메일:", eMail);
+  // console.log("@아이디:", Id);
+  // console.log("비번:", Pwd);
+  // console.log("비번확인:", Rpwd);
+  // console.log("전화번호:", Phon);
+  // console.log("생년월일:", Bday);
+
   const navigate = useNavigate();
   //useNavigate사용을 위한 선언
 
