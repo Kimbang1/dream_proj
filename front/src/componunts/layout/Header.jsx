@@ -1,8 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
   const [searchMonitor, setSearchMonitor] = useState(""); // 검색어 상태 관리
   console.log("searchMonitor", searchMonitor);
+  const navigate = useNavigate();
+  const handleWritePage = () => {
+    navigate("/ContentWrite");
+  };
   // 검색 대상 데이터 배열
   const monitorsData = [];
 
@@ -38,7 +43,13 @@ function Header() {
 
       <div className="functionArea">
         <img className="imges" src="/images/bell.png" alt="종모양" />
-        <img className="imges" src="/images/plus.png" alt="+" />
+
+        <img
+          onClick={handleWritePage}
+          className="imges"
+          src="/images/plus.png"
+          alt="+"
+        />
       </div>
     </div>
   );

@@ -74,3 +74,7 @@ div.functionArea img {
   width: 10%;
   margin-left: 20px;
 }
+div.functionArea img:hover{
+  /*속성 추가 할껏 부드럽게 위로 살짝 올라가기*/
+  background-color: #aaa;
+}

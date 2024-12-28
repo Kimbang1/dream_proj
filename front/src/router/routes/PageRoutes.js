@@ -2,11 +2,16 @@
   댓글페이지,이용약관페이지, 신고페이지*/
 
 import Mainview from "../../Pages/views/Mainview";
+import ContentWrite from "../../Pages/views/ContentWrite";
 
 const pageRoutes = [
   {
     path: "/mainview",
     element: <Mainview />,
+  },
+  {
+    path: "/contentWrite",
+    element: <ContentWrite />,
   },
 ];
 
