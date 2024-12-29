@@ -25,7 +25,8 @@
 @import url(pages-css/Post.css);
 
 /*검색페이지 css*/
-
+/* 게시글 작성 페이지 css */
+@import url(pages-css/ContentWrite.css);
 /*로그인 로그아웃 css*/
 @import url(user/JoinStyle.css);
 @import url(user/LoginStyle.css);
