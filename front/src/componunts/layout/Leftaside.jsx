@@ -1,21 +1,25 @@
 import React from "react";
-
 import { useMediaQuery } from "react-responsive";
-import { useNavigate, Link } from "react-router-dom"; // Link 컴포넌트 추가
+import { useNavigate } from "react-router-dom";
 
-function Leftaside() {
+function Leftaside({ setIsUserMainPage }) {
   const hiddenAside = useMediaQuery({ maxWidth: 750 });
-
   const navigate = useNavigate();
+
   const handlehomeClick = () => {
+    setIsUserMainPage(false); // 프로필 페이지가 아닌 경우
     navigate("/Mainview");
   };
-  
+
+  const handleUseMainClick = () => {
+    setIsUserMainPage(true); // 프로필 페이지로 전환
+    navigate("/user/UserMainpage");
+  };
 
   return (
     <div className="wrap">
       {!hiddenAside && (
-        <form action="">
+        <div>
           <div className="LogoArea">
             <img onClick={handlehomeClick} src="/images/logo4.png" alt="로고" />
           </div>
@@ -37,12 +41,13 @@ function Leftaside() {
               <img src="/images/whale.png" alt="챗봇" />
             </div>
 
-            {/*링크도 경로를 맞춰줘야 함.*/}
-            <Link to="/user/UserMainpage">
-              <div className="menu">
-                <img src="/images/cat.jpg" alt="프로필" />
-              </div>
-            </Link>
+            <div className="menu">
+              <img
+                onClick={handleUseMainClick}
+                src="/images/cat.jpg"
+                alt="프로필"
+              />
+            </div>
 
             <div className="Manager">
               <div className="menu">
@@ -54,7 +59,7 @@ function Leftaside() {
               </div>
             </div>
           </div>
-        </form>
+        </div>
       )}
     </div>
   );

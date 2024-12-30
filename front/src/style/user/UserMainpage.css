@@ -1,6 +1,11 @@
-div.userpage {
-  width: 100%;
+div.UserFrame{
   display: flex;
+  flex-direction: row;
+}
+div.userpage {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 프로필 화면 상단 */
@@ -30,7 +35,9 @@ div.SecondLayer{
   display: flex;
   justify-content: space-between;
 }
-
+div.ThirdLayer div.userName{
+ text-align: left;
+}
 
 /*프로필 화면 하단*/
 div.viewChoiceBtn_view {
@@ -38,7 +45,6 @@ div.viewChoiceBtn_view {
   height: 50px;
   display: flex;
   flex-direction: column;
-  flex: 4;
 }
 
 div.BtnAreaChoice {
@@ -49,6 +55,7 @@ div.BtnAreaChoice {
 }
 
 button.choice {
+  width: 50%;
   margin: 1%;
   cursor: pointer;
   display: inline-block;
@@ -60,28 +67,19 @@ img.Btnicon {
   width: 20%;
 }
 
-div#ViewArea {
-  flex: 4;
+div.ViewChoiceArea {
+  top: 70px;
+ position: relative;
 }
-/*오른쪽 사이드바 표시*/
-div.rightAside {
-  /* border: 1px solid #80f; */
-  height: 80vh;
-  flex: 2;
+
+
+div#rightAside{
+  width: 30%;
 }
-div.Frame {
-  margin: 10px auto;
-  width: 80%;
-  height: 100%;
-  border: 1px solid #000;
-  border-radius: 30px;
-  background-color: rgba(0, 0, 0, 0.3);
-}
-@media screen and (max-width: 330px) {
-  div.rightAside {
-    display: none;
-  }
-  div.Frame {
-    display: none;
+
+@media screen and(max-width:300px) {
+
+  div#rightAside{
+    width: 0;
   }
 }

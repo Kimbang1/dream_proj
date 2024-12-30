@@ -1,11 +1,15 @@
 /*css 리셋 스타일*/
 @import url(style_Reset.css);
 
+/* LayoutCP */
+@import url(pages-css/LayoutCP.css);
+
 /*헤더와 바텀Nav 그리고 왼쪽과 오른쪽 asied 바*/
 @import url(layout-css/bottomNav.css);
 @import url(layout-css/header.css);
 @import url(layout-css/leftaside.css);
 @import url(layout-css/smallheader.css);
+@import url(layout-css/RightAside.css);
 
 /*메인뷰 css*/
 @import url(Mainview-css/Mainviewstyle.css);
@@ -16,13 +20,15 @@
 @import url(user/UsereditProfile.css);
 /*유저 탈퇴페이지*/
 @import url(user/UserResign.css);
-
+/* 유저 포스트 페이지 */
+@import url(user/UserPost.css);
 /*랜딩페이지 css*/
 @import url(pages-css/landing.css);
 
 /*갤러리와 메이슨리 게시물 css*/
 @import url(pages-css/masonry.css);
 @import url(pages-css/Post.css);
+
 /*검색모달*/
 /*알람모달*/
 @import url(modal-css/alramModal.css);

@@ -5,6 +5,7 @@ div#wrap {
 
 div#left {
   flex: 2;
+  border-right: 1px solid #000;
   margin-left: 10px;
   margin-left: 0;
 }
@@ -45,10 +46,6 @@ div#head {
   background-color: #fff;
   /* overflow: visible; 부모 요소의 overflow 설정 */
   width: 100%;
-}
-
-div.mainview {
-  margin: 5%;
 }
 
 div.footerview {
