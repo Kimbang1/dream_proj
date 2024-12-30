@@ -12,8 +12,6 @@ import com.sns.dto.UserDto;
 public interface UserDao {
 	public int mtdInsert(UserDto userDto);
 	
-	public UserDto mtdFindByEmail(@Param("email") String email);
-	
 	public UserDto mtdFindByUuid(@Param("uuid") String uuid);
 	
 	public UserDto mtdFindByEmailAndProvider(@Param("email") String email, @Param("provider") String provider);

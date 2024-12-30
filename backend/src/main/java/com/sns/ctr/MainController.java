@@ -76,7 +76,8 @@ public class MainController {
 		// uuid 생성
 		String create_uuid = UUID.randomUUID().toString();
 		userDto.setUuid(create_uuid);
-//		System.out.println(create_uuid);
+		
+		// 비밀번호 passwordEncoder로 해싱하기
 		
 		try {
 			userDao.mtdInsert(userDto);
@@ -134,8 +135,8 @@ public class MainController {
 	}
 	
 	@GetMapping("/select_test")
-	public ResponseEntity<?> mtdSelectTest(@RequestParam("email") String email) {
-		UserDto userDto = userDao.mtdFindByEmail(email);
+	public ResponseEntity<?> mtdSelectTest(@RequestParam("email") String email, @RequestParam("provider") String provider) {
+		UserDto userDto = userDao.mtdFindByEmailAndProvider(email, provider);
 		System.out.println(userDto.getEmail());
 		System.out.println(userDto.getTag_id());
 		System.out.println(userDto.getUuid());

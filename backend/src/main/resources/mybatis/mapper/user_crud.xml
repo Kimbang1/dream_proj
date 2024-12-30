@@ -3,10 +3,6 @@
 	"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.sns.dao.UserDao">
-
-	<select id="mtdSelect" resultType="com.sns.dto.UserDto">
-		select * from kse_test order by num desc
-	</select>
 	
 	<insert id="mtdInsert" parameterType="com.sns.dto.UserDto">
 		insert into user
@@ -31,10 +27,6 @@
 		</choose>
 		)
 	</insert>
-	
-	<select id="mtdFindByEmail" resultType="com.sns.dto.UserDto">
-		select * from user where email = #{email}
-	</select>
 	
 	<select id="mtdFindByUuid" resultType="com.sns.dto.UserDto">
 		select * from user where uuid = #{uuid}

@@ -3,6 +3,9 @@ package com.sns.jwt;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,6 +26,7 @@ public class SecurityConfig {
 	private String[] PERMIT_ALL_RESOURCES;
 	
 	private final JwtProvider jwtProvider;
+	private final CustomUserDetailsService customUserDetailsService;
 	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -30,21 +34,31 @@ public class SecurityConfig {
 	};
 	
 	@Bean
-	protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+		return authenticationConfiguration.getAuthenticationManager();
+	}
+	
+	@Bean
+	public AuthenticationProvider proAuthenticationProvider() {
+		return new CustomAuthenticationProvider(customUserDetailsService, passwordEncoder());
+	}
+	
+	@Bean
+	public SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity
-		.httpBasic(HttpBasicConfigurer -> HttpBasicConfigurer.disable())
-		.formLogin(formLogin -> formLogin.disable())
-		.csrf(csrf -> csrf.disable())
-		.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+		.httpBasic(HttpBasicConfigurer -> HttpBasicConfigurer.disable()) 	// HTTP Basic 인증 비활성화
+		.formLogin(formLogin -> formLogin.disable())						// Form Login 비활성화
+		.csrf(csrf -> csrf.disable())										// CSRF 비활성화
+		.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) 	// Stateless 세션 관리
 		.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(this.getPermitAllResources()).permitAll()
 				.requestMatchers(new AntPathRequestMatcher("/admin/**")).hasAuthority("ADMIN")
 				.requestMatchers(new AntPathRequestMatcher("/api/v1/**")).hasAnyAuthority("USER", "ADMIN")
-				.anyRequest().authenticated())
+				.anyRequest().authenticated())		// 위에 작성한 것 외의 요청은 인증 필요
 		.exceptionHandling(exception -> exception
-				.accessDeniedHandler(new JwtAccessDeniedHandler())
-				.authenticationEntryPoint(new JwtAuthenticationEntryPoint()))
-		.addFilterBefore(new JwtAuthenticationFilter(jwtProvider, PERMIT_ALL_RESOURCES), UsernamePasswordAuthenticationFilter.class);
+				.accessDeniedHandler(new JwtAccessDeniedHandler())	// 권한 오류 처리
+				.authenticationEntryPoint(new JwtAuthenticationEntryPoint()))	// 인증 실패 처리
+		.addFilterBefore(new JwtAuthenticationFilter(jwtProvider,customUserDetailsService, PERMIT_ALL_RESOURCES), UsernamePasswordAuthenticationFilter.class);
 		return httpSecurity.build();
 	}
 	

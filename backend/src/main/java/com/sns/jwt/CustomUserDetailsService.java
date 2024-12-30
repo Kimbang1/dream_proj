@@ -24,18 +24,17 @@ public class CustomUserDetailsService implements UserDetailsService {
 		UserDto userDto = userDao.mtdFindByEmailAndProvider(email, provider);
 		
 		if(userDto == null) {
+			log.error("No user found for email={} and provider={}", email, provider);
 			throw new UsernameNotFoundException("User not found with email=" + email + " and provider=" + provider);
 		}
 		
-		// UserDetails 생성
-		PrincipalDetails principalDetails = new PrincipalDetails(userDto);
-		BeanUtils.copyProperties(userDto, principalDetails);
-		
-		return principalDetails;
+		return new PrincipalDetails(userDto);
 	}
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		throw new UnsupportedOperationException("Use loadUserByUsernameAndProvider instead.");
+		log.info("Use loadUserByEmailAndProvider instead.");
+		log.info("CustomUserDetailsService loadUserByUsername: username={}", username);
+		return loadUserByEmailAndProvider(username, "local");
 	}
 }

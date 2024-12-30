@@ -16,7 +16,8 @@ public interface RefreshTokenMapper {
 			@Param("uuid") String uuid,
 			@Param("reToken") String reToken,
 			@Param("createAt") Timestamp createAt,
-			@Param("expiresIn") Timestamp expiresIn
+			@Param("expiresIn") Timestamp expiresIn,
+			@Param("userAgent") String userAgent
 			);
 	
 	// 특정 사용자의 모든 Refresh Token 조회 (여러 디바이스에서 발급된 토큰 포함)

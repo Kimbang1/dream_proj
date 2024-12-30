@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.crypto.spec.SecretKeySpec;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -60,6 +62,7 @@ public class JwtProvider {
 	@PostConstruct
 	public void init() {
 		byte[] keyBytes = Decoders.BASE64.decode(secret);
+		key = new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
 	}
 	
 	// Access Token 생성
@@ -77,6 +80,8 @@ public class JwtProvider {
 				.setSubject(authentication.getName())
 				.claim("userId", principalDetails.getUserId())
 				.claim(AUTHORITIES_KEY, authority)
+				.claim("email", principalDetails.getUserDto().getEmail())
+				.claim("provider", principalDetails.getUserDto().getProvider())
 				.setExpiration(expiration)
 				.signWith(key, SignatureAlgorithm.HS256)
 				.compact();
@@ -84,15 +89,19 @@ public class JwtProvider {
 	
 	// Refresh Token 생성
 	@Transactional
-	public String generateRefreshToken(String userId) {
+	public String generateRefreshToken(String userId, HttpServletRequest request) {
 		long create = (new Date()).getTime();
 		long expired = (new Date(create + refreshExpirationTime)).getTime();
 		String tokenUuid = UUID.randomUUID().toString();
 		
+		// User-Agent 값 가져오기
+		String userAgent = request.getHeader("User-Agent");
+		
 		Timestamp createAt = new Timestamp(create);
 		Timestamp expiresIn = new Timestamp(expired);
 		
-		refreshTokenMapper.saveRefreshToken(userId, tokenUuid, createAt, expiresIn);
+		// Refresh 토큰 저장 시 User-Agent 값 함께 저장
+		refreshTokenMapper.saveRefreshToken(userId, tokenUuid, createAt, expiresIn, userAgent);
 		
 		return tokenUuid;
 	}
@@ -164,7 +173,7 @@ public class JwtProvider {
 		
 		// 조회된 토큰 리스트에서 유효한 토큰인지 확인
 		for (RefreshTokenListDto tokenDto : refreshTokens) {
-			if (tokenDto.getReToken().equals(refreshTokens)) {
+			if (tokenDto.getReToken().equals(validRefreshToken)) {
 				// 만료 시간이 현재 시간보다 뒤에 있는지 확인
 				if(tokenDto.getExpiresIn().after(new Timestamp(System.currentTimeMillis()))) {
 					return true;
@@ -181,7 +190,17 @@ public class JwtProvider {
 		}
 		return null;
 	}
-
+	
+	// email과 provider를 추출하는 메서드 추가
+	public String getEmailFromToken(String token) {
+		Claims claims = this.parseClaims(token);
+		return claims.get("email", String.class);
+	}
+	
+	public String getProviderFromToken(String token) {
+		Claims claims = this.parseClaims(token);
+		return claims.get("provider", String.class);
+	}
 	
 	// prefix Token Type Add
 	public String addTokenType(String token) {

@@ -5,8 +5,8 @@
 <mapper namespace="com.sns.dao.RefreshTokenMapper">
     <!-- Refresh Token 저장 -->
    	<insert id="saveRefreshToken">
-    	INSERT INTO refresh_token_list (re_token, uuid, user_agent, expires_in)
-    	VALUES (#{reToken}, #{uuid}, #{userAgent}, #{expiresIn});
+    	INSERT INTO refresh_token_list (re_token, uuid, create_at, expires_in, user_agent)
+    	VALUES (#{reToken}, #{uuid}, #{createAt}, #{expiresIn}, #{userAgent});
 	</insert>
 
     <!-- 특정 사용자의 모든 Refresh Token 조회 -->

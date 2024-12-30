@@ -28,7 +28,7 @@ update_at	timestamp						,
 is_update	tinyint			default 0		,
 delete_at	timestamp						,
 is_delete	tinyint			default 0		,
-pwd			varchar(30)						,
+pwd			varchar(100)					,
 social_key	varchar(36)						,
 suspended_cnt	int			default 0 		,
 constraint unique(tag_id)					,
@@ -39,3 +39,18 @@ drop table user;
 
 desc user;
 select * from user order by create_at;
+
+# refresh_token 관리 테이블
+create table refresh_token_list (
+re_token	varchar(100)	not null		,
+uuid		char(36)		not null		,
+user_agent	varchar(255)					,
+create_at	timestamp						,
+is_using	tinyint			default 1		,
+expires_in	timestamp						,
+constraint fk_refresh_token_user foreign key(uuid) references user(uuid) on delete cascade,
+constraint primary key(re_token)
+);
+drop table refresh_token_list;
+
+select * from refresh_token_list order by create_at;
