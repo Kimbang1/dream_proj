@@ -7,6 +7,8 @@ function Login() {
   const navigate = useNavigate();
   //useNavigate를 사용하기 위한 선언 (나중에 정리할 것)
 
+
+  
   const handleJoinClick = () => {
     navigate("/join");
   };

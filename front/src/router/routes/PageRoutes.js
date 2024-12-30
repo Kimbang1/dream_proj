@@ -3,6 +3,8 @@
 
 import Mainview from "../../Pages/views/Mainview";
 import ContentWrite from "../../Pages/views/ContentWrite";
+import Gallery from "../../Pages/views/Gallery";
+import Post from "../../Pages/views/Post";
 
 const pageRoutes = [
   {
@@ -13,6 +15,14 @@ const pageRoutes = [
     path: "/contentWrite",
     element: <ContentWrite />,
   },
+  {
+    path: "/Gallery",
+    element: <Gallery />,
+  },
+  {
+    path:"/Post",
+    element:<Post/>,
+  }
 ];
 
 export default pageRoutes;

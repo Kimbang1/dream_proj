@@ -9,6 +9,7 @@ function UserGallery() {
     }))
   );
 
+  
   // `loader`: DOM 참조를 위한 useRef 객체
   const loader = useRef(null);
 
