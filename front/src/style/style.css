@@ -23,7 +23,9 @@
 /*갤러리와 메이슨리 게시물 css*/
 @import url(pages-css/masonry.css);
 @import url(pages-css/Post.css);
-
+/*검색모달*/
+/*알람모달*/
+@import url(modal-css/alramModal.css);
 /*검색페이지 css*/
 /* 게시글 작성 페이지 css */
 @import url(pages-css/ContentWrite.css);

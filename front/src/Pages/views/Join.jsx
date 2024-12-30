@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-// import "../style/user/JoinStyle.css";
 import { useNavigate } from "react-router-dom";
-//페이지 이동을 위한 훅
+import axios from "axios"; // axios 추가
 
 function Join() {
   const [Name, setName] = useState("");
@@ -12,20 +11,44 @@ function Join() {
   const [Phon, setPhon] = useState("");
   const [Bday, setBday] = useState("");
 
-  // console.log("이름:", Name);
-  // console.log("이메일:", eMail);
-  // console.log("@아이디:", Id);
-  // console.log("비번:", Pwd);
-  // console.log("비번확인:", Rpwd);
-  // console.log("전화번호:", Phon);
-  // console.log("생년월일:", Bday);
-
   const navigate = useNavigate();
-  //useNavigate사용을 위한 선언
 
-  const handleLoginClick = () => {
-    navigate("/Login"); //회원
+  const handleLoginClick = async () => {
+    if (Pwd !== Rpwd) {
+      alert("비밀번호와 확인 비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    // 보내는 데이터 객체
+    const userData = {
+      name: Name,
+      email: eMail,
+      id: Id,
+      password: Pwd,
+      phon: Phon,
+      bday: Bday,
+    };
+
+    try {
+      // Axios로 데이터 전송 (JSON 형식)
+      const response = await axios.post(
+        "http://localhost:3000/api/register",
+        userData,
+        {
+          headers: {
+            "Content-Type": "application/json", // JSON 형식 지정
+          },
+        }
+      );
+
+      console.log(response.data);
+      navigate("/Login"); // 회원 가입 후 로그인 페이지로 이동
+    } catch (error) {
+      console.error("회원 가입 실패:", error);
+      alert("회원 가입에 실패했습니다. 다시 시도해주세요.");
+    }
   };
+
   return (
     <div id="background">
       <div id="joinBox">
@@ -36,9 +59,7 @@ function Join() {
           type="text"
           placeholder="이름을 입력하시오"
           value={Name}
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
+          onChange={(e) => setName(e.target.value)}
         />
 
         <input
@@ -46,9 +67,7 @@ function Join() {
           type="text"
           placeholder="e-mail을 입력하시오"
           value={eMail}
-          onChange={(e) => {
-            seteMail(e.target.value);
-          }}
+          onChange={(e) => seteMail(e.target.value)}
         />
 
         <input
@@ -56,9 +75,7 @@ function Join() {
           type="text"
           placeholder="아이디를 입력해주세요"
           value={Id}
-          onChange={(e) => {
-            setId(e.target.value);
-          }}
+          onChange={(e) => setId(e.target.value)}
         />
 
         <input
@@ -66,9 +83,7 @@ function Join() {
           placeholder="비밀번호를 입력해주세요"
           type="password"
           value={Pwd}
-          onChange={(e) => {
-            setPwd(e.target.value);
-          }}
+          onChange={(e) => setPwd(e.target.value)}
         />
 
         <input
@@ -76,9 +91,7 @@ function Join() {
           placeholder="비밀번호를 다시 입력해주세요"
           type="password"
           value={Rpwd}
-          onChange={(e) => {
-            setRpwd(e.target.value);
-          }}
+          onChange={(e) => setRpwd(e.target.value)}
         />
 
         <input
@@ -86,9 +99,7 @@ function Join() {
           placeholder="전화번호를 입력해주세요"
           type="text"
           value={Phon}
-          onChange={(e) => {
-            setPhon(e.target.value);
-          }}
+          onChange={(e) => setPhon(e.target.value)}
         />
 
         <input
@@ -96,12 +107,10 @@ function Join() {
           placeholder="생년월일을 입력해주세요"
           type="date"
           value={Bday}
-          onChange={(e) => {
-            setBday(e.target.value);
-          }}
+          onChange={(e) => setBday(e.target.value)}
         />
 
-        <button id="signBtn" onClick={handleLoginClick /*수정예정*/}>
+        <button id="signBtn" onClick={handleLoginClick}>
           입력 완료
         </button>
       </div>

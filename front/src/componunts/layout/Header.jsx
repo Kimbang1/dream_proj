@@ -1,49 +1,53 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AlarmComponent from "../modal/AlramModal"; // 알람 컴포넌트 임포트
 
 function Header() {
-  const [searchMonitor, setSearchMonitor] = useState(""); // 검색어 상태 관리
+  // 검색어 상태 관리
+  const [searchMonitor, setSearchMonitor] = useState("");
   console.log("searchMonitor", searchMonitor);
 
   //최근 검색어 상태
   const [recentSearch, setRecentSearch] = useState([]);
-
-  //최근검색어 삭제
-  const handleDeleteSearch = (index) => {
-    setRecentSearch((prev) => prev.filter((_, i) => i !== index));
-    // 해당 인덱스를 제외한 나머지 항목만 남기기
-  };
-
   //모달 열림상태
   const [isModalOpen, setIsModalOpen] = useState("");
 
+  //알람 모달 열림상태
+  const [isAlramOpen, setIsAlramOpen] = useState(false); // 상태 수정
+
+  //최근검색어 삭제
+  const handleDeleteSearch = (index) => {
+  
+    setRecentSearch((prev) => prev.filter((_, i) => i !== index));
+    // 해당 인덱스를 제외한 나머지 항목만 남기기
+  };
+  
+  
   const navigate = useNavigate();
   const handleWritePage = () => {
     navigate("/ContentWrite");
   };
-  // 검색 대상 데이터 배열
-  const monitorsData = [];
+
+  const monitorsData=[];
 
   // 검색어 변경 이벤트 핸들러
   const onChange = (e) => {
     setSearchMonitor(e.target.value); // 입력 값을 상태로 저장
   };
 
+  ///////////검색 모달///////////////
   const openModal = () => {
     setIsModalOpen(true);
-  }; //셋이즈모달이 트루일땐 모달창이 열림
+  };
 
   const closeModal = () => {
     setIsModalOpen(false);
-  }; //셋이즈모달이 false일땐 모달창이 닫힘
+  };
 
   // 검색어 제출 핸들러
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    //기본동작(새로고침)막는 것
-
     if (searchMonitor.trim() !== "") {
-      // 검색어가 비어있지 않으면 최근 검색어에 추가
       setRecentSearch((prev) => {
         const newSearches = [searchMonitor, ...prev];
         return newSearches.slice(0, 5); // 최대 5개까지만 유지
@@ -51,6 +55,15 @@ function Header() {
       setSearchMonitor("");
       closeModal();
     }
+  };
+
+  //////////////////알람 모달/////////////////
+  const openAlarmModal = () => {
+    setIsAlramOpen(true);
+  };
+
+  const closeAlarmModal = () => {
+    setIsAlramOpen(false);
   };
 
   // 검색어를 기준으로 데이터 필터링
@@ -78,9 +91,13 @@ function Header() {
           />
         </form>
       </div>
-
       <div className="functionArea">
-        <img className="imges" src="/images/bell.png" alt="종모양" />
+        <img
+          onClick={openAlarmModal} // 알람 모달 열기
+          className="imges"
+          src="/images/bell.png"
+          alt="종모양"
+        />
 
         <img
           onClick={handleWritePage}
@@ -89,6 +106,14 @@ function Header() {
           alt="+"
         />
       </div>
+
+      {/* 알람 컴포넌트 추가 */}
+      {isAlramOpen && (
+        <AlarmComponent
+          isOpen={isAlramOpen} // 알람 모달 열기 상태
+          closeAlarmModal={closeAlarmModal} // 알람 모달 닫기 함수 전달
+        />
+      )}
 
       {isModalOpen && (
         <div className="modal-overlay" onClick={closeModal}>
@@ -113,7 +138,6 @@ function Header() {
           </div>
         </div>
       )}
-
       {filteredMonitors.length > 0 && (
         <ul>
           {filteredMonitors.map((monitor, index) => (

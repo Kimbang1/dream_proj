@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import UserGallery from "./UserGallery";
 import UserPost from "./UserPost";
 import axios from "axios";
+import ContentWrite from "../../Pages/views/ContentWrite";
 
 function UserMainpage() {
   const [user, setUser] = useState([]); //불러올 데이터
   const [isPosthome, setIsPosthome] = useState(true);
   const [isGalleryhome, setIsGalleryhome] = useState(false);
   console.log(isGalleryhome, isPosthome);
+  
 
   const onPostClick = () => {
     setIsPosthome(false);
@@ -20,7 +22,11 @@ function UserMainpage() {
     setIsGalleryhome(false);
   };
   const navigate = useNavigate();
+  const [isContentWrite, setIsContentwrite] = useState(true);
 
+  const onContentWriteClick = () => {
+    setIsContentwrite(true);
+  };
   //데이터 로드 함수
   useEffect(() => {
     const fetchData = async () => {
@@ -107,6 +113,7 @@ function UserMainpage() {
           {/* 포스트/갤러리 누르는 것에 따른 화면 전환 */}
           {isPosthome && <UserPost />}
           {isPosthome && <UserGallery />}
+          {isContentWrite && <ContentWrite/>}
         </div>
       </div>
 

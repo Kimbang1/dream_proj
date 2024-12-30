@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 
-function Gallery1() {
+function Gallery() {
   // 상태 변수 `items`: 초기 데이터를 관리하며, 화면에 표시할 항목들을 저장
   const [items, setItems] = useState(
     Array.from({ length: 10 }, (_, i) => ({
@@ -75,4 +75,4 @@ function Gallery1() {
   );
 }
 
-export default Gallery1;
+export default Gallery;
