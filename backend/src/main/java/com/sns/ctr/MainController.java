@@ -69,36 +69,6 @@ public class MainController {
 		return list;
 	}
 	
-	@RequestMapping("/join_proc")
-	public ResponseEntity<?> mtdJoinProc(UserDto userDto, HttpServletResponse response) {
-		String redirect_uri;
-		
-		// uuid 생성
-		String create_uuid = UUID.randomUUID().toString();
-		userDto.setUuid(create_uuid);
-		
-		// 비밀번호 passwordEncoder로 해싱하기
-		
-		try {
-			userDao.mtdInsert(userDto);
-			redirect_uri="http://localhost:8081/res";
-			response.sendRedirect(redirect_uri);
-		} catch(IOException ioe) {
-			System.out.println("회원가입 처리 중 IOE : " + ioe.getMessage());
-		} catch(Exception e) {
-			// 오류 발생 시 error 페이지로 넘기기
-			System.out.println("회원가입 처리 중 오류 : " + e.getMessage());
-			redirect_uri="http://localhost:8081/custom_error";
-			try {
-				response.sendRedirect(redirect_uri);
-			} catch (IOException e1) {
-			}
-			return ResponseEntity.ok().build();
-		}
-		
-		return ResponseEntity.ok().build();
-	}
-	
 	@RequestMapping("/kakao")
 	public ResponseEntity<?> mtdKakao(HttpServletResponse response) {
 		String rest_api_key = "8f8065c3d2d2cc8e683269c8d075800c";

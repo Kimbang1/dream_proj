@@ -2,36 +2,20 @@ import axios from "axios";
 
 //액시오스 인스턴스 생성
 const instance = axios.create({
-  baseURL: React_APP_API_BASE_URL, //환경변수 사용
+  baseURL: process.env.REACT_APP_API_BASE_URL, //환경변수 사용
   timeout: 5000, //요청제한시간
-  withCredentials: true, //쿠키 전송 허용
+  withCredentials: true, //쿠키를 요청에 포함하도록 설정
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-//쿠키 값을 가져오는 함수
-const getCookies =(name) =>{
-    const cookies = document.cookie.split(";");
-    const targetCookie = cookies.find((cookies)=>cookies.startsWith(`${name}=`));
-    return targetCookie ? targetCookie.split("=")[1] : [null];
-    //해당 쿠키의 값 반환
-};
-
 //요청 인터셉터
-
-instance.interceptors.reques.use(
+instance.interceptors.request.use(
     (config) => {
+        // Authorization 헤더에 accessToken 추가(쿠키에서 자동으로 포함됨)
+        // axios는 'withCredentials' 설정을 통해 자동으로 쿠키를 포함 함.
 
-        //쿠키에서 accessToken,refreshToken 가져오기
-       const accessToken = getCookies('token');
-       const refreshToken = getCookies("refreshToken");
-
-       if(accessToken){
-         config.headers.Authorization = `Bearer ${accessToken}`;
-         // Authorization 헤더에 accessToken 추가
-       }
-       if(refreshToken){
-        config.headers["x-refresh-token"]=refreshToken;
-        //추가적인 헤더에 refreshToken 추가
-       }
        return config;
 },
 (error)=>{
@@ -43,18 +27,37 @@ instance.interceptors.reques.use(
 //응답 인터셉터
 instance.interceptors.response.use(
     (response)=>{
+        // 응답 성공 처리
         console.log('Response:',response);
-
         return response;
     },
     (error)=>{
-        console.error('ResponseError:',error);
+        // 에러 상태 처리
+        if(error.response) {
+            const status = error.response.status;
 
-        //401 Unauthorized처리
-        if(error.response && error.response.status === 401){
-            console.log('Unauthorized.Redirecting to login...');
-            //로그인이 필요한 경우 로그인 페이지로 리다이렉트
-            window.location.href="/Pages/views/Login";
+            // 잘못된 요청
+            if(status === 400) {
+                alert("잘못된 요청입니다. 다시 시도해주세요.");
+            }
+            
+            // 인증 실패(로그인 정보가 잘못된 경우)
+            else if(status === 401) {
+                alert("로그인 정보가 올바르지 않습니다.");
+            }
+
+            // 409 상태 처리 (중복된 회원)
+            else if(status === 409) {
+                alert("이미 가입된 회원입니다.");
+            }
+
+            // 500 상태 처리 (서버 오류)
+            else if(status === 500) {
+                alert("서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
+            }
+        } else {
+            // 서버로부터 응답을 받지 못한 경우(ex: 네트워크 오류)
+            alert("네트워크 오류가 발생했습니다.");
         }
 
         return Promise.reject(error);

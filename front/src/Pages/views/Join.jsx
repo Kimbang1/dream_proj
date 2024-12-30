@@ -1,51 +1,45 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; // axios 추가
+import AxiosApi from "../../servies/AxiosApi"
 
 function Join() {
-  const [Name, setName] = useState("");
-  const [eMail, seteMail] = useState("");
-  const [Id, setId] = useState("");
-  const [Pwd, setPwd] = useState("");
-  const [Rpwd, setRpwd] = useState("");
-  const [Phon, setPhon] = useState("");
-  const [Bday, setBday] = useState("");
+  const [username, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [tag_id, setTagId] = useState("");
+  const [pwd, setPwd] = useState("");
+  const [rpwd, setRpwd] = useState("");
+  const [phone, setPhone] = useState("");
+  const [birthday, setBirthday] = useState("");
 
   const navigate = useNavigate();
 
   const handleLoginClick = async () => {
-    if (Pwd !== Rpwd) {
+    if (pwd !== rpwd) {
       alert("비밀번호와 확인 비밀번호가 일치하지 않습니다.");
       return;
     }
 
     // 보내는 데이터 객체
     const userData = {
-      name: Name,
-      email: eMail,
-      id: Id,
-      password: Pwd,
-      phon: Phon,
-      bday: Bday,
+      username: username,
+      email: email,
+      tag_id: tag_id,
+      pwd: pwd,
+      phone: phone,
+      birthday: birthday,
+      provider: "local"
     };
 
     try {
       // Axios로 데이터 전송 (JSON 형식)
-      const response = await axios.post(
-        "http://localhost:3000/api/register",
-        userData,
-        {
-          headers: {
-            "Content-Type": "application/json", // JSON 형식 지정
-          },
-        }
-      );
-
+      const response = await AxiosApi.post("/auth/join", userData);
       console.log(response.data);
+      alert("회원가입 성공");
       navigate("/Login"); // 회원 가입 후 로그인 페이지로 이동
+
     } catch (error) {
       console.error("회원 가입 실패:", error);
-      alert("회원 가입에 실패했습니다. 다시 시도해주세요.");
+      // 에러는 인터셉터에서 처리되므로 여기선 추가 처리 필요 없음
     }
   };
 
@@ -58,31 +52,31 @@ function Join() {
           className="joinFrame"
           type="text"
           placeholder="이름을 입력하시오"
-          value={Name}
-          onChange={(e) => setName(e.target.value)}
+          value={username}
+          onChange={(e) => setUserName(e.target.value)}
         />
 
         <input
           className="joinFrame"
           type="text"
           placeholder="e-mail을 입력하시오"
-          value={eMail}
-          onChange={(e) => seteMail(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
           className="joinFrame"
           type="text"
           placeholder="아이디를 입력해주세요"
-          value={Id}
-          onChange={(e) => setId(e.target.value)}
+          value={tag_id}
+          onChange={(e) => setTagId(e.target.value)}
         />
 
         <input
           className="joinFrame"
           placeholder="비밀번호를 입력해주세요"
           type="password"
-          value={Pwd}
+          value={pwd}
           onChange={(e) => setPwd(e.target.value)}
         />
 
@@ -90,7 +84,7 @@ function Join() {
           className="joinFrame"
           placeholder="비밀번호를 다시 입력해주세요"
           type="password"
-          value={Rpwd}
+          value={rpwd}
           onChange={(e) => setRpwd(e.target.value)}
         />
 
@@ -98,16 +92,16 @@ function Join() {
           className="joinFrame"
           placeholder="전화번호를 입력해주세요"
           type="text"
-          value={Phon}
-          onChange={(e) => setPhon(e.target.value)}
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
         />
 
         <input
           className="joinFrame"
           placeholder="생년월일을 입력해주세요"
           type="date"
-          value={Bday}
-          onChange={(e) => setBday(e.target.value)}
+          value={birthday}
+          onChange={(e) => setBirthday(e.target.value)}
         />
 
         <button id="signBtn" onClick={handleLoginClick}>

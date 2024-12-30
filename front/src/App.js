@@ -1,11 +1,10 @@
 import React from "react";
 import AppRouter from "./router/AppRouter"; // 라우터를 가져옴
-import "./style/Style.css"; // 글로벌 스타일 적용
+import "./style/style.css"; // 글로벌 스타일 적용
 
 function App() {
   //환경변수 가져오기
   const apiBaseUrl = process.env.REACT_APP_BASE_URL;
-
 
   console.log("apiBaseUrl:", apiBaseUrl);
   return (
