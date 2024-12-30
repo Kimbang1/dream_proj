@@ -1,6 +1,6 @@
 import React from "react";
-import Header from "../componunts/layout/Header";
-import SmallHeader from "../componunts/layout/SmallHeader";
+import Header from "../../componunts/layout/Header";
+import SmallHeader from "../../componunts/layout/SmallHeader";
 import { useMediaQuery } from "react-responsive";
 /*
   화면 크기에 따라 다른 헤더를 표시
@@ -8,7 +8,7 @@ import { useMediaQuery } from "react-responsive";
   - 750px 이상: Header
 */
 function ChageHeader() {
-  const isSmallScreen = useMediaQuery({ maxWidth: 749 });
+  // const isSmallScreen = useMediaQuery({ maxWidth: 749 });
   const isLargeScreen = useMediaQuery({ minWidth: 750 });
 
   return <>{isLargeScreen ? <Header /> : <SmallHeader />}</>;

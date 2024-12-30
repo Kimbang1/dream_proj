@@ -1,6 +1,5 @@
 @charset "UTF-8";
 
-
 .masonry {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -39,4 +38,27 @@
 
 .height3 {
   grid-row: span 25;
+}
+
+@media screen and (max-width: 770px) and (min-width: 320px) {
+  .masonry {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2열로 구성 */
+    gap: 16px; /* 항목 간 간격 설정 */
+    padding: 16px; /* 컨테이너 패딩 */
+  }
+
+  .item {
+    width: 100%; /* 2열에 맞게 아이템 크기 조정 */
+    overflow: hidden; /* 이미지가 영역을 넘어서지 않도록 설정 */
+    border-radius: 8px; /* 각 이미지에 둥근 모서리 추가 (선택 사항) */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 약간의 그림자 추가 (선택 사항) */
+  }
+
+  .item img {
+    display: block;
+    width: 100%;
+    height: auto; /* 이미지 비율을 유지 */
+    object-fit: cover; /* 이미지가 컨테이너에 맞게 잘리도록 설정 */
+  }
 }

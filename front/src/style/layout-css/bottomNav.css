@@ -14,18 +14,18 @@ nav#footerFrame{
     background-color: white;
 }
 
-div.icon{
+div.Bottomicon{
     flex: 1;
     width: 50%;
 }
-div.icon :nth-child(1){
+div.Bottomicon :nth-child(1){
     margin-left: 20%;
 }
-div.icon :nth-child(5){
+div.Bottomicon :nth-child(5){
     border: 1px solid #f80;
     border-radius: 50%;
 }
-div.icon img{
+div.Bottomicon img{
     cursor: pointer;
     width:50%;
 }

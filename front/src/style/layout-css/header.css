@@ -45,6 +45,66 @@ div.dodbogiArea img {
   cursor: pointer;
   width: 20px; /* 돋보기 이미지 크기 */
 }
+
+/* 모달 배경 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* 회색 반투명 */
+  display: flex;
+  z-index: 9999;
+}
+
+/* 모달 콘텐츠 */
+.modal-content {
+  background: white;
+  border-radius: 10px;
+  height: 50%;
+  width: 420px;
+  top: 72px;
+  left: 200px;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+/* 최근 검색어 영역 */
+div.recent-search {
+  position: absolute; /* 검색창 바로 아래에 고정 */
+  top: 50px; /* 검색창의 높이만큼 아래로 이동 */
+  left: 0;
+  width: 100%; /* 부모 요소의 너비와 동일하게 설정 */
+  background: white;
+  border: 1px solid #ccc; /* 테두리 추가 */
+  border-radius: 6px;
+  z-index: 999; /* 검색창 위로 배치 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 살짝 그림자 효과 */
+  padding: 10px;
+  display: none; /* 초기에는 숨김 */
+}
+
+/* 최근 검색어 리스트 */
+div.modal-content ul{
+  display: flex;
+  justify-content: space-around;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+div.modal-content ul li {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+div.modal-content ul li:hover {
+  background: #f8f8f8; /* 항목에 마우스 올렸을 때 배경색 */
+}
+
+
+
 /* 
 반응형 처리 */
 @media screen and (min-width:320px) {
@@ -73,4 +133,8 @@ div.functionArea img {
   cursor: pointer;
   width: 10%;
   margin-left: 20px;
+}
+div.functionArea img:hover{
+  /*속성 추가 할껏 부드럽게 위로 살짝 올라가기*/
+  background-color: #aaa;
 }
