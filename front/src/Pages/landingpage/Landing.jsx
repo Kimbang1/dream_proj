@@ -6,7 +6,7 @@ import danpoong from "../../assets/landig/danpoong.png";
 import dngdae from "../../assets/landig/dngdae.png";
 import hanokg from "../../assets/landig/hanokg.png";
 
-import AutoSlied from "../../config/AutoSlide.jsx";
+import AutoSlied from "../landingpage/AutoSlide";
 //자동 슬라이드 컴포넌트 임포트
 function Landing() {
   const images = [bridge, danpoong, dngdae, hanokg];

@@ -1,0 +1,201 @@
+/* 게시글 틀 작성 라인 작업 시작 */
+div.box {
+  border: 1px solid #000;
+  padding: 30px;
+  width: 90%;
+}
+/* 게시글 틀 작성 라인 작업 끝*/
+
+/* 게시할 사진 영역 작업 시작 */
+div.uploadArea {
+  border: 1px solid #aaa;
+  background-color: rgba(0, 0, 0, 0.1);
+  height: 70vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-size: contain; /* 배경 이미지가 영역에 맞게 조정되도록 설정 */
+  background-position: center; /* 배경 이미지의 위치를 중앙으로 설정 */
+  background-repeat: no-repeat; /* 배경 이미지가 반복되지 않도록 설정 */
+}
+
+.uploadedImage {
+  width: 100%; /* 업로드된 이미지를 가로폭에 맞게 조정 */
+  height: 100%; /* 업로드된 이미지를 세로폭에 맞게 조정 */
+  object-fit: contain; /* 이미지 비율을 맞추며 영역에 맞게 크기 조정 */
+  object-position: center; /* 이미지의 위치를 중앙으로 설정 */
+}
+
+/* 클릭 영역 스타일 */
+div.clickArea {
+  margin-top: 30%;
+  margin-left: 45%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  border: 1px solid #000;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.9);
+  position: absolute;
+  z-index: 1;
+  width: 50px;
+  height: 50px;
+}
+
+div.clickArea img {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
+}
+
+div.clickArea:hover {
+  transition: 0.5s ease;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* 게시할 사진 영역 작업 끝 */
+
+/* 게시할 내용과 완료버튼 작업 시작 */
+div.contentArea {
+  margin-top: 10px;
+  border: 1px solid #aaa;
+  background-color: rgba(0, 0, 0, 0.1);
+  position: relative;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 입력란 스타일 */
+textarea#inputContent {
+  margin: 0;
+  width: 100%;
+  height: 100px;
+  resize: none;
+  border: 1px solid #000;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 16px;
+  box-sizing: border-box;
+  padding-right: 70px;
+}
+
+/* 작성 완료 버튼 스타일 */
+div.completeiconArea {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+}
+
+div.completeiconArea button {
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+div.completeiconArea button:hover {
+  background-color: #0056b3;
+}
+
+/* 게시할 내용과 완료버튼 작업 끝 */
+
+@media screen and (min-width: 750px) {
+  div.uploadArea {
+    height: 50vh;
+  }
+  div.clickArea {
+    margin-top: 20%;
+  }
+  img.cameraIcon {
+    display: none;
+  }
+}
+@media screen and (max-width: 360px) {
+  div.box {
+    padding: 10px;
+    width: 100%;
+  }
+  div.uploadArea {
+    width: 100%;
+    height: 50vh;
+  }
+  /* 게시할 내용과 완료버튼 작업 시작 */
+  div.contentArea {
+    width: 100%;
+    margin-top: 10px;
+    border: 1px solid #aaa;
+    background-color: rgba(0, 0, 0, 0.1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+  }
+  div.clickArea{
+    display: none;
+
+  }
+
+
+  /* 입력란 스타일 */
+  textarea#inputContent {
+    margin: 0;
+    width: 78%;
+    height: 60px;
+    resize: none;
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    box-sizing: border-box;
+    padding-right: 70px;
+  }
+
+  /*카메라 아이콘,작성 완료 버튼 스타일 */
+   div.completeiconArea {
+    margin-left: 10px;
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    align-items: center; /* 수직 가운데 정렬 */
+    gap: 10px; /* 아이콘과 버튼 사이 간격 */
+    position: absolute;
+    top: 10px;
+   right: 2px;
+  }
+
+  img.cameraIcon{
+    cursor: pointer;
+    position: relative;
+    left: 10px;
+    width: 60%;
+    background-color: #aaa;
+  }
+
+   div.completeiconArea button {
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 8px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+
+
+  div.completeiconArea button:hover {
+    background-color: #0056b3;
+  }
+ 
+}

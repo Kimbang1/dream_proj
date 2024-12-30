@@ -1,7 +1,7 @@
 import React from "react";
 
 import { useMediaQuery } from "react-responsive";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // Link 컴포넌트 추가
 
 function Leftaside() {
   const hiddenAside = useMediaQuery({ maxWidth: 750 });
@@ -10,9 +10,7 @@ function Leftaside() {
   const handlehomeClick = () => {
     navigate("/Mainview");
   };
-  const handleUserPg = () => {
-    navigate("/UserMainpage");
-  };
+  
 
   return (
     <div className="wrap">
@@ -39,9 +37,12 @@ function Leftaside() {
               <img src="/images/whale.png" alt="챗봇" />
             </div>
 
-            <div className="menu">
-              <img onClick={handleUserPg} src="/images/cat.jpg" alt="프로필" />
-            </div>
+            {/*링크도 경로를 맞춰줘야 함.*/}
+            <Link to="/user/UserMainpage">
+              <div className="menu">
+                <img src="/images/cat.jpg" alt="프로필" />
+              </div>
+            </Link>
 
             <div className="Manager">
               <div className="menu">

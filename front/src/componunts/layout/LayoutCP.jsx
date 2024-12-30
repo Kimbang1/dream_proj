@@ -1,24 +1,14 @@
+// LayoutCP.jsx
 import React from "react";
+import ChangeHeader from "../../Pages/views/ChangeHeader";
+import Leftaside from "../layout/Leftaside";
+import Bottom from "../layout/BottomNav";
 import { useMediaQuery } from "react-responsive";
-import "../style/Style.css";
-import ChangeHeader from "./ChangeHeader";
-import Leftaside from "../componunts/layout/Leftaside";
-import Bottom from "../componunts/layout/BottomNav";
-import Gallery from "../Pages/views/Gallery";
+import { Outlet } from "react-router-dom"; 
 
-function App() {
+const Layout = () => {
   const HiddenAside = useMediaQuery({ maxWidth: 640 });
-
   const sft = useMediaQuery({ maxWidth: 640 });
-
-  /*
-  하단 1택
-  작을때 추가
-
-  메인뷰
-  갤러리, 포스트
-
-  */
 
   return (
     <div id="wrap">
@@ -32,13 +22,13 @@ function App() {
         </div>
 
         <div className="mainview">
-          <Gallery />
+          <Outlet /> {/* Outlet을 통해 하위 라우트 렌더링 */}
         </div>
 
         <div className="footerview">{sft && <Bottom />}</div>
       </div>
     </div>
   );
-}
+};
 
-export default App;
+export default Layout;

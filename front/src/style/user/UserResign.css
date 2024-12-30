@@ -1,0 +1,332 @@
+div.Resign {
+  border: 1px solid #000;
+  border-radius: 10px;
+  margin: 10px auto;
+  /* text-align: center; */
+  justify-items: center;
+  margin: 0 auto;
+  padding: 10px;
+}
+div.profileViewArea {
+  border: 1px solid #f80;
+  display: flex;
+  justify-content: space-around;
+  gap: 10px; /* 요소 간격 */
+  width: 80%;
+}
+/* 유저사진 작업 시작 */
+div.UserProfileImg {
+  border: 1px solid #f80;
+  border-radius: 50%;
+  margin-top: 10px;
+}
+/* 유저사진 작업 끝 */
+
+/* 태그아이디 유저이름 작업 시작 */
+div.usertagid_nameArea {
+  display: flex;
+  flex-direction: column; /* 태그 아이디와 유저 아이디를 세로로 배치 */
+  align-items: center; /* 수평 중앙 정렬 */
+  gap: 5px; /* 태그 아이디와 유저 아이디 간 간격 */
+}
+
+div.tagId,
+div.userName {
+  font-size: 16px; /* 글자 크기 설정 */
+  text-align: center; /* 글자 중앙 정렬 */
+}
+div.secondLine {
+  border: 1px solid #000;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  height: 40px; /* 박스 높이를 늘림 */
+  padding: 0 10px; /* 내부 여백 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  gap: 10px;
+}
+/* 태그아이디 유저이름 작업 끝 */
+
+/*팔로우 팔로잉 작업시작  */
+div.follow_following {
+  display: flex;
+  justify-content: space-around; /* 각 항목 간 간격 균등 */
+  align-items: center; /* 수직 정렬 */
+  width: 100%; /* 컨테이너 전체 너비 */
+  gap: 15px; /* 항목 간 간격 추가 */
+}
+
+div.follow_following > div {
+  border: 1px solid #000; /* 테두리 */
+  border-radius: 5px; /* 모서리 둥글게 */
+  width: 80px; /* 각 항목의 넓이 */
+  height: 40px; /* 각 항목의 높이 */
+  display: flex;
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  font-size: 14px; /* 글자 크기 */
+  margin: 0 5px; /* 각 항목의 좌우 간격 추가 */
+}
+
+div.contentCount {
+  border: 1px solid #000; /* 테두리 */
+  border-radius: 5px; /* 모서리 둥글게 */
+  width: 80px; /* 박스 넓이 */
+  height: 40px; /* 박스 높이 */
+  display: flex;
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  font-size: 14px; /* 글자 크기 */
+  margin: 5px 5px; /* 좌우 간격 */
+}
+
+/*팔로우 팔로잉 작업 끝  */
+
+/* 게시물 수 작업 시작 */
+div.contentCount {
+  border: 1px solid #000;
+  border-radius: 10px;
+  height: 30px;
+}
+/* 게시물 수 작업 끝 */
+div.middleArea {
+  /* border: 1px solid #000; */
+  margin: 10px 15%;
+  text-align: left;
+  padding: 10px 0;
+}
+/* 유저 소개글 영역 시작 */
+div.usercontent {
+  border: 1px solid #000;
+  width: 100%;
+  /* text-align: center; */
+  border-radius: 5px;
+}
+div.usercontent span {
+  width: 100%;
+}
+/* 유저 소개글 영역 끝 */
+
+/* 유저 가입날짜 시작 */
+div.joinDay {
+  width: 100%;
+  border-radius: 5px;
+}
+
+div.joinDay span {
+  border: 1px solid #000;
+  border-radius: 5px;
+}
+/* 유저 가입날짜 끝 */
+
+/* 컨텐츠 박스들 간격 시작 */
+div.contentsBox {
+  /* margin-top: 10px; */
+}
+/* 컨텐츠 박스들 간격 끝 */
+
+div.resignContent {
+  width: 100%;
+  border: 1px solid #000;
+  border-radius: 5px;
+}
+
+div.agreeArea {
+  display: flex;
+  align-items: center;
+  margin: 10px 30%;
+}
+
+div.resignAgree {
+  display: flex;
+  align-items: center; /* 수직 가운데 정렬 */
+  justify-content: center; /* 수평 가운데 정렬 */
+  border: 1px solid #000;
+  height: 30px;
+  border-radius: 5px;
+  margin-left: 10px;
+  padding: 0 10px; /* 내부 여백 추가 */
+}
+
+div.resignAgree span {
+  border: none; /* 불필요한 테두리 제거 */
+  text-align: center; /* 텍스트 가운데 정렬 */
+  line-height: 30px; /* 높이에 맞춰 텍스트 정렬 */
+  white-space: nowrap; /* 텍스트가 줄바꿈되지 않도록 설정 */
+}
+
+/* 탈퇴 버튼 작업 시작 */
+div.resignBtnArea {
+  /* border: 1px solid #000; */
+  width: 100%;
+  display: flex; /* 플렉스박스를 사용하여 중앙 정렬 */
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+}
+
+div.resignBtnArea button {
+  width: 30%;
+  height: 30px;
+  border: 1px solid #000;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+div.resignBtnArea button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+/* 탈퇴 버튼 작업 끝 */
+
+@media screen and (max-width: 768px) {
+  div.profileViewArea {
+    border: 1px solid #f80;
+    display: flex;
+    justify-content: space-around;
+    gap: 10px; /* 요소 간격 */
+    width: 80%;
+  }
+  /* 유저사진 작업 시작 */
+  div.UserProfileImg {
+    border: 1px solid #f80;
+    border-radius: 50%;
+    margin-top: 10px;
+  }
+  /* 유저사진 작업 끝 */
+
+  /* 태그아이디 유저이름 작업 시작 */
+  div.usertagid_nameArea {
+    display: flex;
+    flex-direction: column; /* 태그 아이디와 유저 아이디를 세로로 배치 */
+    align-items: center; /* 수평 중앙 정렬 */
+    gap: 5px; /* 태그 아이디와 유저 아이디 간 간격 */
+  }
+
+  div.tagId,
+  div.userName {
+    font-size: 16px; /* 글자 크기 설정 */
+    text-align: center; /* 글자 중앙 정렬 */
+  }
+  div.secondLine {
+    border: 1px solid #000;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    height: 40px; /* 박스 높이를 늘림 */
+    padding: 0 10px; /* 내부 여백 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    gap: 10px;
+  }
+  /* 태그아이디 유저이름 작업 끝 */
+
+  /*팔로우 팔로잉 작업시작  */
+  div.follow_following {
+    display: flex;
+    justify-content: space-around; /* 각 항목 간 간격 균등 */
+    align-items: center; /* 수직 정렬 */
+    width: 100%; /* 컨테이너 전체 너비 */
+    gap: 15px; /* 항목 간 간격 추가 */
+  }
+
+  div.follow_following > div {
+    border: 1px solid #000; /* 테두리 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    width: 80px; /* 각 항목의 넓이 */
+    height: 40px; /* 각 항목의 높이 */
+    display: flex;
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    font-size: 14px; /* 글자 크기 */
+    margin: 0 5px; /* 각 항목의 좌우 간격 추가 */
+  }
+
+  div.contentCount {
+    border: 1px solid #000; /* 테두리 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    width: 80px; /* 박스 넓이 */
+    height: 40px; /* 박스 높이 */
+    display: flex;
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    font-size: 14px; /* 글자 크기 */
+    margin: 5px 5px; /* 좌우 간격 */
+  }
+
+  /*팔로우 팔로잉 작업 끝  */
+
+  /* 게시물 수 작업 시작 */
+  div.contentCount {
+    border: 1px solid #000;
+    border-radius: 10px;
+    height: 30px;
+  }
+  /* 게시물 수 작업 끝 */
+  div.middleArea {
+    /* border: 1px solid #000; */
+    margin: 10px 15%;
+    text-align: left;
+    padding: 10px 0;
+  }
+  /* 유저 소개글 영역 시작 */
+  div.usercontent {
+    border: 1px solid #000;
+    width: 100%;
+    /* text-align: center; */
+    border-radius: 5px;
+  }
+  div.usercontent span {
+    width: 100%;
+  }
+  /* 유저 소개글 영역 끝 */
+
+  /* 유저 가입날짜 시작 */
+  div.joinDay {
+    width: 100%;
+    border-radius: 5px;
+  }
+
+  div.joinDay span {
+    border: 1px solid #000;
+    border-radius: 5px;
+  }
+  /* 유저 가입날짜 끝 */
+
+  div.resignContent {
+    width: 100%;
+    border: 1px solid #000;
+    border-radius: 5px;
+  }
+
+  div.agreeArea {
+    display: flex;
+    align-items: center;
+    margin: 10px 25%;
+  }
+
+  div.resignAgree {
+    display: flex;
+    align-items: center; /* 수직 가운데 정렬 */
+    justify-content: center; /* 수평 가운데 정렬 */
+    border: 1px solid #000;
+    height: 30px;
+    border-radius: 5px;
+    margin-left: 10px;
+    padding: 0 10px; /* 내부 여백 추가 */
+  }
+
+  div.resignAgree span {
+    border: none; /* 불필요한 테두리 제거 */
+    text-align: center; /* 텍스트 가운데 정렬 */
+    line-height: 30px; /* 높이에 맞춰 텍스트 정렬 */
+    white-space: nowrap; /* 텍스트가 줄바꿈되지 않도록 설정 */
+  }
+
+  .resignBtnArea button {
+    width: 50%; /* 버튼을 모바일에서도 적당히 크고 중앙에 배치 */
+  }
+}
