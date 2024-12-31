@@ -20,7 +20,7 @@ function SmallHeader() {
         <img src="/images/manager.png" alt="관리자 페이지 가기" />
       </div>
 
-      <div className="left">
+      <div className="right">
         <img src="/images/bell.png" alt="" />
         <img src="/images/whale.png" alt="" />
         <img src="/images/chating.png" alt="" />
