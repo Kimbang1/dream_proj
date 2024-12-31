@@ -12,7 +12,7 @@ const pageRoutes = [
     element: <Mainview />,
   },
   {
-    path: "/contentWrite",
+    path: "/ContentWrite",
     element: <ContentWrite />,
   },
   {

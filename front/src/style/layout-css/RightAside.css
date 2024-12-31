@@ -1,0 +1,22 @@
+/*오른쪽 사이드바 표시*/
+div.rightAside {
+  /* border: 1px solid #80f; */
+  height: 80vh;
+  flex: 2;
+}
+div.Frame {
+  margin: 10px auto;
+  width: 80%;
+  height: 100%;
+  border: 1px solid #000;
+  border-radius: 30px;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+@media screen and (max-width: 330px) {
+  div.rightAside {
+    display: none;
+  }
+  div.Frame {
+    display: none;
+  }
+}

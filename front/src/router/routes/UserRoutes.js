@@ -4,20 +4,29 @@
 import UserMainpage from "../../componunts/user/UserMainpage";
 import Useredit from "../../componunts/user/UsereditProfile";
 import UserResign from "../../componunts/user/UserResign";
-
+import UserPost from "../../componunts/user/UserPost";
+import UserGallery from "../../componunts/user/UserGallery";
 const userRoutes = [
   {
     path: "/user/*",
     element: <UserMainpage />, // component -> element로 수정
   },
   {
-    path: "/user/Useredit",
+    path: "/Useredit",
     element: <Useredit />,
   },
   {
-    path: "/user/UserResign",
+    path: "/UserResign",
     element: <UserResign />,
   },
+  {
+    path:"/UserPost",
+    element:<UserPost/>,
+  },
+  {
+    path:"/UserGallery",
+    element:<UserGallery/>,
+  }
 ];
 
 export default userRoutes;

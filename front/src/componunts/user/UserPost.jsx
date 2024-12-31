@@ -51,8 +51,8 @@ function UserPost() {
   // 컴포넌트 초기 데이터 로드
   useEffect(() => {
     loadData();
-  }, [loadData]);
-
+  }, []);  
+//  loadData;
   return (
     <div className="UserPostView">
       <div className="PostArea">
@@ -66,6 +66,7 @@ function UserPost() {
                 <span>{item.content}</span>
               </div>
             </div>
+
             <div className="right">
               <div className="RightUpper">
                 <span>댓글 {item.comments}</span>

@@ -1,13 +1,13 @@
-.UserPostView {
+div.UserPostView {
   padding: 20px;
 }
 
-.PostArea {
+div.PostArea {
   display: flex;
   flex-direction: column;
 }
 
-.PostItem {
+div.PostItem {
   display: flex;
   margin-bottom: 20px;
 }
