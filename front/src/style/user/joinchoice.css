@@ -1,0 +1,72 @@
+/* 배경 스타일 */
+div.background {
+  background-color: #4c5158;
+  background-image: url(/public/images/Ocean.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0;
+}
+
+/* 선택 영역 스타일 */
+div.choiceAreaBox {
+  width: 90%;
+  max-width: 500px;
+  margin: 10px auto;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 로컬 버튼 스타일 */
+button.local {
+  width: 40vw;
+  cursor: pointer;
+  margin: 10px 0;
+  border: 1px solid #f80;
+  height: 40px;
+  border-radius: 5px;
+}
+
+/* 구분선 스타일 */
+hr {
+  margin: 10px 50px;
+  width: 100%;
+}
+
+/* 소셜 버튼 영역 스타일 */
+div#socialArea {
+  display: flex;
+  flex-direction: column; /* 버튼들을 세로로 정렬 */
+  justify-content: center; /* 중앙 정렬 */
+  align-items: center; /* 중앙 정렬 */
+  width: 100%;
+  margin: 10px 0;
+}
+
+/* 소셜 버튼 스타일 */
+button.social {
+  cursor: pointer;
+  margin: 10px 0;
+  border: 1px solid #f80;
+  width: 40vw; /* 화면 너비의 40%로 설정 */
+  height: 40px;
+  border-radius: 5px;
+}
+
+@media screen and (max-width: 320px) {
+  button.social {
+    height: 40px;
+    border-radius: 5px;
+  }
+}

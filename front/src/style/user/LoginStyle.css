@@ -42,23 +42,6 @@ hr {
   width: 100%;
 }
 
-div#socialArea {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: calc(80% - 20px);
-  margin: 10px;
-}
-
-button.social {
-  cursor: pointer;
-  margin: 0 10px;
-  border: 1px solid #f80;
-  width: calc((80% - 40px) / 3);
-  height: 40px;
-  border-radius: 5px;
-}
-
 div.loginBtnArea {
   margin-left: 11%;
   width: 80%;

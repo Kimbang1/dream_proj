@@ -20,9 +20,9 @@ const pageRoutes = [
     element: <Gallery />,
   },
   {
-    path:"/Post",
-    element:<Post/>,
-  }
+    path: "/Post",
+    element: <Post />,
+  },
 ];
 
 export default pageRoutes;

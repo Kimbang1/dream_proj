@@ -1,6 +1,17 @@
 /*css 리셋 스타일*/
 @import url(style_Reset.css);
 
+/*랜딩페이지 css*/
+@import url(pages-css/landing.css);
+
+/*로그인 조인 관련 css*/
+@import url(user/JoinStyle.css);
+@import url(user/LoginStyle.css);
+@import url(user/joinchoice.css);
+
+/*약관동의 css*/
+@import url(pages-css/Agree.css);
+
 /* LayoutCP */
 @import url(pages-css/LayoutCP.css);
 
@@ -22,8 +33,6 @@
 @import url(user/UserResign.css);
 /* 유저 포스트 페이지 */
 @import url(user/UserPost.css);
-/*랜딩페이지 css*/
-@import url(pages-css/landing.css);
 
 /*갤러리와 메이슨리 게시물 css*/
 @import url(pages-css/masonry.css);
@@ -33,8 +42,6 @@
 /*알람모달*/
 @import url(modal-css/alramModal.css);
 /*검색페이지 css*/
+
 /* 게시글 작성 페이지 css */
 @import url(pages-css/ContentWrite.css);
-/*로그인 로그아웃 css*/
-@import url(user/JoinStyle.css);
-@import url(user/LoginStyle.css);

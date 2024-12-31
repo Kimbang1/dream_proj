@@ -20,7 +20,7 @@ function Landing() {
   };
 
   const handleJoinClick = () => {
-    navigate("/join"); //회원정보 입력 페이지로 이동
+    navigate("/Agree"); //약관 동의 페이지
   };
   return (
     <div id="wrap">

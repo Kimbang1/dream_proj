@@ -9,7 +9,7 @@ function Login() {
   //useNavigate를 사용하기 위한 선언 (나중에 정리할 것)
 
   const handleJoinClick = () => {
-    navigate("/join");
+    navigate("/joinchoice");
   };
 
   const handleLoginClick = async () => {
@@ -62,12 +62,7 @@ function Login() {
             로그인
           </button>
         </div>
-        <hr />
-        <div id="socialArea">
-          <button class="social">네이버</button> {/*onClick={}*/}
-          <button class="social">kakao</button> {/*onClick={}*/}
-          <button class="social">google</button> {/*onClick={}*/}
-        </div>
+
         <hr />
         <div className="loginBtnArea">
           <button className="loginBtn" onClick={handleJoinClick}>
