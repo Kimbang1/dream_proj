@@ -24,7 +24,7 @@ const Layout = () => {
 
       <div id="right">
         <div id="head">
-          <ChangeHeader />
+          <ChangeHeader setIsUserMainPage={setIsUserMainPage} />
         </div>
 
         <div className="viewArea">

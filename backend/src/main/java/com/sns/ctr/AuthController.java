@@ -139,7 +139,23 @@ public class AuthController {
 	public ResponseEntity<HashMap<String, String>> logout(HttpServletRequest httpServletRequest, @RequestBody HashMap<String, String> requestBody, HttpServletResponse response) {
 		HashMap<String, String> responseBody = new HashMap<>();
 		
-		String inputRefreshToken = requestBody.get("refreshToken");
+		// 쿠키에서 refreshToken 값 가져오기
+		String inputRefreshToken = null;
+		Cookie[] cookies = httpServletRequest.getCookies();		// 요청에 포함된 모든 쿠키 가져오기
+		if(cookies != null) {
+			for (Cookie cookie : cookies) {
+				if("refreshToken".equals(cookie.getName())) {
+					inputRefreshToken = cookie.getValue();
+					break;
+				}
+			}
+		}
+		
+		// refreshToken이 없으면 에러 처리
+		if(inputRefreshToken == null) {
+			responseBody.put("error", "Failed to log out: Refresh token not found.");
+			return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);	// 401
+		}
 		
 		// RefreshToken 삭제
 		boolean isDeleted = jwtProvider.deleteRefreshToken(inputRefreshToken);
@@ -171,7 +187,24 @@ public class AuthController {
 	public ResponseEntity<HashMap<String, String>> refresh(HttpServletRequest httpServletRequest, @RequestBody HashMap<String, String> requestBody, HttpServletResponse response) {
 		HashMap<String, String> responseBody = new HashMap<>();
 		
-		String inputRefreshToken = requestBody.get("refreshToken");
+		// 쿠키에서 refreshToken 값 가져오기
+		String inputRefreshToken = null;
+		Cookie[] cookies = httpServletRequest.getCookies();		// 요청에 포함된 모든 쿠키 가져오기
+		if(cookies != null) {
+			for (Cookie cookie : cookies) {
+				if("refreshToken".equals(cookie.getName())) {
+					inputRefreshToken = cookie.getValue();
+					break;
+				}
+			}
+		}
+		
+		// refreshToken이 없으면 에러 처리
+		if(inputRefreshToken == null) {
+			responseBody.put("error", "Failed to log out: Refresh token not found.");
+			return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);	// 401
+		}
+		
 		String sAccessToken = jwtProvider.resolveToken(httpServletRequest);
 		JwtCode jwtCode = jwtProvider.validateToken(sAccessToken);
 		
