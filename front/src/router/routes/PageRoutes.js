@@ -5,10 +5,11 @@ import Mainview from "../../Pages/views/Mainview";
 import ContentWrite from "../../Pages/views/ContentWrite";
 import Gallery from "../../Pages/views/Gallery";
 import Post from "../../Pages/views/Post";
+import SearchRes from "../../Pages/views/SearchRes";
 
 const pageRoutes = [
   {
-    path: "/mainview",
+    path: "/*",
     element: <Mainview />,
   },
   {
@@ -22,6 +23,10 @@ const pageRoutes = [
   {
     path: "/Post",
     element: <Post />,
+  },
+  {
+    path: "/SearchRes",
+    element: <SearchRes />,
   },
 ];
 

@@ -18,13 +18,14 @@ div.logo {
   /* 로고의 크기 비율 */
   display: flex;
   justify-content: center; /* 로고 중앙 정렬 */
-  width: 100%;
 }
 
 div.logo img {
   cursor: pointer;
-
-  width: 100%; /* 비율 유지 */
+  max-width: 100%; /* 로고 이미지 최대 너비 */
+  max-height: 100%; /* 로고 이미지 최대 높이 */
+  width: auto; /* 비율 유지 */
+  height: auto; /* 비율 유지 */
 }
 
 div.managerOption {
@@ -37,20 +38,20 @@ div.managerOption {
 }
 div.managerOption img {
   cursor: pointer;
-  max-height: 40px; /* 이미지 크기 제한 */
+  max-height: 30px; /* 이미지 크기 제한 */
   height: auto;
   margin: 0 10px; /* 이미지 간 간격 */
 }
 
-div.left {
+div.right {
   /* flex: 2; 왼쪽 아이콘 영역의 크기 비율 */
   display: flex;
-  justify-content: space-around; /* 아이콘 간 간격 유지 */
+  justify-content: space-between; /* 아이콘 간 간격 유지 */
   align-items: center; /* 세로 정렬 */
 }
-div.left img {
-  width: 40px; /* 고정 크기 설정 */
-  height: 40px; /* 정사각형 비율 유지 */
+div.right img {
+  width: 30px; /* 고정 크기 설정 */
+  height: 30px; /* 정사각형 비율 유지 */
   cursor: pointer;
   margin: 0 5px; /* 좌우 간격 */
 }

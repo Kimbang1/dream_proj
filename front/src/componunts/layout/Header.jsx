@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AlarmComponent from "../modal/AlramModal"; // 알람 컴포넌트 임포트
 
-function Header() {
+function Header({ setIsUserMainPage }) {
   const [searchMonitor, setSearchMonitor] = useState("");
   const [recentSearch, setRecentSearch] = useState([]);
   const [isAlramOpen, setIsAlramOpen] = useState(false);
@@ -27,6 +27,9 @@ function Header() {
       });
       setSearchMonitor("");
       setIsAccordionOpen(false); // 검색 후 아코디언 닫기
+
+      //검색 페이지로 이동하면서 검색어 전달
+      navigate(`/SearchRes?query=${encodeURIComponent(searchMonitor)}`);
     }
   };
 
@@ -40,7 +43,10 @@ function Header() {
   const closeAlarmModal = () => setIsAlramOpen(false);
 
   // 글쓰기 페이지 이동
-  const handleWritePage = () => navigate("/ContentWrite");
+  const handleWritePage = () => {
+    setIsUserMainPage(true);
+    navigate("/ContentWrite");
+  };
 
   // 연관 검색어 필터링
   const filteredMonitors =

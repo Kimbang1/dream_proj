@@ -7,10 +7,18 @@ import { useMediaQuery } from "react-responsive";
   - 320px 이상 750px 미만: SmallHeader
   - 750px 이상: Header
 */
-function ChageHeader() {
+function ChageHeader({ setIsUserMainPage }) {
   // const isSmallScreen = useMediaQuery({ maxWidth: 749 });
   const isLargeScreen = useMediaQuery({ minWidth: 750 });
 
-  return <>{isLargeScreen ? <Header /> : <SmallHeader />}</>;
+  return (
+    <>
+      {isLargeScreen ? (
+        <Header setIsUserMainPage={setIsUserMainPage} />
+      ) : (
+        <SmallHeader setIsUserMainPage={setIsUserMainPage} />
+      )}
+    </>
+  );
 }
 export default ChageHeader;

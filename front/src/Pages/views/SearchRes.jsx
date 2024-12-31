@@ -1,17 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
 import AxiosApi from "../../servies/AxiosApi";
+import { useLocation } from "react-router-dom";  //쿼리 파라미터 가져올때
 
-function Gallery() {
-  const [items, setItems] = useState([]); // 이미지 데이터를 저장
-  const [loading, setLoading] = useState(false); // 로딩 상태
-  const loader = useRef(null); // Intersection Observer를 사용할 때 사용할 ref
+function SearchRes() {
+  const [items, setItems] = useState([]); //이미지 데이터를 저장
+  const [loading, setLoading] = useState(false); //로딩상태
+  const loader = useRef(null); //Intersection Observer를 사용할때 사용하는 Ref
+  const location = useLocation();
 
-  // 새로운 이미지를 로드하는 함수
+  //새로운 이미지 로드 함수
   const loadMoreItems = async () => {
-    if (loading) return; // 이미 로딩 중이면 종료
+    if (loading) return; //로딩 중이면 종료
 
-    setLoading(true); // 로딩 상태 시작
-
+    setLoading(true); //로딩 상태 시작
     try {
       // 백엔드 API에서 JSON 데이터 가져오기
       const response = await AxiosApi.get("/api/gallery");
@@ -24,6 +25,10 @@ function Gallery() {
 
     setLoading(false); // 로딩 상태 종료
   };
+
+  //URL에서 검색어 추출
+  const searchParams = new URLSearchParams(location.search);
+  const query = searchParams.get("query") || ""; //검색어를 가져오기
 
   // Intersection Observer 설정 (스크롤 끝에 도달하면 새로운 데이터 로드)
   useEffect(() => {
@@ -43,18 +48,18 @@ function Gallery() {
     return () => {
       if (loader.current) observer.unobserve(loader.current); // 컴포넌트 언마운트 시 해제
     };
-  }, []);
+  }, [query]); //검색어가 변경될때마다 호출
 
   // 컴포넌트 마운트 시 처음 데이터 로드
   useEffect(() => {
     loadMoreItems();
-  }, []);
+  }, [query]); //검색어가 변경될때마다 호출
 
   return (
     <>
-      {/* 데이터가 없으면 "작성된 글이 없습니다." 텍스트 표시 */}
+      {/* 데이터가 없으면 작성된 글이 없습니다. 표시 */}
       {items.length === 0 ? (
-        <p style={{ textAlign: "center", marginTop: "20px" }}>
+        <p style={{ texAlign: "center", marginTop: "20px " }}>
           작성된 글이 없습니다.
         </p>
       ) : (
@@ -63,8 +68,8 @@ function Gallery() {
           {items.map((item) => (
             <div className={`item height${(item.id % 3) + 1}`} key={item.id}>
               <img
-                src={item.image_url} // 이미지 URL을 JSON에서 가져옴
-                alt={item.title} // 이미지 제목을 JSON에서 가져옴
+                src={item.image_url}
+                alt={item.title}
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
             </div>
@@ -72,14 +77,14 @@ function Gallery() {
           {/* 로더 위치 */}
           <div
             ref={loader}
-            style={{ height: "50px", background: "transparent" }}
+            style={{ height: "50%", background: "transparent" }}
           />
         </div>
       )}
-      {/* 로딩 중 표시 */}
+      {/* 로딩중 표시 */}
       {loading && <p>로딩 중...</p>}
     </>
   );
 }
 
-export default Gallery;
+export default SearchRes;

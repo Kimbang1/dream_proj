@@ -23,7 +23,7 @@ function Leftaside({ setIsUserMainPage }) {
         console.log("쿠키 삭제 실패");
       }
       //로그아웃 성공시 랜딩 페이지로 아래껄 주석 지우고 활성화 시켜주세용
-      window.location.href = "/Landing";
+      window.location.href = "/";
       }catch(error){
         console.log("로그아웃 실패:",error);
       }
