@@ -11,19 +11,21 @@
 
     <!-- 특정 사용자의 모든 Refresh Token 조회 -->
     <select id="findByUserId" resultType="com.sns.dto.RefreshTokenListDto">
-    	SELECT re_token, uuid, user_agent, create_at, is_using, expires_in
-    	FROM refresh_token_list
-    	WHERE uuid = #{uuid};
+    	SELECT * FROM refresh_token_list WHERE uuid = #{uuid};
 	</select>
-
-    <!-- 특정 사용자의 특정 디바이스의 Refresh Token 삭제 -->
-    <delete id="deleteByUuidAndToken">
-    	DELETE FROM refresh_token_list 
-    	WHERE uuid = #{uuid} AND re_token = #{reToken};
-	</delete>
+	
+	<!-- 특정 사용자의 특정 Refresh Token 조회 -->
+	<select id="findByRefreshToken" resultType="com.sns.dto.RefreshTokenListDto">
+		SELECT * FROM refresh_token_list WHERE re_token = #{reToken}
+	</select>
 	
 	<!-- 특정 사용자의 모든 토큰 삭제 (로그아웃) -->
 	<delete id="deleteAllByUserId">
     	DELETE FROM refresh_token_list WHERE uuid = #{uuid};
+	</delete>
+
+    <!-- 특정 사용자의 특정 디바이스의 Refresh Token 삭제 -->
+    <delete id="deleteByRefreshToken" >
+    	DELETE FROM refresh_token_list WHERE re_token = #{reToken};
 	</delete>
 </mapper>

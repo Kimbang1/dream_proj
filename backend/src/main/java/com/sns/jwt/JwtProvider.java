@@ -167,20 +167,59 @@ public class JwtProvider {
 	}
 	
 	// Refresh Token 검증
-	public boolean validateRefreshToken(String userId, String validRefreshToken) {
-		// 유저의 모든 Refresh Token 조회
-		List<RefreshTokenListDto> refreshTokens = refreshTokenMapper.findByUserId(userId);
-		
-		// 조회된 토큰 리스트에서 유효한 토큰인지 확인
-		for (RefreshTokenListDto tokenDto : refreshTokens) {
-			if (tokenDto.getReToken().equals(validRefreshToken)) {
-				// 만료 시간이 현재 시간보다 뒤에 있는지 확인
-				if(tokenDto.getExpiresIn().after(new Timestamp(System.currentTimeMillis()))) {
-					return true;
-				}
+	public boolean validateRefreshToken(String validRefreshToken) {
+		// Refresh Token 조회
+		RefreshTokenListDto reTokenDto = refreshTokenMapper.findByRefreshToken(validRefreshToken);
+					
+		// isUsing으로 토큰 활성화 여부 체크
+		if(reTokenDto != null && reTokenDto.isUsing()) {
+			// 만료 시간이 현재 시간보다 뒤에 있는지 확인
+			if(reTokenDto.getExpiresIn().after(new Timestamp(System.currentTimeMillis()))) {
+				return true;
 			}
 		}
 		return false;
+	}
+	
+	// 특정 Refresh Token 삭제
+	public boolean deleteRefreshToken(String targetToken) {
+		try {
+			int delCnt = refreshTokenMapper.deleteByRefreshToken(targetToken);
+			if(delCnt == 0) {
+				log.info("Failed to delete: RefreshToken '{}' doesn't exist.", targetToken);
+				return false;
+			}
+			log.info("Successfully deleted {} RefreshToken with token: {}", delCnt, targetToken);
+			return true;
+		} catch(Exception e) {
+			log.error("Error occurred while deleting RefreshToken '{}': {}", targetToken, e.getMessage());
+	        return false;
+		}
+	}
+	
+	// 특정 사용자의 모든 Refresh Token 삭제
+	public int deleteAllRefreshToken(String uuid) {
+		// uuid가 빈 문자열로 들어올 경우 처리
+		if (!StringUtils.hasText(uuid)) {
+			log.warn("Invalid userId provided: '{}'", uuid);
+			return 0;
+		}
+		
+		// uuid로 모든 refresh token 삭제 요청
+		try {
+			int delCnt = refreshTokenMapper.deleteAllByUserId(uuid);
+			if(delCnt == 0) {
+				// refresh token이 없을 때
+				log.info("No RefreshTokens found for userId '{}'.", uuid);
+			} else {
+				// refresh token을 삭제 했을 때
+				log.info("Successfully deleted {} RefreshToken(s) for userId '{}'.", delCnt, uuid);
+			}
+			return delCnt;
+		} catch (Exception e) {
+			log.error("Error occurred while deleting RefreshTokens for userId '{}': {}", uuid, e.getMessage());
+			return 0;
+		}
 	}
 	
 	public String resolveToken(HttpServletRequest request) {

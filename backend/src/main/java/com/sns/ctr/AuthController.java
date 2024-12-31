@@ -104,7 +104,7 @@ public class AuthController {
 			accessTokenCookie.setHttpOnly(true);	// 클라이언트의 js코드에서 접근할 수 없도록 제한
 			accessTokenCookie.setSecure(true);		// HTTPS 연결 시 사용
 			accessTokenCookie.setPath("/");			// 쿠키가 유효한 경로 지정(특정 경로에서만 사용할 수 있게 제한 가능)
-			accessTokenCookie.setMaxAge(60 * 30);	// 쿠키 만료 시간(30분)
+			accessTokenCookie.setMaxAge(60 * 15);	// 쿠키 만료 시간(15분)
 			response.addCookie(accessTokenCookie);	// 응답에 쿠키 추가
 			
 			// refreshToken을 HttpOnly 쿠키로 설정
@@ -135,51 +135,120 @@ public class AuthController {
 		}
 	}
 	
-	@PostMapping("/refresh")
-	public ResponseEntity<HashMap<String, String>> refresh(HttpServletRequest httpServletRequest, @RequestBody HashMap<String, String> requestBody) {
+	@PostMapping("/logout")
+	public ResponseEntity<HashMap<String, String>> logout(HttpServletRequest httpServletRequest, @RequestBody HashMap<String, String> requestBody, HttpServletResponse response) {
 		HashMap<String, String> responseBody = new HashMap<>();
-		HttpHeaders httpHeaders = new HttpHeaders();
+		
+		String inputRefreshToken = requestBody.get("refreshToken");
+		
+		// RefreshToken 삭제
+		boolean isDeleted = jwtProvider.deleteRefreshToken(inputRefreshToken);
+		if(!isDeleted) {
+			responseBody.put("error", "Failed to log out: Invalid or expired refresh token.");
+			return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED); 	// 401
+		}
+		
+		// Cookie 삭제
+		Cookie accessTokenCookie = new Cookie("accessToken", null);
+		accessTokenCookie.setHttpOnly(true);  // 클라이언트의 JS에서 접근 불가
+	    accessTokenCookie.setSecure(true);    // HTTPS 연결에서만 사용
+	    accessTokenCookie.setPath("/");       // 쿠키가 유효한 경로
+	    accessTokenCookie.setMaxAge(0);       // 만료 시간을 0으로 설정하여 쿠키 삭제
+	    response.addCookie(accessTokenCookie);  // 응답에 쿠키 추가
+	    
+	    Cookie refreshTokenCookie = new Cookie("refreshToken", null);
+	    refreshTokenCookie.setHttpOnly(true); // 클라이언트의 JS에서 접근 불가
+	    refreshTokenCookie.setSecure(true);   // HTTPS 연결에서만 사용
+	    refreshTokenCookie.setPath("/");      // 쿠키가 유효한 경로
+	    refreshTokenCookie.setMaxAge(0);      // 만료 시간을 0으로 설정하여 쿠키 삭제
+	    response.addCookie(refreshTokenCookie); // 응답에 쿠키 추가
+		
+	    responseBody.put("message", "Successfully logged out.");
+		return new ResponseEntity<>(responseBody, HttpStatus.OK);
+	}
+	
+	@PostMapping("/refresh")
+	public ResponseEntity<HashMap<String, String>> refresh(HttpServletRequest httpServletRequest, @RequestBody HashMap<String, String> requestBody, HttpServletResponse response) {
+		HashMap<String, String> responseBody = new HashMap<>();
 		
 		String inputRefreshToken = requestBody.get("refreshToken");
 		String sAccessToken = jwtProvider.resolveToken(httpServletRequest);
 		JwtCode jwtCode = jwtProvider.validateToken(sAccessToken);
 		
 		switch(jwtCode) {
-		case ACCESS:
+		case ACCESS:	// AccessToken이 만료되지 않은 경우
 			log.info("JWT Token Not Expired");
-			break;
-		case EXPIRED:
+			responseBody.put("message", "Access token is still valid. No refresh needed.");
+			return new ResponseEntity<>(responseBody, HttpStatus.OK);
+		case EXPIRED:	// AccessToken이 만료된 경우
 			Claims claims = jwtProvider.parseClaims(sAccessToken);
-			if(claims.get("userId") == null) {
-				log.info("Invalid JWT Token");
-				return null;
+			if(claims.get("userId") == null) {	// userId가 없는 경우
+				log.info("Invalid JWT Token: userId is missing.");
+				responseBody.put("error", "JWT Token is invalid: userId is missing.");
+				return new ResponseEntity<>(requestBody, HttpStatus.UNAUTHORIZED);	// 401
 			}
 			String userId = claims.get("userId").toString();
-			boolean bRefreshTokenValid = jwtProvider.validateRefreshToken(userId, inputRefreshToken);
-			if(bRefreshTokenValid) {
-				Authentication authentication = jwtProvider.getAuthentication(sAccessToken);
-				String sNewAccessToken = jwtProvider.generateAccessToken(authentication);
-				String sNewRefreshToken = jwtProvider.generateRefreshToken(userId, httpServletRequest);
+			boolean isRefreshTokenValid = jwtProvider.validateRefreshToken(inputRefreshToken);
+			Authentication authentication = jwtProvider.getAuthentication(sAccessToken);
+			
+			// RefreshToken이 유효하지 않은 경우
+			if(!isRefreshTokenValid) {
 				
-				SecurityContextHolder.getContext().setAuthentication(authentication);
-				
-				httpHeaders.add(jwtProvider.getJwtHeader(), jwtProvider.addTokenType(sNewAccessToken));
-				
-				responseBody.put("msg", "Expired Token Re Create");
-				responseBody.put("refreshToken", sNewRefreshToken);
-			} else {
-				log.info("Invalid JWT Token");
-				responseBody.put("error", "Invalid JWT Token");
+				// 기존 RefreshToken 비활성화
+				if (jwtProvider.deleteRefreshToken(inputRefreshToken)) {
+					// 새로운 RefreshToken, AccessToken 발급
+					String newAccessToken = jwtProvider.generateAccessToken(authentication);
+					String newRefreshToken = jwtProvider.generateRefreshToken(userId, httpServletRequest);
+					
+					// accessToken을 HttpOnly 쿠키로 설정
+					Cookie accessTokenCookie = new Cookie("accessToken", newAccessToken);
+					accessTokenCookie.setHttpOnly(true);	// 클라이언트의 js코드에서 접근할 수 없도록 제한
+					accessTokenCookie.setSecure(true);		// HTTPS 연결 시 사용
+					accessTokenCookie.setPath("/");			// 쿠키가 유효한 경로 지정(특정 경로에서만 사용할 수 있게 제한 가능)
+					accessTokenCookie.setMaxAge(60 * 15);	// 쿠키 만료 시간(15분)
+					response.addCookie(accessTokenCookie);	// 응답에 쿠키 추가
+					
+					// refreshToken을 HttpOnly 쿠키로 설정
+					Cookie refreshTokenCookie = new Cookie("refreshToken", newRefreshToken);
+					refreshTokenCookie.setHttpOnly(true);	// 클라이언트의 js코드에서 접근할 수 없도록 제한
+					refreshTokenCookie.setSecure(true);		// HTTPS 연결 시 사용
+					refreshTokenCookie.setPath("/");		// 쿠키가 유효한 경로 지정(특정 경로에서만 사용할 수 있게 제한 가능)
+					refreshTokenCookie.setMaxAge(60 * 60);	// 쿠키 만료 시간(1시간)
+					response.addCookie(refreshTokenCookie);	// 응답에 쿠키 추가
+					
+					log.info("Expired Refresh Token Replaced with New Tokens");
+					responseBody.put("message", "Expired Refresh Token Recreated");
+					return new ResponseEntity<>(requestBody, HttpStatus.OK);
+				} else {
+					log.error("Failed to delete: RefreshToken '{}' doesn't exist.", inputRefreshToken);
+					responseBody.put("message", "RefreshToken doesn't exist.");
+					return new ResponseEntity<>(requestBody, HttpStatus.UNAUTHORIZED);
+				}
 			}
+			
+			// RefreshToken이 유효한 경우(AccessToken만 재발급)
+			String newAccessToken = jwtProvider.generateAccessToken(authentication);
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			
+			// accessToken을 HttpOnly 쿠키로 설정
+			Cookie accessTokenCookie = new Cookie("accessToken", newAccessToken);
+			accessTokenCookie.setHttpOnly(true);	// 클라이언트의 js코드에서 접근할 수 없도록 제한
+			accessTokenCookie.setSecure(true);		// HTTPS 연결 시 사용
+			accessTokenCookie.setPath("/");			// 쿠키가 유효한 경로 지정(특정 경로에서만 사용할 수 있게 제한 가능)
+			accessTokenCookie.setMaxAge(60 * 15);	// 쿠키 만료 시간(15분)
+			response.addCookie(accessTokenCookie);	// 응답에 쿠키 추가
+			
+			responseBody.put("message", "Refresh Token has been successfully recreated.");
 			break;
 		
 		default:
-			log.info("Invalid JWT Token");
-			responseBody.put("error", "Invalid JWT Token");
-			break;
+			// 예상치 못한 상황
+			log.error("Unexpected JWT Token status: {}", jwtCode);
+			responseBody.put("error", "Unexpected JWT Token status.");
+			return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);	// 401
 		}
 		
-		return new ResponseEntity<>(responseBody, httpHeaders, HttpStatus.OK);
+		return new ResponseEntity<>(responseBody, HttpStatus.OK);
 	}
 	
 	
