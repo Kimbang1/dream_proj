@@ -23,12 +23,12 @@ public interface RefreshTokenMapper {
 	// 특정 사용자의 모든 Refresh Token 조회 (여러 디바이스에서 발급된 토큰 포함)
 	public List<RefreshTokenListDto> findByUserId(@Param("uuid") String uuid);
 	
-	// 특정 사용자의 특정 디바이스의 Refresh Token 삭제
-	public void deleteByUuidAndToken(
-			@Param("uuid") String uuid,
-			@Param("reToken") String reToken
-			);
+	// 특정 사용자의 특정 Refresh Token 조회
+	public RefreshTokenListDto findByRefreshToken(@Param("reToken") String refreshToken);
 	
 	// 특정 사용자의 모든 토큰 삭제 (로그아웃)
-	public void deleteAllByUserId(@Param("uuid") String uuid);
+	public int deleteAllByUserId(@Param("uuid") String uuid);
+	
+	// 특정 사용자의 특정 디바이스의 Refresh Token 삭제
+	public int deleteByRefreshToken(@Param("reToken") String reToken);
 }
