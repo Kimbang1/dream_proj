@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AxiosApi from "../../servies/AxiosApi"
+import AxiosApi from "../../servies/AxiosApi";
 
 function Join() {
   const [username, setUserName] = useState("");
