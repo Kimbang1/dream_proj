@@ -12,55 +12,54 @@ const instance = axios.create({
 
 //요청 인터셉터
 instance.interceptors.request.use(
-    (config) => {
-        // Authorization 헤더에 accessToken 추가(쿠키에서 자동으로 포함됨)
-        // axios는 'withCredentials' 설정을 통해 자동으로 쿠키를 포함 함.
-
-       return config;
-},
-(error)=>{
-    console.error("Request Error:",error);
+  (config) => {
+    // Authorization 헤더에 accessToken 추가(쿠키에서 자동으로 포함됨)
+    // axios는 'withCredentials' 설정을 통해 자동으로 쿠키를 포함 함.
+    return config;
+  },
+  (error) => {
+    console.error("Request Error:", error);
     return Promise.reject(error);
-}
+  }
 );
 
 //응답 인터셉터
 instance.interceptors.response.use(
-    (response)=>{
-        // 응답 성공 처리
-        console.log('Response:',response);
-        return response;
-    },
-    (error)=>{
-        // 에러 상태 처리
-        if(error.response) {
-            const status = error.response.status;
+  (response) => {
+    // 응답 성공 처리
+    console.log("Response:", response);
+    return response;
+  },
+  (error) => {
+    // 에러 상태 처리
+    if (error.response) {
+      const status = error.response.status;
 
-            // 잘못된 요청
-            if(status === 400) {
-                alert("잘못된 요청입니다. 다시 시도해주세요.");
-            }
-            
-            // 인증 실패(로그인 정보가 잘못된 경우)
-            else if(status === 401) {
-                alert("로그인 정보가 올바르지 않습니다.");
-            }
+      // 잘못된 요청
+      if (status === 400) {
+        alert("잘못된 요청입니다. 다시 시도해주세요.");
+      }
 
-            // 409 상태 처리 (중복된 회원)
-            else if(status === 409) {
-                alert("이미 가입된 회원입니다.");
-            }
+      // 인증 실패(로그인 정보가 잘못된 경우)
+      else if (status === 401) {
+        alert("로그인 정보가 올바르지 않습니다.");
+      }
 
-            // 500 상태 처리 (서버 오류)
-            else if(status === 500) {
-                alert("서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
-            }
-        } else {
-            // 서버로부터 응답을 받지 못한 경우(ex: 네트워크 오류)
-            alert("네트워크 오류가 발생했습니다.");
-        }
+      // 409 상태 처리 (중복된 회원)
+      else if (status === 409) {
+        alert("이미 가입된 회원입니다.");
+      }
 
-        return Promise.reject(error);
+      // 500 상태 처리 (서버 오류)
+      else if (status === 500) {
+        alert("서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      }
+    } else {
+      // 서버로부터 응답을 받지 못한 경우(ex: 네트워크 오류)
+      alert("네트워크 오류가 발생했습니다.");
     }
+
+    return Promise.reject(error);
+  }
 );
 export default instance;
