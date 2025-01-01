@@ -15,69 +15,56 @@ function ContentWrite() {
   // 파일 선택 핸들러
   const handleFileChange = async (e) => {
     const selectedFile = e.target.files[0];
-    console.log("선택한 파일:", selectedFile); //파일 선택 여부 확인
-
-    // 파일 크기 제한
-    const maxSize = 30 * 1024 * 1024; // 30MB
-    if (selectedFile.size > maxSize) {
-      alert("파일 크기가 너무 큽니다. 30MB 이하로 업로드해주세요.");
+    if (!selectedFile) {
+      alert("파일을 선택하지 않았습니다.");
       return;
     }
-
-    if (selectedFile) {
-      // 지원하지 않는 형식일 때
-      const validTypes = ["image/jpeg", "image/png", "image/heic"];
-      if (!validTypes.includes(selectedFile.type)) {
-        alert("지원하지 않는 형식의 사진입니다.");
-        return;
-      }
-
-      // 이미지 시간 체크
-      const isValidImageTime = await validateImageTime(selectedFile);
-      if (!isValidImageTime) {
-        setFile(null); // 파일 초기화
-        return;
-      }
-
-      // 메타데이터 추출 및 서버로 전송
-      await handleMetadataAndSend(selectedFile);
-
-      // 파일 자체 저장
+  
+    // 파일 크기 및 형식 확인
+    const validTypes = ["image/jpeg", "image/png", "image/heic"];
+    const maxSize = 30 * 1024 * 1024;
+    if (selectedFile.size > maxSize || !validTypes.includes(selectedFile.type)) {
+      alert("파일이 너무 크거나 지원하지 않는 형식입니다.");
+      return;
+    }
+  
+    // 시간 체크 및 메타데이터 전송
+    const isValidImageTime = await validateImageTime(selectedFile);
+    if (!isValidImageTime) {
+      alert("업로드 가능한 시간이 초과된 사진입니다.");
+      return;
+    }
+  
+    const isMetadataSent = await handleMetadataAndSend(selectedFile);
+    if (isMetadataSent) {
       setFile(selectedFile);
+      console.log("파일이 성공적으로 처리되었습니다.");
+    } else {
+      alert("파일 처리에 실패했습니다.");
     }
   };
 
-  // 텍스트 입력 핸들러
   const handleTextUpdate = (e) => {
     setContent(e.target.value);
-  };
-
-  // 작성 완료 핸들러
+  };  
+  
   const handleComplete = async () => {
     if (!file || !content.trim()) {
-      alert("사진과 내용 모두 입력해야 합니다.");
+      alert("사진과 내용을 모두 입력하세요.");
       return;
     }
-
-    // 게시물 요청
-    const formData = new FormData();
-    formData.append("file", file); // 파일 첨부
-    formData.append("content", content); // 텍스트 첨부
-
+  
     try {
-      const response = await AxiosApi.post("/auth/posts", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const response = await AxiosApi.post("/post/content", {
+        content,
       });
-      const savedPost = response.data; // 서버에서 반환한 데이터
-      setPosts([...posts, savedPost]); // 게시물 리스트에 추가
-
-      // 상태 초기화
-      setFile(null);
+      setPosts([...posts, response.data]);
       setContent("");
+      setFile(null);
       alert("게시물이 저장되었습니다.");
     } catch (error) {
       console.error("게시물 저장 실패:", error);
-      alert("게시물 저장 중 문제가 발생했으니 재업로드 부탁드립니다.");
+      alert("게시물 저장 중 문제가 발생했습니다.");
     }
   };
 
@@ -97,7 +84,7 @@ function ContentWrite() {
         {/* 파일 선택 클릭 영역 */}
         <input
           type="file"
-          accept="image/jpeg,image/png,image/heic" // 허용할 파일 형식
+          accept="image/jpeg,image/png,image/heic,image/jpg" // 허용할 파일 형식
           style={{ display: "none" }}
           id="fileInput"
           onChange={handleFileChange}
