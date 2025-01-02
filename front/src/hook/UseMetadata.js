@@ -3,9 +3,9 @@ import EXIF from "exif-js";
 import AxiosApi from "../servies/AxiosApi";
 
 const UseMetadata = () => {
-  const [errorMSG, setErrorMSG] = useState(""); // 오류 메시지 상태
+  const [errorMSG, setErrorMSG] = useState("");
+  const [previewURL, setPreviewURL] = useState(null);
 
-  // EXIF 메타데이터에서 촬영 시간을 포함한 정보를 추출하는 함수
   const getImageMetadata = (imageFile) => {
     return new Promise((resolve) => {
       EXIF.getData(imageFile, function () {
@@ -18,32 +18,24 @@ const UseMetadata = () => {
         let latitude = null;
         let longitude = null;
 
-        // 위도, 경도 계산
         if (gpsLatitude && gpsLongitude) {
           latitude =
             (gpsLatitude[0] + gpsLatitude[1] / 60 + gpsLatitude[2] / 3600) *
-            (gpsLatitudeRef === "S" ? -1 : 1); // S 방향이면 음수
+            (gpsLatitudeRef === "S" ? -1 : 1);
           longitude =
             (gpsLongitude[0] + gpsLongitude[1] / 60 + gpsLongitude[2] / 3600) *
-            (gpsLongitudeRef === "W" ? -1 : 1); // W 방향이면 음수
-
-          console.log("latitude:", latitude);
-          console.log("longitude:", longitude);
-        } else {
-          console.warn("GPS 데이터가 없습니다.");
+            (gpsLongitudeRef === "W" ? -1 : 1);
         }
-        // dateTimeOriginal 값을 유효한 형식으로 변환
+
         let formattedDateTime = null;
         if (dateTimeOriginal) {
           try {
-            formattedDateTime = new Date(
-              dateTimeOriginal.replace(/:/g, "-").replace(" ", "T")
-            );
-            if (isNaN(formattedDateTime.getTime())) {
-              formattedDateTime = null; // 변환 실패 시 null로 설정
-            }
-          } catch (error) {
-            console.error("DateTimeOriginal 변환 오류:", error);
+            const isoString = dateTimeOriginal
+              .replace(/^(\d{4}):(\d{2}):(\d{2})/, "$1-$2-$3")
+              .replace(" ", "T");
+            formattedDateTime = new Date(isoString);
+          } catch {
+            formattedDateTime = null;
           }
         }
 
@@ -51,67 +43,51 @@ const UseMetadata = () => {
           dateTimeOriginal: formattedDateTime,
           latitude,
           longitude,
+          imageFile,
         });
       });
     });
   };
 
-  // 서버로 메타데이터 전송하는 함수
-  const sendMetadataToServer = async (metadata) => {
+  const sendMetadataToServer = async (metadata, content) => {
     try {
-      console.log("메타데이터 확인 : ",metadata);
+      const time = metadata.dateTimeOriginal || new Date().toISOString();
+      const formData = new FormData();
+      formData.append("file", metadata.imageFile);
+      formData.append("latitude", metadata.latitude);
+      formData.append("longitude", metadata.longitude);
+      formData.append("time", time);
+      formData.append("content", content);
 
-      if (metadata && metadata.name && metadata.imageFile) {
-        const formData = new FormData();
-        formData.append("latitude", metadata.latitude);
-        formData.append("longitude", metadata.longitude);
-        formData.append("time", metadata.time);
-        formData.append("imageFile", metadata.imageFile);
-
-        console.log("전송 데이터 확인:", {
-          latitude: metadata.latitude,
-          longitude: metadata.longitude,
-          time: metadata.time,
-          imageFile: metadata.imageFile.name,
-        });
-
-        // FormData를 사용하는 경우 Content-Type을 설정할 필요 없음
-        const response = await AxiosApi.post("/post/upload", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data", // FormData 사용 시 필요한 헤더
-          },
-        });
-
-        console.log("메타데이터 전송 성공:", response.data);
-      } else {
-        setErrorMSG("메타데이터가 유효하지 않습니다.");
-      }
+      const response = await AxiosApi.post("/post/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      return response.data;
     } catch (error) {
-      console.error("메타데이터 전송 오류:", error);
-      setErrorMSG("서버로 메타데이터 전송에 실패했습니다.");
+      setErrorMSG("메타데이터 전송 실패");
+      return false;
     }
   };
 
-  // 메타데이터 추출 및 서버로 전송하는 함수
-  const handleMetadataAndSend = async (imageFile) => {
+  const handleMetadataAndSend = async (imageFile, content) => {
     if (!imageFile.type.startsWith("image/")) {
       setErrorMSG("이미지 파일만 업로드 가능합니다.");
-      return;
+      return false;
     }
 
+    const previewURL = URL.createObjectURL(imageFile);
+    setPreviewURL(previewURL);
+
     const metadata = await getImageMetadata(imageFile);
-    if (
-      metadata.dateTimeOriginal ||
-      (metadata.latitude && metadata.longitude)
-    ) {
-      await sendMetadataToServer(imageFile, metadata);
+    if (metadata.dateTimeOriginal || metadata.latitude || metadata.longitude) {
+      return await sendMetadataToServer(metadata, content);
     } else {
-      setErrorMSG("이미지에서 메타데이터를 추출할 수 없습니다.");
-      console.error("메타데이터 추출 실패:", metadata);
+      setErrorMSG("이미지 메타데이터 추출 실패");
+      return false;
     }
   };
 
-  return { handleMetadataAndSend, errorMSG };
+  return { handleMetadataAndSend, errorMSG, previewURL };
 };
 
 export default UseMetadata;
