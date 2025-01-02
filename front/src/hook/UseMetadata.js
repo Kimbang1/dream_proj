@@ -59,34 +59,33 @@ const UseMetadata = () => {
   // 서버로 메타데이터 전송하는 함수
   const sendMetadataToServer = async (metadata) => {
     try {
-      const formData = new FormData();
-      formData.append("latitude", metadata.latitude);
-      formData.append("longitude", metadata.longitude);
-      formData.append("time", metadata.time);
-      formData.append("imageFile", metadata.imageFile);
+      console.log("메타데이터 확인 : ",metadata);
 
-      console.log("전송 데이터 확인:", {
-        latitude: metadata.latitude,
-        longitude: metadata.longitude,
-        time: metadata.time,
-        imageFile: metadata.imageFile.name,
-      });
+      if (metadata && metadata.name && metadata.imageFile) {
+        const formData = new FormData();
+        formData.append("latitude", metadata.latitude);
+        formData.append("longitude", metadata.longitude);
+        formData.append("time", metadata.time);
+        formData.append("imageFile", metadata.imageFile);
 
-      const response = await AxiosApi.post(
-        "/post/upload",
-        {
+        console.log("전송 데이터 확인:", {
           latitude: metadata.latitude,
           longitude: metadata.longitude,
           time: metadata.time,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+          imageFile: metadata.imageFile.name,
+        });
 
-      console.log("메타데이터 전송 성공:", response.data);
+        // FormData를 사용하는 경우 Content-Type을 설정할 필요 없음
+        const response = await AxiosApi.post("/post/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data", // FormData 사용 시 필요한 헤더
+          },
+        });
+
+        console.log("메타데이터 전송 성공:", response.data);
+      } else {
+        setErrorMSG("메타데이터가 유효하지 않습니다.");
+      }
     } catch (error) {
       console.error("메타데이터 전송 오류:", error);
       setErrorMSG("서버로 메타데이터 전송에 실패했습니다.");
