@@ -1,6 +1,6 @@
 import { useState } from "react";
 import EXIF from "exif-js";
-import axios from "axios";
+import AxiosApi from "../servies/AxiosApi"
 
 const UseMetadata = () => {
   const [errorMSG, setErrorMSG] = useState(""); // 오류 메시지 상태
@@ -69,7 +69,7 @@ const UseMetadata = () => {
     }
 
     try {
-      const response = await axios.post("/auth/upload-metadata", formData, {
+      const response = await AxiosApi.post("/post/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

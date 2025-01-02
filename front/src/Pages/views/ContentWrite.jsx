@@ -58,7 +58,7 @@ function ContentWrite() {
     }
 
     try {
-      const response = await AxiosApi.post("/post/content", {
+      const response = await AxiosApi.post("/post/upload", {
         content,
       });
       setPosts([...posts, response.data]);
