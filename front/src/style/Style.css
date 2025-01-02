@@ -45,3 +45,6 @@
 
 /* 게시글 작성 페이지 css */
 @import url(pages-css/ContentWrite.css);
+
+/* 지도 css */
+@import url(pages-css/Map.css);
