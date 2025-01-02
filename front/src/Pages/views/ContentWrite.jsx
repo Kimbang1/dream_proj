@@ -19,22 +19,25 @@ function ContentWrite() {
       alert("파일을 선택하지 않았습니다.");
       return;
     }
-  
+
     // 파일 크기 및 형식 확인
     const validTypes = ["image/jpeg", "image/png", "image/heic"];
     const maxSize = 30 * 1024 * 1024;
-    if (selectedFile.size > maxSize || !validTypes.includes(selectedFile.type)) {
+    if (
+      selectedFile.size > maxSize ||
+      !validTypes.includes(selectedFile.type)
+    ) {
       alert("파일이 너무 크거나 지원하지 않는 형식입니다.");
       return;
     }
-  
+
     // 시간 체크 및 메타데이터 전송
     const isValidImageTime = await validateImageTime(selectedFile);
     if (!isValidImageTime) {
       alert("업로드 가능한 시간이 초과된 사진입니다.");
       return;
     }
-  
+
     const isMetadataSent = await handleMetadataAndSend(selectedFile);
     if (isMetadataSent) {
       setFile(selectedFile);
@@ -46,14 +49,14 @@ function ContentWrite() {
 
   const handleTextUpdate = (e) => {
     setContent(e.target.value);
-  };  
-  
+  };
+
   const handleComplete = async () => {
     if (!file || !content.trim()) {
       alert("사진과 내용을 모두 입력하세요.");
       return;
     }
-  
+
     try {
       const response = await AxiosApi.post("/post/content", {
         content,
