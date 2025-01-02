@@ -1,11 +1,13 @@
 div.editProfile {
   border: 1px solid #000;
-  width: 100%;
+  min-width: 100%;
   padding: 10px;
   align-items: center;
   line-height: 60px;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  padding-bottom: 80px;
 }
 
 div.label {
@@ -46,4 +48,17 @@ div.BtnArea button {
   margin: 0 30px;
   border-radius: 10px;
   cursor: pointer;
+}
+@media screen and (min-width : 320) {
+  div.editProfile {
+  border: 1px solid #000;
+  min-height: 100vh;
+  padding: 20px;
+  align-items: center;
+  line-height: 60px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
 }
