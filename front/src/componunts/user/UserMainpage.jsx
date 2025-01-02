@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import AxiosApi from "../../servies/AxiosApi"
 import RightAside from "../layout/RightAside";
 import ViewChoice from "../layout/ViewChoice";
-import MediaQuery from "react-responsive";
+
+
 function UserMainpage() {
   const [user, setUser] = useState([]); //불러올 데이터
 
   const rightaside = {maxwidth : 320};
   const navigate = useNavigate();
   const UserEditHandle = () =>{
-    navigate("Useredit");
+    // setIsUserMainpage(true);
+    navigate("/Useredit");
   }
   //데이터 로드 함수
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("/api/user/data"); //실제 API엔트포인트로 바꿔야함.
+        const response = await AxiosApi.get("/post/data"); //실제 API엔트포인트로 바꿔야함.
         setUser(response.data);
       } catch (error) {
         console.error("데이터 가져오기 실패:", error);

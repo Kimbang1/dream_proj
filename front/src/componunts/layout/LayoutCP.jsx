@@ -42,7 +42,7 @@ const Layout = () => {
           {isUserMainPage && <Outlet />} {/*프로필 페이지를 보여줌*/}
         </div>
       </div>
-      <div className="footerview">{sft && <Bottom />}</div>
+      <div className="footerview">{sft && <Bottom setIsUserMainPage={setIsUserMainPage} />}</div>
     </div>
   );
 };

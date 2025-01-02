@@ -1,5 +1,6 @@
 package com.sns.ctr;
 
+import java.net.http.HttpHeaders;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -34,7 +35,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-@Transactional
 @Slf4j
 public class AuthController {
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -43,6 +43,7 @@ public class AuthController {
 	private final UserDao userDao;
 	
 	@PostMapping("/join")
+	@Transactional
 	public ResponseEntity<?> mtdJoinProc(@RequestBody UserDto  userDto) {
 		
 		// 가입되어있는지 체크
@@ -97,38 +98,27 @@ public class AuthController {
 			String refreshToken = jwtProvider.generateRefreshToken(principalDetails.getUserId(), request);
 			
 			// accessToken을 HttpOnly 쿠키로 설정
-			Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
-			accessTokenCookie.setHttpOnly(true);	// 클라이언트의 js코드에서 접근할 수 없도록 제한
-			accessTokenCookie.setSecure(true);		// HTTPS 연결 시 사용
-			accessTokenCookie.setPath("/");			// 쿠키가 유효한 경로 지정(특정 경로에서만 사용할 수 있게 제한 가능)
-			accessTokenCookie.setMaxAge(60 * 15);	// 쿠키 만료 시간(15분)
+			Cookie accessTokenCookie = createCookies("accessToken", accessToken, 60*60);
+			addSameSiteCookieToResponse(response, accessTokenCookie, "None");
 			response.addCookie(accessTokenCookie);	// 응답에 쿠키 추가
 			
 			// refreshToken을 HttpOnly 쿠키로 설정
-			Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-			refreshTokenCookie.setHttpOnly(true);	// 클라이언트의 js코드에서 접근할 수 없도록 제한
-			refreshTokenCookie.setSecure(true);		// HTTPS 연결 시 사용
-			refreshTokenCookie.setPath("/");		// 쿠키가 유효한 경로 지정(특정 경로에서만 사용할 수 있게 제한 가능)
-			refreshTokenCookie.setMaxAge(60 * 60);	// 쿠키 만료 시간(1시간)
+			Cookie refreshTokenCookie = createCookies("refreshToken", refreshToken, 60*60);
+			addSameSiteCookieToResponse(response, refreshTokenCookie, "None");
 			response.addCookie(refreshTokenCookie);	// 응답에 쿠키 추가
 			
 			// 쿠키만 설정하여 응답 반환
 		    return new ResponseEntity<>(HttpStatus.OK);
 		} catch (BadCredentialsException e) {
 			// 인증 실패 처리 - 잘못된 자격 증명(인증 정보가 잘못된 경우 - 잘못된 이메일, 비밀번호)
-			HashMap<String, String> errorResponse = new HashMap<>();
-			errorResponse.put("message", "Invalid credentials.");
-			return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);	// 401번
+			return createErrorResponse("Invalid credentials.", HttpStatus.UNAUTHORIZED); 	// 401번
 		} catch (InternalAuthenticationServiceException e) {
 			// 인증 서비스 오류 - 인증 서비스 자체가 내부적으로 문제를 일으킨 경우
-			HashMap<String, String> errorResponse = new HashMap<>();
-			errorResponse.put("message", "Authentication service is unavailable.");
-			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);	// 500번
+			return createErrorResponse("Authentication service is unavailable.", HttpStatus.INTERNAL_SERVER_ERROR); 	// 500번
 		} catch (Exception e) {
 			// 일반적인 예외 처리
-			HashMap<String, String> errorResponse = new HashMap<>();
-			errorResponse.put("message", "An unexpected error occurred.");
-			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);		// 400번
+			return createErrorResponse("An unexpected error occurred.", HttpStatus.BAD_REQUEST);		// 400번
+			
 		}
 	}
 	
@@ -150,30 +140,20 @@ public class AuthController {
 		
 		// refreshToken이 없으면 에러 처리
 		if(inputRefreshToken == null) {
-			responseBody.put("error", "Failed to log out: Refresh token not found.");
-			return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);	// 401
+			return createErrorResponse("Failed to log out: Refresh token not found.", HttpStatus.UNAUTHORIZED); 	// 401
 		}
 		
 		// RefreshToken 삭제
 		boolean isDeleted = jwtProvider.deleteRefreshToken(inputRefreshToken);
 		if(!isDeleted) {
-			responseBody.put("error", "Failed to log out: Invalid or expired refresh token.");
-			return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED); 	// 401
+			return createErrorResponse("Failed to log out: Invalid or expired refresh token.", HttpStatus.UNAUTHORIZED); 	// 401
 		}
 		
 		// Cookie 삭제
-		Cookie accessTokenCookie = new Cookie("accessToken", null);
-		accessTokenCookie.setHttpOnly(true);  // 클라이언트의 JS에서 접근 불가
-	    accessTokenCookie.setSecure(true);    // HTTPS 연결에서만 사용
-	    accessTokenCookie.setPath("/");       // 쿠키가 유효한 경로
-	    accessTokenCookie.setMaxAge(0);       // 만료 시간을 0으로 설정하여 쿠키 삭제
+		Cookie accessTokenCookie = createCookies("accessToken", null, 0);
 	    response.addCookie(accessTokenCookie);  // 응답에 쿠키 추가
 	    
-	    Cookie refreshTokenCookie = new Cookie("refreshToken", null);
-	    refreshTokenCookie.setHttpOnly(true); // 클라이언트의 JS에서 접근 불가
-	    refreshTokenCookie.setSecure(true);   // HTTPS 연결에서만 사용
-	    refreshTokenCookie.setPath("/");      // 쿠키가 유효한 경로
-	    refreshTokenCookie.setMaxAge(0);      // 만료 시간을 0으로 설정하여 쿠키 삭제
+	    Cookie refreshTokenCookie = createCookies("refreshToken", null, 0);
 	    response.addCookie(refreshTokenCookie); // 응답에 쿠키 추가
 		
 	    responseBody.put("message", "Successfully logged out.");
@@ -183,7 +163,7 @@ public class AuthController {
 	@PostMapping("/refresh")
 	public ResponseEntity<HashMap<String, String>> refresh(HttpServletRequest httpServletRequest, @RequestBody HashMap<String, String> requestBody, HttpServletResponse response) {
 		HashMap<String, String> responseBody = new HashMap<>();
-		
+		log.info("여기까지는 왔어");
 		// 쿠키에서 refreshToken 값 가져오기
 		String inputRefreshToken = null;
 		Cookie[] cookies = httpServletRequest.getCookies();		// 요청에 포함된 모든 쿠키 가져오기
@@ -194,12 +174,13 @@ public class AuthController {
 					break;
 				}
 			}
+		} else {
+			log.error("No cookies found in the request.");
 		}
 		
 		// refreshToken이 없으면 에러 처리
 		if(inputRefreshToken == null) {
-			responseBody.put("error", "Failed to log out: Refresh token not found.");
-			return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);	// 401
+			return createErrorResponse("Failed to log out: Refresh token not found.", HttpStatus.UNAUTHORIZED); 	// 401
 		}
 		
 		String sAccessToken = jwtProvider.resolveToken(httpServletRequest);
@@ -214,8 +195,7 @@ public class AuthController {
 			Claims claims = jwtProvider.parseClaims(sAccessToken);
 			if(claims.get("userId") == null) {	// userId가 없는 경우
 				log.info("Invalid JWT Token: userId is missing.");
-				responseBody.put("error", "JWT Token is invalid: userId is missing.");
-				return new ResponseEntity<>(requestBody, HttpStatus.UNAUTHORIZED);	// 401
+				return createErrorResponse("JWT Token is invalid: userId is missing.", HttpStatus.UNAUTHORIZED); 	// 401
 			}
 			String userId = claims.get("userId").toString();
 			boolean isRefreshTokenValid = jwtProvider.validateRefreshToken(inputRefreshToken);
@@ -231,19 +211,13 @@ public class AuthController {
 					String newRefreshToken = jwtProvider.generateRefreshToken(userId, httpServletRequest);
 					
 					// accessToken을 HttpOnly 쿠키로 설정
-					Cookie accessTokenCookie = new Cookie("accessToken", newAccessToken);
-					accessTokenCookie.setHttpOnly(true);	// 클라이언트의 js코드에서 접근할 수 없도록 제한
-					accessTokenCookie.setSecure(true);		// HTTPS 연결 시 사용
-					accessTokenCookie.setPath("/");			// 쿠키가 유효한 경로 지정(특정 경로에서만 사용할 수 있게 제한 가능)
-					accessTokenCookie.setMaxAge(60 * 15);	// 쿠키 만료 시간(15분)
+					Cookie accessTokenCookie = createCookies("accessToken", newAccessToken, 60*60);
+					addSameSiteCookieToResponse(response, accessTokenCookie, "None");
 					response.addCookie(accessTokenCookie);	// 응답에 쿠키 추가
 					
 					// refreshToken을 HttpOnly 쿠키로 설정
-					Cookie refreshTokenCookie = new Cookie("refreshToken", newRefreshToken);
-					refreshTokenCookie.setHttpOnly(true);	// 클라이언트의 js코드에서 접근할 수 없도록 제한
-					refreshTokenCookie.setSecure(true);		// HTTPS 연결 시 사용
-					refreshTokenCookie.setPath("/");		// 쿠키가 유효한 경로 지정(특정 경로에서만 사용할 수 있게 제한 가능)
-					refreshTokenCookie.setMaxAge(60 * 60);	// 쿠키 만료 시간(1시간)
+					Cookie refreshTokenCookie = createCookies("refreshToken", newRefreshToken, 60*60);
+					addSameSiteCookieToResponse(response, refreshTokenCookie, "None");
 					response.addCookie(refreshTokenCookie);	// 응답에 쿠키 추가
 					
 					log.info("Expired Refresh Token Replaced with New Tokens");
@@ -261,11 +235,8 @@ public class AuthController {
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			
 			// accessToken을 HttpOnly 쿠키로 설정
-			Cookie accessTokenCookie = new Cookie("accessToken", newAccessToken);
-			accessTokenCookie.setHttpOnly(true);	// 클라이언트의 js코드에서 접근할 수 없도록 제한
-			accessTokenCookie.setSecure(true);		// HTTPS 연결 시 사용
-			accessTokenCookie.setPath("/");			// 쿠키가 유효한 경로 지정(특정 경로에서만 사용할 수 있게 제한 가능)
-			accessTokenCookie.setMaxAge(60 * 15);	// 쿠키 만료 시간(15분)
+			Cookie accessTokenCookie = createCookies("accessToken", newAccessToken, 60*60);
+			addSameSiteCookieToResponse(response, accessTokenCookie, "None");
 			response.addCookie(accessTokenCookie);	// 응답에 쿠키 추가
 			
 			responseBody.put("message", "Refresh Token has been successfully recreated.");
@@ -274,12 +245,34 @@ public class AuthController {
 		default:
 			// 예상치 못한 상황
 			log.error("Unexpected JWT Token status: {}", jwtCode);
-			responseBody.put("error", "Unexpected JWT Token status.");
-			return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);	// 401
+			return createErrorResponse("Unexpected JWT Token status.", HttpStatus.UNAUTHORIZED); 	// 401
 		}
 		
 		return new ResponseEntity<>(responseBody, HttpStatus.OK);
 	}
 	
+	private Cookie createCookies(String name, String value, int maxAge) {
+		Cookie cookie = new Cookie(name, value);
+		cookie.setHttpOnly(true);	// 클라이언트의 js코드에서 접근할 수 없도록 제한
+		cookie.setSecure(true);		// HTTPS 연결 시 사용
+		cookie.setPath("/");		// 쿠키가 유효한 경로 지정(특정 경로에서만 사용할 수 있게 제한 가능)
+		cookie.setMaxAge(maxAge);	// 쿠키 만료 시간()
+		return cookie;
+	}
+	
+	private void addSameSiteCookieToResponse(HttpServletResponse response, Cookie cookie, String sameSite) {
+	    // 쿠키를 헤더에 직접 추가
+	    String setCookieHeader = String.format(
+	            "%s=%s; Max-Age=%d; Path=%s; HttpOnly; Secure; SameSite=%s",
+	            cookie.getName(), cookie.getValue(), cookie.getMaxAge(), cookie.getPath(), sameSite
+	    );
+	    response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, setCookieHeader);
+	}
+	
+	private ResponseEntity<HashMap<String, String>> createErrorResponse(String message, HttpStatus status) {
+		HashMap<String, String> errorResponse = new HashMap<>();
+		errorResponse.put("message", message);
+		return new ResponseEntity<>(errorResponse, status);
+	}
 	
 }

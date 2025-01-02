@@ -31,6 +31,19 @@ public class CustomUserDetailsService implements UserDetailsService {
 		return new PrincipalDetails(userDto);
 	}
 	
+	public UserDetails loadUserByUuid(String uuid) throws UsernameNotFoundException {
+		log.info("CustomUserDetailsService loadUserByUuid : uuid={}", uuid);
+		
+		UserDto userDto = userDao.mtdFindByUuid(uuid);
+		
+		if (userDto == null) {
+			log.error("No user found for uuid={}", uuid);
+			throw new UsernameNotFoundException("User not found with uuid=" + uuid);
+		}
+		
+		return new PrincipalDetails(userDto);
+	}
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		log.info("Use loadUserByEmailAndProvider instead.");

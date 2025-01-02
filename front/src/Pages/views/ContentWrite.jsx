@@ -9,8 +9,7 @@ function ContentWrite() {
   const [posts, setPosts] = useState([]); // 게시물 리스트 상태
   const { validateImageTime, errorMessage: timeErrorMessage } =
     useImageTimeCheck(); // 시간 체크 훅 사용
-  const { handleMetadataAndSend, errorMessage: metadataErrorMessage } =
-    useImageMetadata(); // 메타데이터 전송 훅 사용
+  const { handleMetadataAndSend, errorMSG, previewURL } = useImageMetadata(); // 메타데이터 전송 훅 사용
 
   // 파일 선택 핸들러
   const handleFileChange = async (e) => {
@@ -63,7 +62,6 @@ function ContentWrite() {
       });
       setPosts([...posts, response.data]);
       setContent("");
-      setFile(null);
       alert("게시물이 저장되었습니다.");
     } catch (error) {
       console.error("게시물 저장 실패:", error);
@@ -74,11 +72,12 @@ function ContentWrite() {
   return (
     <div className="box">
       {/* 사진 업로드 영역 */}
+
       <div className="uploadArea">
         {/* 업로드된 이미지 영역 */}
         {file && (
           <img
-            src={URL.createObjectURL(file)}
+            src={previewURL}
             alt="업로드된 이미지"
             className="uploadedImage"
           />
@@ -107,10 +106,8 @@ function ContentWrite() {
       </div>
 
       {/* 오류 메시지 */}
-      {(timeErrorMessage || metadataErrorMessage) && (
-        <p style={{ color: "red" }}>
-          {timeErrorMessage || metadataErrorMessage}
-        </p>
+      {(timeErrorMessage || errorMSG) && (
+        <p style={{ color: "red" }}>{timeErrorMessage || errorMSG}</p>
       )}
 
       {/* 게시글 영역 */}

@@ -6,7 +6,7 @@ function RightAside(){
       <div className="rightAside">
            {/* 오른쪽 사이드바 */}
         <div className="Frame">
-
+      
         </div>
       </div>
 

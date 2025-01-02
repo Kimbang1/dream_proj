@@ -63,6 +63,9 @@ dependencies {
     
     // .env 파일 로드
     implementation 'io.github.cdimascio:dotenv-java:3.1.0'
+    
+    // 파일 업로드
+    implementation 'commons-io:commons-io:2.7'
 }
 
 tasks.named('test') {

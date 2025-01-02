@@ -53,7 +53,7 @@ const TimeCheck = () => {
     console.log("현재 시간: ", currentTime);
     console.log("이미지 촬영 시간: ", imageDate);
     console.log("시간 차이(밀리초): ", timeDifference);
-    return timeDifference <= 20 * 60 * 10000 && timeDifference >= 0; // 20분을 밀리초로 변환
+    return timeDifference <= 20 * 60 * 100000 && timeDifference >= 0; // 20분을 밀리초로 변환
   };
 
 
