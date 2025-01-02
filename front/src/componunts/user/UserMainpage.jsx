@@ -3,15 +3,15 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import RightAside from "../layout/RightAside";
 import ViewChoice from "../layout/ViewChoice";
-import MediaQuery from "react-responsive";
+
 function UserMainpage() {
   const [user, setUser] = useState([]); //불러올 데이터
 
-  const rightaside = {maxwidth : 320};
+  const rightaside = { maxwidth: 320 };
   const navigate = useNavigate();
-  const UserEditHandle = () =>{
-    navigate("Useredit");
-  }
+  const UserEditHandle = () => {
+    navigate("/Useredit");
+  };
   //데이터 로드 함수
   useEffect(() => {
     const fetchData = async () => {
@@ -68,12 +68,9 @@ function UserMainpage() {
         </div>
       </div>
 
-      <div id="rightAside">
-       {rightaside && <RightAside />}
-      </div>
+      <div id="rightAside">{rightaside && <RightAside />}</div>
     </div>
   );
 }
-
 
 export default UserMainpage;
