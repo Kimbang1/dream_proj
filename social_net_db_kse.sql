@@ -54,3 +54,55 @@ constraint primary key(re_token)
 drop table refresh_token_list;
 
 select * from refresh_token_list order by create_at;
+
+# file_list 파일 관리 테이블
+create table file_list (
+file_id			char(36)		not null		,
+ori_filename	varchar(100)	not null		,
+up_filename		varchar(100)	not null		,
+file_url		varchar(300)	not null		,
+insert_at		timestamp		default now()	,
+is_using		tinyint							,
+extension		varchar(20)		not null		,
+captured_at		timestamp						,
+latitude		double							,
+longitude		double							,
+constraint primary key(file_id)
+);
+drop table file_list;
+
+select * from file_list order by insert_at;
+
+# post 게시글 테이블
+create table post (
+post_id			char(36)		not null		,
+write_user		char(36)						,
+content			varchar(300)	not null		,
+create_at		timestamp		default now()	,
+is_using		tinyint							,
+update_at		timestamp						,
+is_update		tinyint			default 0		,
+delete_at		timestamp						,
+is_delete		tinyint			default 0		,
+view_cnt		int				default 0		,
+constraint fk_post_user foreign key(write_user) references user(uuid) on delete cascade,
+constraint primary key(post_id)
+);
+drop table post;
+
+select * from post order by create_at;
+
+# file_post 파일과 게시글을 묶어주는 중간 테이블
+create table file_post (
+link_id			char(36)		not null		,
+file_id			char(36)						,
+post_id			char(36)						,
+create_at		timestamp		default now()	,
+is_using		tinyint			default 1		,
+constraint fk_filePost_file foreign key(file_id) references file_list(file_id) on delete cascade,
+constraint fk_filePost_post foreign key(post_id) references post(post_id) on delete cascade,
+constraint primary key(link_id)
+);
+drop table file_post;
+
+select * from file_post order by create_at;
