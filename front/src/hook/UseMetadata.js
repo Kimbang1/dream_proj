@@ -39,8 +39,10 @@ const UseMetadata = () => {
           }
         }
 
+        const formattedTime = formattedDateTime ? formattedDateTime.toISOString() : new Date().toISOString(); // ISO 형식으로 변환
+
         resolve({
-          dateTimeOriginal: formattedDateTime,
+          dateTimeOriginal: formattedTime,
           latitude,
           longitude,
           imageFile,

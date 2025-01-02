@@ -34,9 +34,25 @@
 		select * from user where uuid = #{uuid}
 	</select>
 	
+	<!-- tag_id로 회원 찾기 -->
+	<select id="mtdFindByTagId" resultType="com.sns.dto.UserDto">
+		select * from user where tag_id = #{tag_id}
+	</select>
+	
 	<!-- email과 provider로 회원 찾기 -->
 	<select id="mtdFindByEmailAndProvider" resultType="com.sns.dto.UserDto">
 		select * from user where email = #{email} and provider = #{provider}
+	</select>
+	
+	<!-- 회원 정보 수정 -->
+	<update id="mtdUpdateUser" parameterType="com.sns.dto.UserDto">
+		update user set tag_id = #{tag_id}, username = #{username}, phone = #{phone}
+		where uuid = #{uuid}
+	</update>
+	
+	<!-- tag_id 중복 확인 -->
+	<select id="mtdTagIdCheck" resultType="java.lang.Boolean">
+		select case when count(*) > 0 then true else false end from user where tag_id = #{tag_id}
 	</select>
 
 </mapper>

@@ -6,12 +6,12 @@ import lombok.Data;
 
 @Data
 public class FileListDto {
-	private String fileId;
-	private String oriFilename;
-	private String upFilename;
-	private String fileUrl;
+	private String file_id;
+	private String ori_filename;
+	private String up_filename;
+	private String file_url;
 	private Timestamp insert_at;
-	private boolean isUsing;
+	private boolean is_using;
 	private String extension;
 	private Timestamp captured_at;
 	private double latitude;
