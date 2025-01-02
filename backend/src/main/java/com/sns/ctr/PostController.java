@@ -1,5 +1,6 @@
 package com.sns.ctr;
 
+import java.util.Date;
 import java.util.HashMap;
 
 import org.springframework.http.HttpStatus;
@@ -18,13 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 public class PostController {
 	
 	@PostMapping("/upload")
-	public ResponseEntity<HashMap<String, String>> mtdFilePost(@RequestParam("file") MultipartFile file, @RequestParam("content") String content) {
+	public ResponseEntity<HashMap<String, String>> mtdFilePost(@RequestParam("file") MultipartFile file, @RequestParam("imageDate") Date imageDate, @RequestParam("latitude") Double latitude, @RequestParam("longitude") Double longitude) {
 		// 파일 이름과 MIME 타입 확인
         String originalFileName = file.getOriginalFilename();
         String mimeType = file.getContentType();
         System.out.println("original file name: " + originalFileName);
         System.out.println("mimeType: " + mimeType);
-        System.out.println("content: " + content);
 
         // 파일이 정상적으로 업로드되었는지 확인
         if (file.isEmpty()) {
