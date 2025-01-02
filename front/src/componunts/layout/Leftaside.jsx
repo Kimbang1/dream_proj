@@ -42,6 +42,10 @@ function Leftaside({ setIsUserMainPage }) {
     navigate("/user/UserMainpage");
   };
 
+  const handleMapClick = () => {
+    setIsUserMainPage(true);
+    navigate("/Map";)
+  }
   return (
     <div className="wrap">
       {!hiddenAside && (
@@ -56,7 +60,7 @@ function Leftaside({ setIsUserMainPage }) {
             </div>
 
             <div className="menu">
-              <img src="/images/map.png" alt="지도" />
+              <img onClick={handleMapClick}  src="/images/map.png" alt="지도" />
             </div>
 
             <div className="menu">
