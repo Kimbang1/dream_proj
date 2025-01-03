@@ -13,14 +13,18 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sns.dao.FileListMapper;
+import com.sns.dao.FilePostMapper;
+import com.sns.dao.PostMapper;
 import com.sns.dao.UserDao;
 import com.sns.dto.FileListDto;
+import com.sns.dto.PostDto;
 import com.sns.dto.UserDto;
 import com.sns.jwt.JwtProvider;
 import com.sns.svc.FileService;
@@ -40,9 +44,11 @@ public class PostController {
 	private final FileListMapper fileListMapper;
 	private final JwtProvider jwtProvider;
 	private final UserDao userDao;
+	private final FilePostMapper filePostMapper;
+	private final PostMapper postMapper;
 	
 	@PostMapping("/fileUpload")
-	public ResponseEntity<HashMap<String, String>> mtdFilePost(
+	public ResponseEntity<HashMap<String, String>> mtdFileUpload(
 			@RequestParam("file") MultipartFile file,
 			@RequestParam("latitude") String latitude,
 			@RequestParam("longitude") String longitude,
@@ -135,8 +141,13 @@ public class PostController {
             
             fileListMapper.saveFileData(fileListDto);
             
+            // file_post 테이블 저장
+            String link_id = UUID.randomUUID().toString();
+            filePostMapper.saveFileId(link_id, file_id);
+            
             // 파일 업로드 성공 메시지 반환
             HashMap<String, String> response = new HashMap<>();
+            response.put("link_id", link_id);
             response.put("message", "파일이 성공적으로 업로드되었습니다.");
             response.put("fileName", originalFileName); // 업로드된 파일 이름 반환
             response.put("filePath", filePath);
@@ -148,6 +159,51 @@ public class PostController {
             log.error("파일 업로드 중 오류 발생: ", e);
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // 500 Internal Server Error 반환
         }
+	}
+	
+	@PostMapping("/postUpload")
+	public ResponseEntity<HashMap<String, String>> mtdPostUpload(@RequestBody HashMap<String, String> requestData, HttpServletRequest request) {
+		HashMap<String, String> responseBody = new HashMap<>();
+		String linkId = requestData.get("link_id");
+		String content = requestData.get("content");
+		
+		System.out.println("link_id: " + linkId);
+		System.out.println("content: " + content);
+		
+		String accessToken = null;
+		
+		// AccessToken 추출
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if ("accessToken".equals(cookie.getName())) {
+					accessToken = cookie.getValue();
+					break;
+				}
+			}
+		}
+		
+		if (accessToken == null) {
+		    log.error("Access token이 존재하지 않습니다.");
+		    responseBody.put("message", "로그인이 필요합니다.");
+		    return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+		}
+		
+		// AccessToken에서 사용자 정보 추출
+		String email = jwtProvider.getEmailFromToken(accessToken);
+		String provider = jwtProvider.getProviderFromToken(accessToken);
+		UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
+		
+		PostDto postDto = new PostDto();
+		String post_id = UUID.randomUUID().toString();
+		postDto.setPost_id(post_id);
+		postDto.setWrite_user(user.getUuid());
+		postDto.setContent(content);
+		postMapper.savePost(postDto);
+		
+		filePostMapper.addPostId(linkId, post_id);
+		
+		return null;
 	}
 	
 	

@@ -30,4 +30,6 @@ public class UserDto {
 	private String pwd;
 	private String social_key;
 	private int suspended_cnt;
+	private String introduce;
+	private String profile_path;
 }

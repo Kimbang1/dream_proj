@@ -6,9 +6,9 @@ import lombok.Data;
 
 @Data
 public class FilePostDto {
-	private String linkId;
-	private String fileId;
-	private String postId;
-	private Timestamp createAt;
-	private boolean isUsing;
+	private String link_id;
+	private String file_id;
+	private String post_id;
+	private Timestamp create_at;
+	private boolean is_using;
 }

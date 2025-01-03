@@ -6,6 +6,7 @@ import useImageMetadata from "../../hook/UseMetadata"; // 메타데이터 전송
 function ContentWrite() {
   const [file, setFile] = useState(null); // 사진 파일 상태
   const [content, setContent] = useState(""); // 입력란 텍스트 상태
+  const [link_id, setLinkId] = useState(null);
   const [posts, setPosts] = useState([]); // 게시물 리스트 상태
   const { validateImageTime, errorMessage: timeErrorMessage } =
     useImageTimeCheck(); // 시간 체크 훅 사용
@@ -40,6 +41,9 @@ function ContentWrite() {
     const isMetadataSent = await handleMetadataAndSend(selectedFile);
     if (isMetadataSent) {
       setFile(selectedFile);
+      // 파일 업로드 성공 후 link_id 저장
+      const linkIdFromResponse = isMetadataSent.link_id;
+      setLinkId(linkIdFromResponse);
       console.log("파일이 성공적으로 처리되었습니다.");
     } else {
       alert("파일 처리에 실패했습니다.");
@@ -57,8 +61,9 @@ function ContentWrite() {
     }
 
     try {
-      const response = await AxiosApi.post("/post/upload", {
+      const response = await AxiosApi.post("/post/postUpload", {
         content,
+        link_id,
       });
       setPosts([...posts, response.data]);
       setContent("");
