@@ -3,7 +3,7 @@ import axios from "axios";
 //액시오스 인스턴스 생성
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL, //환경변수 사용
-  timeout: 5000, //요청제한시간
+  timeout: 50000, //요청제한시간
   withCredentials: true, //쿠키를 요청에 포함하도록 설정
   headers: {
     "Content-Type": "application/json",

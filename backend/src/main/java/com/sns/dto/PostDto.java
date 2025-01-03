@@ -6,14 +6,14 @@ import lombok.Data;
 
 @Data
 public class PostDto {
-	private String postId;
-	private String writeUser;
+	private String post_id;
+	private String write_user;
 	private String content;
-	private Timestamp createAt;
-	private boolean isUsing;
-	private Timestamp updateAt;
-	private boolean isUpdate;
-	private Timestamp deleteAt;
-	private boolean isDelete;
-	private int viewCnt;
+	private Timestamp create_at;
+	private boolean is_using;
+	private Timestamp update_at;
+	private boolean is_update;
+	private Timestamp delete_at;
+	private boolean is_delete;
+	private int view_cnt;
 }

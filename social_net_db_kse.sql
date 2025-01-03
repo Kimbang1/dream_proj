@@ -31,6 +31,8 @@ is_delete	tinyint			default 0		,
 pwd			varchar(100)					,
 social_key	varchar(36)						,
 suspended_cnt	int			default 0 		,
+introduce	varchar(100)					,
+profile_path varchar(300)					,
 constraint unique(tag_id)					,
 constraint unique(email, provider)			, # -> 중복 회원가입 방지를 위함
 constraint primary key(uuid)
@@ -60,7 +62,7 @@ create table file_list (
 file_id			char(36)		not null		,
 ori_filename	varchar(100)	not null		,
 up_filename		varchar(100)	not null		,
-file_url		varchar(300)	not null		,
+file_path		varchar(300)	not null		,
 insert_at		timestamp		default now()	,
 is_using		tinyint							,
 extension		varchar(20)		not null		,
@@ -71,7 +73,7 @@ constraint primary key(file_id)
 );
 drop table file_list;
 
-select * from file_list order by insert_at;
+select * from file_list order by insert_at desc;
 
 # post 게시글 테이블
 create table post (
@@ -79,7 +81,7 @@ post_id			char(36)		not null		,
 write_user		char(36)						,
 content			varchar(300)	not null		,
 create_at		timestamp		default now()	,
-is_using		tinyint							,
+is_using		tinyint			default 0		,
 update_at		timestamp						,
 is_update		tinyint			default 0		,
 delete_at		timestamp						,
@@ -97,8 +99,8 @@ create table file_post (
 link_id			char(36)		not null		,
 file_id			char(36)						,
 post_id			char(36)						,
-create_at		timestamp		default now()	,
-is_using		tinyint			default 1		,
+create_at		timestamp		 				,
+is_using		tinyint			default 0		,
 constraint fk_filePost_file foreign key(file_id) references file_list(file_id) on delete cascade,
 constraint fk_filePost_post foreign key(post_id) references post(post_id) on delete cascade,
 constraint primary key(link_id)

@@ -15,6 +15,16 @@ const UseMetadata = () => {
         const gpsLatitudeRef = EXIF.getTag(this, "GPSLatitudeRef");
         const gpsLongitudeRef = EXIF.getTag(this, "GPSLongitudeRef");
 
+        const allTags = EXIF.getAllTags(this);
+        console.log("All EXIF tags:", allTags);
+
+        console.log("GPS data:", {
+          gpsLatitude,
+          gpsLongitude,
+          gpsLatitudeRef,
+          gpsLongitudeRef,
+        });
+
         let latitude = null;
         let longitude = null;
 
@@ -55,13 +65,12 @@ const UseMetadata = () => {
 
   const sendMetadataToServer = async (metadata, content) => {
     try {
-      const time = metadata.dateTimeOriginal || new Date().toISOString();
+      const captured_at = metadata.dateTimeOriginal || new Date().toISOString();
       const formData = new FormData();
       formData.append("file", metadata.imageFile);
       formData.append("latitude", metadata.latitude);
       formData.append("longitude", metadata.longitude);
-      formData.append("time", time);
-      formData.append("content", content);
+      formData.append("captured_at", captured_at);
 
       const response = await AxiosApi.post("/post/fileUpload", formData, {
         headers: { "Content-Type": "multipart/form-data" },

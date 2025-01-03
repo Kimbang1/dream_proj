@@ -27,7 +27,7 @@ function Join() {
       pwd: pwd,
       phone: phone,
       birthday: birthday,
-      provider: "local"
+      provider: "local",
     };
 
     try {
@@ -36,7 +36,6 @@ function Join() {
       console.log(response.data);
       alert("회원가입 성공");
       navigate("/Login"); // 회원 가입 후 로그인 페이지로 이동
-
     } catch (error) {
       console.error("회원 가입 실패:", error);
       // 에러는 인터셉터에서 처리되므로 여기선 추가 처리 필요 없음
