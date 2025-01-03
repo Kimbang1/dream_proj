@@ -1,24 +1,24 @@
-div.mainview{
-    width: 71%;
+div.mainview {
+  width: 71%;
 }
-div.viewArea{
-    display: flex;
-    flex-direction: row;
+div.viewArea {
+  display: flex;
+  flex-direction: row;
+  overflow-y: scroll;
 }
-div.Outlet{
-    width: 80%;
+div.Outlet {
+  width: 80%;
 }
-div.RightAside{
-    width: 30%;
+div.RightAside {
+  width: 30%;
 }
 
-div.BtnAreaChoice{
-    margin-top: 0;
+div.BtnAreaChoice {
+  margin-top: 0;
 }
-@media screen and (min-width:300px) {
-    
-    div.RightAside{
-        display: none;
-        width: 0;
-    }
+@media screen and (min-width: 300px) {
+  div.RightAside {
+    display: none;
+    width: 0;
+  }
 }

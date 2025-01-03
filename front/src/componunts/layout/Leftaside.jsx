@@ -1,5 +1,5 @@
 import React from "react";
-import  AxiosApi  from "../../servies/AxiosApi";
+import AxiosApi from "../../servies/AxiosApi";
 import { useMediaQuery } from "react-responsive";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
@@ -8,24 +8,23 @@ function Leftaside({ setIsUserMainPage }) {
   const hiddenAside = useMediaQuery({ maxWidth: 750 });
   const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
 
-  const handleLogout = async() => {
-
+  const handleLogout = async () => {
     //로그아웃시 쿠키 삭제
     if (window.confirm("로그아웃 하시겠습니까?")) {
-      removeCookie("accessToken", { path: "/" ,domain:"your-domain.com"});
+      removeCookie("accessToken", { path: "/", domain: "your-domain.com" });
       removeCookie("refreshToken", { path: "/", domain: "your-domain.com" });
-      try{
-        await AxiosApi.post("auth/logout",{},{withCredentials:true});//로그아웃
-      // 쿠키 삭제 후 확인
-      if (!cookies.accessToken) {
-        console.log("쿠키 삭제 성공");
-      } else {
-        console.log("쿠키 삭제 실패");
-      }
-      //로그아웃 성공시 랜딩 페이지로 아래껄 주석 지우고 활성화 시켜주세용
-      window.location.href = "/";
-      }catch(error){
-        console.log("로그아웃 실패:",error);
+      try {
+        await AxiosApi.post("auth/logout", {}, { withCredentials: true }); //로그아웃
+        // 쿠키 삭제 후 확인
+        if (!cookies.accessToken) {
+          console.log("쿠키 삭제 성공");
+        } else {
+          console.log("쿠키 삭제 실패");
+        }
+        //로그아웃 성공시 랜딩 페이지로 아래껄 주석 지우고 활성화 시켜주세용
+        window.location.href = "/";
+      } catch (error) {
+        console.log("로그아웃 실패:", error);
       }
     }
   };
@@ -42,6 +41,10 @@ function Leftaside({ setIsUserMainPage }) {
     navigate("/user/UserMainpage");
   };
 
+  const handleMapClick = () => {
+    setIsUserMainPage(true);
+    navigate("/Map");
+  };
   return (
     <div className="wrap">
       {!hiddenAside && (
@@ -56,7 +59,7 @@ function Leftaside({ setIsUserMainPage }) {
             </div>
 
             <div className="menu">
-              <img src="/images/map.png" alt="지도" />
+              <img onClick={handleMapClick} src="/images/map.png" alt="지도" />
             </div>
 
             <div className="menu">
