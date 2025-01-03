@@ -33,7 +33,7 @@ public class PostController {
 	private final FileService fileService;
 	private final FileListMapper fileListMapper;
 	
-	@PostMapping("/upload")
+	@PostMapping("/fileUpload")
 	public ResponseEntity<HashMap<String, String>> mtdFilePost(
 			@RequestParam("file") MultipartFile file,
 			@RequestParam("latitude") String latitude,

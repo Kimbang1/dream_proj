@@ -66,6 +66,11 @@ dependencies {
     
     // 파일 업로드
     implementation 'commons-io:commons-io:2.7'
+    
+    // Image Processing(이미지 파일 변환)
+    implementation "com.sksamuel.scrimage:scrimage-core:4.0.32"
+    implementation "com.sksamuel.scrimage:scrimage-webp:4.0.32"
+    implementation 'com.sksamuel.scrimage:scrimage-formats-extra:4.0.32'
 }
 
 tasks.named('test') {

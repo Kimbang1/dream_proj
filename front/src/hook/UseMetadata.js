@@ -39,7 +39,9 @@ const UseMetadata = () => {
           }
         }
 
-        const formattedTime = formattedDateTime ? formattedDateTime.toISOString() : new Date().toISOString(); // ISO 형식으로 변환
+        const formattedTime = formattedDateTime
+          ? formattedDateTime.toISOString()
+          : new Date().toISOString(); // ISO 형식으로 변환
 
         resolve({
           dateTimeOriginal: formattedTime,
@@ -61,7 +63,7 @@ const UseMetadata = () => {
       formData.append("time", time);
       formData.append("content", content);
 
-      const response = await AxiosApi.post("/post/upload", formData, {
+      const response = await AxiosApi.post("/post/fileUpload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       return response.data;
