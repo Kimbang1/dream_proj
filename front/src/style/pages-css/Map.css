@@ -1,0 +1,14 @@
+div.Mapview{
+
+    width: 90%;
+    height: 70vh;
+
+}
+div#map{
+    border: 2px solid #f80;
+    width: 90%;
+    height: 70vh;
+    margin: 20px 20px;
+    border-radius: 10px;
+    overflow-y: scroll;
+}

@@ -6,6 +6,7 @@ import ContentWrite from "../../Pages/views/ContentWrite";
 import Gallery from "../../Pages/views/Gallery";
 import Post from "../../Pages/views/Post";
 import SearchRes from "../../Pages/views/SearchRes";
+import Map from "../../componunts/NaverMap/Map";
 
 const pageRoutes = [
   {
@@ -27,6 +28,10 @@ const pageRoutes = [
   {
     path: "/SearchRes",
     element: <SearchRes />,
+  },
+  {
+    path: "/Map",
+    element: <Map />,
   },
 ];
 
