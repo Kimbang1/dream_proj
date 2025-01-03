@@ -60,7 +60,7 @@ create table file_list (
 file_id			char(36)		not null		,
 ori_filename	varchar(100)	not null		,
 up_filename		varchar(100)	not null		,
-file_url		varchar(300)	not null		,
+file_path		varchar(300)	not null		,
 insert_at		timestamp		default now()	,
 is_using		tinyint							,
 extension		varchar(20)		not null		,

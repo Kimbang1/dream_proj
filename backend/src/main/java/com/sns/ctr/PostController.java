@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,9 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sns.dao.FileListMapper;
+import com.sns.dao.UserDao;
 import com.sns.dto.FileListDto;
+import com.sns.dto.UserDto;
+import com.sns.jwt.JwtProvider;
 import com.sns.svc.FileService;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,14 +38,16 @@ public class PostController {
 	
 	private final FileService fileService;
 	private final FileListMapper fileListMapper;
+	private final JwtProvider jwtProvider;
+	private final UserDao userDao;
 	
 	@PostMapping("/fileUpload")
 	public ResponseEntity<HashMap<String, String>> mtdFilePost(
 			@RequestParam("file") MultipartFile file,
 			@RequestParam("latitude") String latitude,
 			@RequestParam("longitude") String longitude,
-			@RequestParam("content") String content,
-			@RequestParam("time") String time
+			@RequestParam("captured_at") String captured_at,
+			HttpServletRequest request
 			) {
 		// 파일 이름과 MIME 타입 확인
         String originalFileName = file.getOriginalFilename();
@@ -47,25 +55,85 @@ public class PostController {
         System.out.println("original file name: " + originalFileName);
         System.out.println("mimeType: " + mimeType);
 
-        System.out.println("time: " + time);
+        System.out.println("captured_at: " + captured_at);
         
-        Timestamp timestamp = Timestamp.from(Instant.parse(time));
+        Timestamp timestamp = Timestamp.from(Instant.parse(captured_at));
         System.out.println("timestamp: " + timestamp);
+        
+        HashMap<String, String> responseBody = new HashMap<>();
+        
+        // AccessToken 추출
+        String accessToken = null;
+ 		Cookie[] cookies = request.getCookies();
+ 		if (cookies != null) {
+ 			for (Cookie cookie : cookies) {
+ 				if ("accessToken".equals(cookie.getName())) {
+ 					accessToken = cookie.getValue();
+ 					break;
+ 				}
+ 			}
+ 		}
+ 		
+ 		if (accessToken == null) {
+ 		    log.error("Access token이 존재하지 않습니다.");
+ 		    responseBody.put("message", "로그인이 필요합니다.");
+ 		    return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+ 		}
+ 		
+ 		// AccessToken에서 사용자 정보 추출
+ 		String email = jwtProvider.getEmailFromToken(accessToken);
+ 		String provider = jwtProvider.getProviderFromToken(accessToken);
+ 		UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
 
         // 파일이 정상적으로 업로드되었는지 확인
         if (file.isEmpty()) {
-            HashMap<String, String> response = new HashMap<>();
-            response.put("message", "파일이 비어 있습니다.");
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); // 400 Bad Request 반환
+            responseBody.put("message", "파일이 비어 있습니다.");
+            return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST); // 400 Bad Request 반환
+        }
+        
+        Double doubleLong = 0.0;
+        Double doubleLati = 0.0;
+        if (longitude != null && !longitude.equals("null")) {
+        	doubleLong = Double.valueOf(longitude);
+        } else {
+            // 적절한 기본값을 할당하거나, 예외를 처리하세요
+        	doubleLong = 0.0; // 기본값 0.0으로 처리
+        }
+        if (latitude != null && !latitude.equals("null")) {
+        	doubleLati = Double.valueOf(latitude);
+        } else {
+        	// 적절한 기본값을 할당하거나, 예외를 처리하세요
+        	doubleLati = 0.0; // 기본값 0.0으로 처리
         }
 
         try {
         	// 1. 파일 로컬에 저장
+        	
             String filePath = fileService.saveFile(file);
             
             // 2. DB에 파일 정보 저장
             FileListDto fileListDto = new FileListDto();
-//            fileListMapper.저장메서드()
+            String file_id = UUID.randomUUID().toString();
+            fileListDto.setFile_id(file_id);
+            fileListDto.setOri_filename(originalFileName);
+            fileListDto.setUp_filename(filePath.substring(filePath.lastIndexOf("\\") + 1));
+            fileListDto.setFile_path(filePath);
+            fileListDto.setExtension(originalFileName.substring(originalFileName.lastIndexOf(".")));
+            fileListDto.setLatitude(doubleLati);
+            fileListDto.setLongitude(doubleLong);
+            fileListDto.setCaptured_at(timestamp);
+            
+            log.info("file_id: " + fileListDto.getFile_id());
+            log.info("ori_filename" + fileListDto.getOri_filename());
+            log.info("up_filename" + fileListDto.getUp_filename());
+            log.info("file_path" + fileListDto.getFile_path());
+            log.info("extension: " + fileListDto.getExtension());
+            log.info("latitude: " + fileListDto.getLatitude());
+            log.info("logitude: " + fileListDto.getLongitude());
+            log.info("captured_at: " + fileListDto.getCaptured_at());
+            
+            
+            fileListMapper.saveFileData(fileListDto);
             
             // 파일 업로드 성공 메시지 반환
             HashMap<String, String> response = new HashMap<>();
