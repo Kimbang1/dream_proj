@@ -1,13 +1,9 @@
 div#smallHeda {
   width: 100%; /* 전체 헤더의 너비 */
+  height: 10vh;
   margin: 0 auto;
   display: flex;
   box-sizing: border-box;
-  /* border: 1px solid #000;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px; */ /*나중에 크기 조절할 여유 생기면 ㄱ*/
-  justify-content: space-around; /* 요소 간 일정 간격 유지 */
-  align-items: center; /* 세로 정렬 */
   position: sticky; /* 스크롤 시 고정 */
   top: 0; /* 페이지 상단에 고정 */
   z-index: 1000; /* 다른 요소보다 위에 배치 */
@@ -16,8 +12,7 @@ div#smallHeda {
 
 div.logo {
   /* 로고의 크기 비율 */
-  display: flex;
-  justify-content: center; /* 로고 중앙 정렬 */
+  width: 50%;
 }
 
 div.logo img {
@@ -27,31 +22,6 @@ div.logo img {
   width: auto; /* 비율 유지 */
   height: auto; /* 비율 유지 */
 }
-
-div.managerOption {
-  /* 관리자 옵션 영역의 크기 비율 */
-  margin-left: 40px;
-  margin-right: 10px;
-  display: flex;
-  justify-content: center; /* 중앙 정렬 */
-  align-items: center; /* 세로 정렬 */
-}
-div.managerOption img {
-  cursor: pointer;
-  max-height: 30px; /* 이미지 크기 제한 */
-  height: auto;
-  margin: 0 10px; /* 이미지 간 간격 */
-}
-
-div.right {
-  /* flex: 2; 왼쪽 아이콘 영역의 크기 비율 */
-  display: flex;
-  justify-content: space-between; /* 아이콘 간 간격 유지 */
-  align-items: center; /* 세로 정렬 */
-}
-div.right img {
-  width: 30px; /* 고정 크기 설정 */
-  height: 30px; /* 정사각형 비율 유지 */
-  cursor: pointer;
-  margin: 0 5px; /* 좌우 간격 */
+div.right{
+  padding-left: 10px;
 }

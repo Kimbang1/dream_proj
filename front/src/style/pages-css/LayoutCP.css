@@ -5,6 +5,7 @@ div.viewArea {
   display: flex;
   flex-direction: row;
   overflow-y: scroll;
+  height: 90vh;
 }
 div.Outlet {
   width: 80%;

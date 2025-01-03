@@ -1,29 +1,21 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-function SmallHeader() {
-  
+import Bar from "../BarStyle/Bar";
+
+function SmallHeader({ setIsUserMainPage }) {
   const navigate = useNavigate();
   const handlehomeClick = () => {
+    setIsUserMainPage(false);
     navigate("/Mainview");
   };
   return (
     <div id="smallHeda">
       <div className="logo">
-        <img
-          onClick={handlehomeClick}
-          src="/images/logo4.png"
-          alt="로고사진  "
-        />
-      </div>
-
-      <div className="managerOption">
-        <img src="/images/manager.png" alt="관리자 페이지 가기" />
+        <img onClick={handlehomeClick} src="/images/logo4.png" alt="로고사진" />
       </div>
 
       <div className="right">
-        <img src="/images/bell.png" alt="" />
-        <img src="/images/whale.png" alt="" />
-        <img src="/images/chating.png" alt="" />
+        <Bar />
       </div>
     </div>
   );

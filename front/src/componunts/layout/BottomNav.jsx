@@ -13,20 +13,24 @@ function Bottom({ setIsUserMainPage }) {
   };
 
   const changeGallery = () => {
+    setIsUserMainPage(true);
     navigate("/Gallery"); // 네비게이션 추가
   };
 
   const changePost = () => {
+    setIsUserMainPage(true);
     navigate("/Post"); // 네비게이션 추가
   };
 
   const changeContentWrite = () => {
+    setIsUserMainPage(true);
     navigate("/ContentWrite"); // 네비게이션 추가
   };
 
   const changeSearchRes = () => {
+    setIsUserMainPage(true);
     navigate("/SearchRes");
-  }
+  };
 
   return (
     <div>

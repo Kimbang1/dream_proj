@@ -1,8 +1,9 @@
 /* 게시글 틀 작성 라인 작업 시작 */
 div.box {
   border: 1px solid #000;
+  margin: 10px;
   padding: 30px;
-  width: 90%;
+  width: 80%;
 }
 /* 게시글 틀 작성 라인 작업 끝*/
 
@@ -122,6 +123,7 @@ div.completeiconArea button:hover {
 @media screen and (max-width: 360px) {
   div.box {
     padding: 10px;
+    height: 73vh;
     width: 100%;
   }
   div.uploadArea {
@@ -139,11 +141,9 @@ div.completeiconArea button:hover {
     flex-direction: column;
     padding: 5px;
   }
-  div.clickArea{
+  div.clickArea {
     display: none;
-
   }
-
 
   /* 입력란 스타일 */
   textarea#inputContent {
@@ -160,7 +160,7 @@ div.completeiconArea button:hover {
   }
 
   /*카메라 아이콘,작성 완료 버튼 스타일 */
-   div.completeiconArea {
+  div.completeiconArea {
     margin-left: 10px;
     width: 20%;
     display: flex;
@@ -170,10 +170,10 @@ div.completeiconArea button:hover {
     gap: 10px; /* 아이콘과 버튼 사이 간격 */
     position: absolute;
     top: 10px;
-   right: 2px;
+    right: 2px;
   }
 
-  img.cameraIcon{
+  img.cameraIcon {
     cursor: pointer;
     position: relative;
     left: 10px;
@@ -181,7 +181,7 @@ div.completeiconArea button:hover {
     background-color: #aaa;
   }
 
-   div.completeiconArea button {
+  div.completeiconArea button {
     cursor: pointer;
     padding: 5px 10px;
     font-size: 8px;
@@ -193,9 +193,7 @@ div.completeiconArea button:hover {
     transition: background-color 0.3s ease;
   }
 
-
   div.completeiconArea button:hover {
     background-color: #0056b3;
   }
- 
 }

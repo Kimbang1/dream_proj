@@ -22,6 +22,9 @@
 @import url(layout-css/smallheader.css);
 @import url(layout-css/RightAside.css);
 
+/* 메뉴 바 토글 css */
+@import url(layout-css/Bar.css);
+
 /*메인뷰 css*/
 @import url(Mainview-css/Mainviewstyle.css);
 
