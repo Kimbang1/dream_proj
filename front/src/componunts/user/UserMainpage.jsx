@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import AxiosApi from "../../servies/AxiosApi"
+import AxiosApi from "../../servies/AxiosApi";
 import RightAside from "../layout/RightAside";
 import ViewChoice from "../layout/ViewChoice";
-
 
 function UserMainpage() {
   const [user, setUser] = useState([]); //불러올 데이터
 
-  const rightaside = {maxwidth : 320};
+  const rightaside = { maxwidth: 320 };
   const navigate = useNavigate();
-  const UserEditHandle = () =>{
+  const UserEditHandle = () => {
     // setIsUserMainpage(true);
     navigate("/Useredit");
-  }
+  };
   //데이터 로드 함수
   useEffect(() => {
     const fetchData = async () => {
@@ -70,12 +69,9 @@ function UserMainpage() {
         </div>
       </div>
 
-      <div id="rightAside">
-       {rightaside && <RightAside />}
-      </div>
+      <div id="rightAside">{rightaside && <RightAside />}</div>
     </div>
   );
 }
-
 
 export default UserMainpage;
