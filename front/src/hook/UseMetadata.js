@@ -15,6 +15,16 @@ const UseMetadata = () => {
         const gpsLatitudeRef = EXIF.getTag(this, "GPSLatitudeRef");
         const gpsLongitudeRef = EXIF.getTag(this, "GPSLongitudeRef");
 
+        const allTags = EXIF.getAllTags(this);
+        console.log("All EXIF tags:", allTags);
+
+        console.log("GPS data:", {
+          gpsLatitude,
+          gpsLongitude,
+          gpsLatitudeRef,
+          gpsLongitudeRef,
+        });
+
         let latitude = null;
         let longitude = null;
 

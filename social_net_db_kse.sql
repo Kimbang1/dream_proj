@@ -31,6 +31,8 @@ is_delete	tinyint			default 0		,
 pwd			varchar(100)					,
 social_key	varchar(36)						,
 suspended_cnt	int			default 0 		,
+introduce	varchar(100)					,
+profile_path varchar(300)					,
 constraint unique(tag_id)					,
 constraint unique(email, provider)			, # -> 중복 회원가입 방지를 위함
 constraint primary key(uuid)
@@ -71,7 +73,7 @@ constraint primary key(file_id)
 );
 drop table file_list;
 
-select * from file_list order by insert_at;
+select * from file_list order by insert_at desc;
 
 # post 게시글 테이블
 create table post (

@@ -16,4 +16,6 @@ public class PostDto {
 	private Timestamp deleteAt;
 	private boolean isDelete;
 	private int viewCnt;
+	private String introduce;
+	private String profile_path;
 }
