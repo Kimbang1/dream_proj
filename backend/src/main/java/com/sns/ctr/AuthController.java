@@ -192,6 +192,7 @@ public class AuthController {
 			responseBody.put("message", "Access token is still valid. No refresh needed.");
 			return new ResponseEntity<>(responseBody, HttpStatus.OK);
 		case EXPIRED:	// AccessToken이 만료된 경우
+			log.info("Access Token is Expired");
 			Claims claims = jwtProvider.parseClaims(sAccessToken);
 			if(claims.get("userId") == null) {	// userId가 없는 경우
 				log.info("Invalid JWT Token: userId is missing.");
@@ -222,11 +223,11 @@ public class AuthController {
 					
 					log.info("Expired Refresh Token Replaced with New Tokens");
 					responseBody.put("message", "Expired Refresh Token Recreated");
-					return new ResponseEntity<>(requestBody, HttpStatus.OK);
+					return new ResponseEntity<>(responseBody, HttpStatus.OK);
 				} else {
 					log.error("Failed to delete: RefreshToken '{}' doesn't exist.", inputRefreshToken);
 					responseBody.put("message", "RefreshToken doesn't exist.");
-					return new ResponseEntity<>(requestBody, HttpStatus.UNAUTHORIZED);
+					return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
 				}
 			}
 			

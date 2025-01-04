@@ -61,7 +61,6 @@ public class SecurityConfig {
 				.requestMatchers(this.getPermitAllResources()).permitAll()
 				.requestMatchers(new AntPathRequestMatcher("/admin/**")).hasAuthority("ADMIN")
 				.requestMatchers(new AntPathRequestMatcher("/api/v1/**")).hasAnyAuthority("USER", "ADMIN")
-				.requestMatchers(new AntPathRequestMatcher("/auth/refresh")).permitAll()
 				.anyRequest().authenticated())		// 위에 작성한 것 외의 요청은 인증 필요
 		.exceptionHandling(exception -> exception
 				.accessDeniedHandler(new JwtAccessDeniedHandler())	// 권한 오류 처리
