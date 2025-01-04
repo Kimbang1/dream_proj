@@ -22,6 +22,16 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 	public void commence(HttpServletRequest request,
 			HttpServletResponse response,
 			AuthenticationException authException) throws IOException, ServletException {
+		log.info("message: {}", authException.getMessage());
+		if (authException.getMessage().contains("Expired JWT token")) {
+			log.error("URI : {} , MESSAGE : {} , Error : {}",
+					request.getRequestURI(),
+					authException.getMessage(),
+					600);
+			response.setStatus(600);
+			response.getWriter().write("Access token expired. Please refresh your token.");
+			return;
+		}
 		log.error("URI : {} , MESSAGE : {} , Error : {}",
 				request.getRequestURI(),
 				authException.getMessage(),

@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sns.dao.RefreshTokenMapper;
 import com.sns.dao.UserDao;
+import com.sns.dto.RefreshTokenListDto;
 import com.sns.dto.UserDto;
 import com.sns.jwt.CustomAuthenticationToken;
 import com.sns.jwt.JwtCode;
@@ -41,6 +43,7 @@ public class AuthController {
 	private final JwtProvider jwtProvider;
 	private final PasswordEncoder passwordEncoder;
 	private final UserDao userDao;
+	private final RefreshTokenMapper refreshTokenMapper;
 	
 	@PostMapping("/join")
 	@Transactional
@@ -83,9 +86,11 @@ public class AuthController {
 		String password = requestBody.get("pwd");
 		String provider = requestBody.get("provider");
 		
+		log.info("Email: {}, Password: {}, Provider: {}", email, password, provider);
+		
 		// 인증 토큰 생성
 		CustomAuthenticationToken authenticationToken =
-				new CustomAuthenticationToken(email, password, provider);
+				new CustomAuthenticationToken(email, password, provider, request);
 		try {
 			// 인증 처리
 			Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -183,73 +188,49 @@ public class AuthController {
 			return createErrorResponse("Failed to log out: Refresh token not found.", HttpStatus.UNAUTHORIZED); 	// 401
 		}
 		
-		String sAccessToken = jwtProvider.resolveToken(httpServletRequest);
-		JwtCode jwtCode = jwtProvider.validateToken(sAccessToken);
+		boolean isRefreshTokenValid = jwtProvider.validateRefreshToken(inputRefreshToken);
 		
-		switch(jwtCode) {
-		case ACCESS:	// AccessToken이 만료되지 않은 경우
-			log.info("JWT Token Not Expired");
-			responseBody.put("message", "Access token is still valid. No refresh needed.");
-			return new ResponseEntity<>(responseBody, HttpStatus.OK);
-		case EXPIRED:	// AccessToken이 만료된 경우
-			log.info("Access Token is Expired");
-			Claims claims = jwtProvider.parseClaims(sAccessToken);
-			if(claims.get("userId") == null) {	// userId가 없는 경우
-				log.info("Invalid JWT Token: userId is missing.");
-				return createErrorResponse("JWT Token is invalid: userId is missing.", HttpStatus.UNAUTHORIZED); 	// 401
-			}
-			String userId = claims.get("userId").toString();
-			boolean isRefreshTokenValid = jwtProvider.validateRefreshToken(inputRefreshToken);
-			Authentication authentication = jwtProvider.getAuthentication(sAccessToken);
+		// RefreshToken이 유효하지 않은 경우
+		if(!isRefreshTokenValid) {
 			
-			// RefreshToken이 유효하지 않은 경우
-			if(!isRefreshTokenValid) {
-				
-				// 기존 RefreshToken 비활성화
-				if (jwtProvider.deleteRefreshToken(inputRefreshToken)) {
-					// 새로운 RefreshToken, AccessToken 발급
-					String newAccessToken = jwtProvider.generateAccessToken(authentication);
-					String newRefreshToken = jwtProvider.generateRefreshToken(userId, httpServletRequest);
-					
-					// accessToken을 HttpOnly 쿠키로 설정
-					Cookie accessTokenCookie = createCookies("accessToken", newAccessToken, 60*60);
-					addSameSiteCookieToResponse(response, accessTokenCookie, "None");
-					response.addCookie(accessTokenCookie);	// 응답에 쿠키 추가
-					
-					// refreshToken을 HttpOnly 쿠키로 설정
-					Cookie refreshTokenCookie = createCookies("refreshToken", newRefreshToken, 60*60);
-					addSameSiteCookieToResponse(response, refreshTokenCookie, "None");
-					response.addCookie(refreshTokenCookie);	// 응답에 쿠키 추가
-					
-					log.info("Expired Refresh Token Replaced with New Tokens");
-					responseBody.put("message", "Expired Refresh Token Recreated");
-					return new ResponseEntity<>(responseBody, HttpStatus.OK);
-				} else {
-					log.error("Failed to delete: RefreshToken '{}' doesn't exist.", inputRefreshToken);
-					responseBody.put("message", "RefreshToken doesn't exist.");
-					return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
-				}
-			}
+			// 기존 RefreshToken 비활성화
+			jwtProvider.deleteRefreshToken(inputRefreshToken);
 			
-			// RefreshToken이 유효한 경우(AccessToken만 재발급)
-			String newAccessToken = jwtProvider.generateAccessToken(authentication);
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-			
-			// accessToken을 HttpOnly 쿠키로 설정
-			Cookie accessTokenCookie = createCookies("accessToken", newAccessToken, 60*60);
-			addSameSiteCookieToResponse(response, accessTokenCookie, "None");
-			response.addCookie(accessTokenCookie);	// 응답에 쿠키 추가
-			
-			responseBody.put("message", "Refresh Token has been successfully recreated.");
-			break;
-		
-		default:
-			// 예상치 못한 상황
-			log.error("Unexpected JWT Token status: {}", jwtCode);
-			return createErrorResponse("Unexpected JWT Token status.", HttpStatus.UNAUTHORIZED); 	// 401
+			// RefreshToken 유효하지 않으면 로그인하도록 유도
+	        responseBody.put("message", "Refresh token is invalid or expired. Please log in again.");
+	        return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);  // 401
 		}
 		
+		RefreshTokenListDto refreshTokenListDto = refreshTokenMapper.findByRefreshToken(inputRefreshToken);
+		UserDto userDto = userDao.mtdFindByUuid(refreshTokenListDto.getUuid());
+		
+		String email = userDto.getEmail();
+		String provider = userDto.getProvider();
+		String key = provider.equals("local") ? userDto.getPwd() : userDto.getSocial_key();
+		
+		CustomAuthenticationToken authenticationToken =
+				new CustomAuthenticationToken(email, key, provider, httpServletRequest);
+		
+		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
+		String newAccessToken = jwtProvider.generateAccessToken(authentication);
+		
+		// AccessToken 만료 여부 체크
+		JwtCode jwtCode = jwtProvider.validateToken(newAccessToken);
+		if (jwtCode != JwtCode.ACCESS) {
+			responseBody.put("message", "Failed to generate a valid access token.");
+	        return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+		}
+		
+		// accessToken을 HttpOnly 쿠키로 설정
+		Cookie accessTokenCookie = createCookies("accessToken", newAccessToken, 60*60);
+		addSameSiteCookieToResponse(response, accessTokenCookie, "None");
+		response.addCookie(accessTokenCookie);	
+		
+		responseBody.put("message", "Refresh Token has been successfully recreated.");	
 		return new ResponseEntity<>(responseBody, HttpStatus.OK);
+
 	}
 	
 	private Cookie createCookies(String name, String value, int maxAge) {

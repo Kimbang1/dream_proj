@@ -32,7 +32,7 @@ instance.interceptors.response.use(
   },
   async (error) => {
 
-    if (error.response && error.response.status === 401) {
+    if (error.response && error.response.status === 600) {
       console.log("이거 타나?");
       try {
         // /auth/refresh 엔드포인트로 요청 보내기
