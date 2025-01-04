@@ -11,6 +11,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -173,7 +174,7 @@ public class JwtProvider {
 		}
 	}
 	
-	// 토큰 검증
+	// Access Token 토큰 검증
 	public JwtCode validateToken(String token) {
 		try {
 			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -201,6 +202,7 @@ public class JwtProvider {
         }
 	}
 	
+	
 	// Refresh Token 검증
 	public boolean validateRefreshToken(String validRefreshToken) {
 		// Refresh Token 조회
@@ -209,14 +211,29 @@ public class JwtProvider {
 		log.info("Token is using: {}", reTokenDto.is_using());
 		log.info("ExpiresIn: {}", reTokenDto.getExpires_in());
 		log.info("Current time: {}", new Timestamp(System.currentTimeMillis()));
-		// isUsing으로 토큰 활성화 여부 체크
-		if(reTokenDto != null && reTokenDto.is_using()) {
-			// 만료 시간이 현재 시간보다 뒤에 있는지 확인
-			if(reTokenDto.getExpires_in().after(new Timestamp(System.currentTimeMillis()))) {
-				return true;
-			}
-		}
-		return false;
+		
+		// 토큰이 존재하지 않으면 유효하지 않음
+	    if (reTokenDto == null) {
+	        log.info("RefreshToken '{}' does not exist.", validRefreshToken);
+	        return false;  
+	    }
+
+	    // Refresh Token 활성화 상태 확인
+	    if (!reTokenDto.is_using()) {
+	        log.info("RefreshToken '{}' is not active.", validRefreshToken);
+	        return false;
+	    }
+	    
+	    // 만료 시간 체크
+	    Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+	    if (reTokenDto.getExpires_in().before(currentTimestamp)) {
+	        log.info("RefreshToken '{}' has expired.", validRefreshToken);
+	        return false;  // 만료된 토큰은 유효하지 않음
+	    }
+	    
+	    // 모든 조건을 만족하면 유효한 Refresh Token
+	    log.info("RefreshToken '{}' is valid.", validRefreshToken);
+	    return true;
 	}
 	
 	// 특정 Refresh Token 삭제
@@ -270,6 +287,11 @@ public class JwtProvider {
 	
 	// email과 provider를 추출하는 메서드 추가
 	public String getEmailFromToken(String token) {
+		// 토큰 검증
+		if (validateToken(token) != JwtCode.ACCESS) {
+			throw new BadCredentialsException("Invalid JWT Token");
+		}
+		// 검증이 완료되면 클레임에서 email 추출
 		Claims claims = this.parseClaims(token);
 		return claims.get("email", String.class);
 	}

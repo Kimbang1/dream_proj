@@ -110,8 +110,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			break;
 		case EXPIRED:
 			log.info("Access token expired");
-			response.sendRedirect("/auth/refresh");
-			break;
+		    response.setStatus(600); // 401 상태 코드 반환
+		    response.getWriter().write("Access token expired");
+		    response.getWriter().flush();
+		    return;
     	case DENIED:
     		log.info("Invalid JWT Token");
     		response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid Access Token");
