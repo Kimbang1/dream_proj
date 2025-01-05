@@ -8,6 +8,7 @@ const Map = () => {
     const script = document.createElement("script");
     script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.REACT_APP_NAVER_MAP_CLIENT_ID}`;
     script.async = true;
+    
     script.onload = () => {
       // 스크립트 로드 후 지도 초기화
       const mapDiv = document.getElementById("map");
@@ -15,6 +16,10 @@ const Map = () => {
         center: new window.naver.maps.LatLng(37.5665, 126.978), // 서울 기본 위치
         zoom: 10,
       });
+      // console.log(
+      //   "NAVER_MAP_CLIENT_ID:",
+      //   process.env.REACT_APP_NAVER_MAP_CLIENT_ID
+      // );
 
       // 지도 클릭 시 중심 좌표 업데이트
       window.naver.maps.Event.addDOMListener(mapDiv, "click", () => {

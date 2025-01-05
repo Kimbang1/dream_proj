@@ -4,7 +4,7 @@ import { useMediaQuery } from "react-responsive";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 
-function Leftaside({ setIsUserMainPage }) {
+function Leftaside({ setIsMainPage }) {
   const hiddenAside = useMediaQuery({ maxWidth: 750 });
   const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
 
@@ -32,17 +32,14 @@ function Leftaside({ setIsUserMainPage }) {
   const navigate = useNavigate();
 
   const handlehomeClick = () => {
-    setIsUserMainPage(false); // 프로필 페이지가 아닌 경우
     navigate("/Mainview");
   };
 
   const handleUseMainClick = () => {
-    setIsUserMainPage(true); // 프로필 페이지로 전환
     navigate("/user/UserMainpage");
   };
 
   const handleMapClick = () => {
-    setIsUserMainPage(true);
     navigate("/Map");
   };
   return (

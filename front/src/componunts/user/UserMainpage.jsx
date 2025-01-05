@@ -6,12 +6,12 @@ import ViewChoice from "../layout/ViewChoice";
 
 function UserMainpage() {
   const [user, setUser] = useState([]); //불러올 데이터
-  const [isUserMainPage,setIsUserMainPage]= useState(true);
+  // const [isUserMainPage,setIsUserMainPage]= useState(true);
 
   const rightaside = { maxwidth: 300 };
   const navigate = useNavigate();
   const UserEditHandle = () => {
-    setIsUserMainPage(true);
+    // setIsUserMainPage(false);
     navigate("/Useredit");
   };
   //데이터 로드 함수

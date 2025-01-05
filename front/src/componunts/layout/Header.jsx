@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AlarmComponent from "../modal/AlramModal"; // 알람 컴포넌트 임포트
 
-function Header({ setIsUserMainPage }) {
+function Header({ setIsMainPage }) {
   const [searchMonitor, setSearchMonitor] = useState("");
   const [recentSearch, setRecentSearch] = useState([]);
   const [isAlramOpen, setIsAlramOpen] = useState(false);
@@ -44,7 +44,6 @@ function Header({ setIsUserMainPage }) {
 
   // 글쓰기 페이지 이동
   const handleWritePage = () => {
-    setIsUserMainPage(true);
     navigate("/ContentWrite");
   };
 

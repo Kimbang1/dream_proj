@@ -11,7 +11,7 @@ import AlramPage from "../../Pages/views/AlramPage";
 
 const pageRoutes = [
   {
-    path: "/*",
+    path: "/Mainview",
     element: <Mainview />,
   },
   {
