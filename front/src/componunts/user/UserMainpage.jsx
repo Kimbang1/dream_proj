@@ -4,13 +4,14 @@ import AxiosApi from "../../servies/AxiosApi";
 import RightAside from "../layout/RightAside";
 import ViewChoice from "../layout/ViewChoice";
 
-function UserMainpage({ setIsUserMainpage }) {
+function UserMainpage() {
   const [user, setUser] = useState([]); //불러올 데이터
+  const [isUserMainPage,setIsUserMainPage]= useState(true);
 
   const rightaside = { maxwidth: 300 };
   const navigate = useNavigate();
   const UserEditHandle = () => {
-    setIsUserMainpage(true);
+    setIsUserMainPage(true);
     navigate("/Useredit");
   };
   //데이터 로드 함수

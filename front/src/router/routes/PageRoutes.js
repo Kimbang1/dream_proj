@@ -7,6 +7,7 @@ import Gallery from "../../Pages/views/Gallery";
 import Post from "../../Pages/views/Post";
 import SearchRes from "../../Pages/views/SearchRes";
 import Map from "../../componunts/NaverMap/Map";
+import AlramPage from "../../Pages/views/AlramPage";
 
 const pageRoutes = [
   {
@@ -32,6 +33,10 @@ const pageRoutes = [
   {
     path: "/Map",
     element: <Map />,
+  },
+  {
+    path: "/Alram",
+    element: <AlramPage />,
   },
 ];
 

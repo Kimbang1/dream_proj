@@ -44,6 +44,8 @@
 /*검색모달*/
 /*알람모달*/
 @import url(modal-css/alramModal.css);
+/* 알람 페이지 */
+@import url(pages-css/Alram.css);
 /*검색페이지 css*/
 
 /* 게시글 작성 페이지 css */

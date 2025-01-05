@@ -1,0 +1,15 @@
+div.alramFrame{
+    margin: 10px auto;
+    width: 80%;
+    border: 1px solid #000;
+    border-radius: 10px;
+    height: 80vh;
+}
+
+div.alarmListArea{
+    border:1px solid #f80;
+    height: 30px;
+    width: 80%;
+    border-radius: 10px;
+
+}
