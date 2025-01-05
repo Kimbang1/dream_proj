@@ -1,7 +1,9 @@
 package com.sns.ctr;
 
+import java.io.IOException;
 import java.net.http.HttpHeaders;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sns.dao.RefreshTokenMapper;
@@ -26,6 +29,7 @@ import com.sns.jwt.CustomAuthenticationToken;
 import com.sns.jwt.JwtCode;
 import com.sns.jwt.JwtProvider;
 import com.sns.jwt.PrincipalDetails;
+import com.sns.social.KakaoApi;
 
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
@@ -44,6 +48,7 @@ public class AuthController {
 	private final PasswordEncoder passwordEncoder;
 	private final UserDao userDao;
 	private final RefreshTokenMapper refreshTokenMapper;
+	private final KakaoApi kakaoApi;
 	
 	@PostMapping("/join")
 	@Transactional
@@ -77,6 +82,40 @@ public class AuthController {
 					.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body("회원가입 처리 중 오류 발생");
 		}
+	}
+	
+	@RequestMapping("/joinKakao")
+	public void mtdKakao(HttpServletResponse response) {
+	    String rest_api_key = "8f8065c3d2d2cc8e683269c8d075800c";
+	    String redirect_uri = "http://localhost:8081/auth/kakao_res";
+	    String uri = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + rest_api_key + "&redirect_uri=" + redirect_uri;
+	    try {
+	        response.sendRedirect(uri);
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	@RequestMapping("/kakao_res")
+	public String mtdSocialRes(@RequestParam("code") String code, HttpServletResponse response){
+		// ^ 인가 코드 받기
+		
+		// 2. 토큰 받기
+		String accessToken = kakaoApi.getAccessToken(code);
+		
+		// 3. 사용자 정보 받기
+		Map<String, Object> userInfo = kakaoApi.getUserInfo(accessToken);
+		
+		String id = (String)userInfo.get("id");
+		String email = (String)userInfo.get("email");
+		String nickname = (String)userInfo.get("nickname");
+		
+		System.out.println("id : " + id);
+		System.out.println("email : " + email);
+		System.out.println("nickname : " + nickname);
+		System.out.println("accessToken : " + accessToken);
+		
+		return "성공";
 	}
 	
 	@PostMapping("/login")
