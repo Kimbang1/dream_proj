@@ -106,12 +106,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not found");
 				return;
 			}
-			
 			break;
 		case EXPIRED:
 			log.info("Access token expired");
-			response.sendRedirect("/auth/refresh");
-			break;
+			response.setStatus(600);
+			response.getWriter().write("Access token expired");
+		    response.getWriter().flush();
+		    return;
     	case DENIED:
     		log.info("Invalid JWT Token");
     		response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid Access Token");

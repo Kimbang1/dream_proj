@@ -14,7 +14,7 @@ function Leftaside({ setIsUserMainPage }) {
       removeCookie("accessToken", { path: "/", domain: "your-domain.com" });
       removeCookie("refreshToken", { path: "/", domain: "your-domain.com" });
       try {
-        await AxiosApi.post("auth/logout", {}, { withCredentials: true }); //로그아웃
+        await AxiosApi.post("/auth/logout", {}, { withCredentials: true }); //로그아웃
         // 쿠키 삭제 후 확인
         if (!cookies.accessToken) {
           console.log("쿠키 삭제 성공");
