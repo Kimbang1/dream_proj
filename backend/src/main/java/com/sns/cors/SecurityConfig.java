@@ -15,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.sns.dao.UserDao;
 import com.sns.jwt.CustomAuthenticationProvider;
 import com.sns.jwt.CustomUserDetailsService;
 import com.sns.jwt.JwtAccessDeniedHandler;
@@ -34,6 +35,7 @@ public class SecurityConfig {
 	
 	private final JwtProvider jwtProvider;
 	private final CustomUserDetailsService customUserDetailsService;
+	private final UserDao userDao;
 	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -47,7 +49,7 @@ public class SecurityConfig {
 	
 	@Bean
 	public AuthenticationProvider proAuthenticationProvider() {
-		return new CustomAuthenticationProvider(customUserDetailsService, passwordEncoder());
+		return new CustomAuthenticationProvider(userDao, passwordEncoder());
 	}
 	
 	@Bean
@@ -61,7 +63,6 @@ public class SecurityConfig {
 				.requestMatchers(this.getPermitAllResources()).permitAll()
 				.requestMatchers(new AntPathRequestMatcher("/admin/**")).hasAuthority("ADMIN")
 				.requestMatchers(new AntPathRequestMatcher("/api/v1/**")).hasAnyAuthority("USER", "ADMIN")
-				.requestMatchers(new AntPathRequestMatcher("/auth/refresh")).permitAll()
 				.anyRequest().authenticated())		// 위에 작성한 것 외의 요청은 인증 필요
 		.exceptionHandling(exception -> exception
 				.accessDeniedHandler(new JwtAccessDeniedHandler())	// 권한 오류 처리

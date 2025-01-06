@@ -1,7 +1,9 @@
 package com.sns.ctr;
 
+import java.io.IOException;
 import java.net.http.HttpHeaders;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -16,14 +18,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sns.dao.RefreshTokenMapper;
 import com.sns.dao.UserDao;
+import com.sns.dto.RefreshTokenListDto;
 import com.sns.dto.UserDto;
 import com.sns.jwt.CustomAuthenticationToken;
 import com.sns.jwt.JwtCode;
 import com.sns.jwt.JwtProvider;
 import com.sns.jwt.PrincipalDetails;
+import com.sns.social.KakaoApi;
 
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
@@ -41,6 +47,8 @@ public class AuthController {
 	private final JwtProvider jwtProvider;
 	private final PasswordEncoder passwordEncoder;
 	private final UserDao userDao;
+	private final RefreshTokenMapper refreshTokenMapper;
+	private final KakaoApi kakaoApi;
 	
 	@PostMapping("/join")
 	@Transactional
@@ -76,6 +84,40 @@ public class AuthController {
 		}
 	}
 	
+	@RequestMapping("/joinKakao")
+	public void mtdKakao(HttpServletResponse response) {
+	    String rest_api_key = "8f8065c3d2d2cc8e683269c8d075800c";
+	    String redirect_uri = "http://localhost:8081/auth/kakao_res";
+	    String uri = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + rest_api_key + "&redirect_uri=" + redirect_uri;
+	    try {
+	        response.sendRedirect(uri);
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	@RequestMapping("/kakao_res")
+	public String mtdSocialRes(@RequestParam("code") String code, HttpServletResponse response){
+		// ^ 인가 코드 받기
+		
+		// 2. 토큰 받기
+		String accessToken = kakaoApi.getAccessToken(code);
+		
+		// 3. 사용자 정보 받기
+		Map<String, Object> userInfo = kakaoApi.getUserInfo(accessToken);
+		
+		String id = (String)userInfo.get("id");
+		String email = (String)userInfo.get("email");
+		String nickname = (String)userInfo.get("nickname");
+		
+		System.out.println("id : " + id);
+		System.out.println("email : " + email);
+		System.out.println("nickname : " + nickname);
+		System.out.println("accessToken : " + accessToken);
+		
+		return "성공";
+	}
+	
 	@PostMapping("/login")
 	public ResponseEntity<HashMap<String, String>> login(@RequestBody HashMap<String, String> requestBody, HttpServletRequest request, HttpServletResponse response) {
 		// requestBody에서 email, password, provider값 가져옴
@@ -85,7 +127,7 @@ public class AuthController {
 		
 		// 인증 토큰 생성
 		CustomAuthenticationToken authenticationToken =
-				new CustomAuthenticationToken(email, password, provider);
+				new CustomAuthenticationToken(email, password, provider, "login");
 		try {
 			// 인증 처리
 			Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -182,72 +224,45 @@ public class AuthController {
 		if(inputRefreshToken == null) {
 			return createErrorResponse("Failed to log out: Refresh token not found.", HttpStatus.UNAUTHORIZED); 	// 401
 		}
+		log.info("refreshToken: {}", inputRefreshToken);
+
+		boolean isRefreshTokenValid = jwtProvider.validateRefreshToken(inputRefreshToken);
+		log.info("isRefreshTokenValid: {}", isRefreshTokenValid);
 		
-		String sAccessToken = jwtProvider.resolveToken(httpServletRequest);
-		JwtCode jwtCode = jwtProvider.validateToken(sAccessToken);
-		
-		switch(jwtCode) {
-		case ACCESS:	// AccessToken이 만료되지 않은 경우
-			log.info("JWT Token Not Expired");
-			responseBody.put("message", "Access token is still valid. No refresh needed.");
-			return new ResponseEntity<>(responseBody, HttpStatus.OK);
-		case EXPIRED:	// AccessToken이 만료된 경우
-			Claims claims = jwtProvider.parseClaims(sAccessToken);
-			if(claims.get("userId") == null) {	// userId가 없는 경우
-				log.info("Invalid JWT Token: userId is missing.");
-				return createErrorResponse("JWT Token is invalid: userId is missing.", HttpStatus.UNAUTHORIZED); 	// 401
-			}
-			String userId = claims.get("userId").toString();
-			boolean isRefreshTokenValid = jwtProvider.validateRefreshToken(inputRefreshToken);
-			Authentication authentication = jwtProvider.getAuthentication(sAccessToken);
+		// RefreshToken이 유효하지 않은 경우
+		if(!isRefreshTokenValid) {
+			log.info("isRefreshTokenValid: {} 일 때 if문 들어옴", isRefreshTokenValid);
 			
-			// RefreshToken이 유효하지 않은 경우
-			if(!isRefreshTokenValid) {
-				
-				// 기존 RefreshToken 비활성화
-				if (jwtProvider.deleteRefreshToken(inputRefreshToken)) {
-					// 새로운 RefreshToken, AccessToken 발급
-					String newAccessToken = jwtProvider.generateAccessToken(authentication);
-					String newRefreshToken = jwtProvider.generateRefreshToken(userId, httpServletRequest);
-					
-					// accessToken을 HttpOnly 쿠키로 설정
-					Cookie accessTokenCookie = createCookies("accessToken", newAccessToken, 60*60);
-					addSameSiteCookieToResponse(response, accessTokenCookie, "None");
-					response.addCookie(accessTokenCookie);	// 응답에 쿠키 추가
-					
-					// refreshToken을 HttpOnly 쿠키로 설정
-					Cookie refreshTokenCookie = createCookies("refreshToken", newRefreshToken, 60*60);
-					addSameSiteCookieToResponse(response, refreshTokenCookie, "None");
-					response.addCookie(refreshTokenCookie);	// 응답에 쿠키 추가
-					
-					log.info("Expired Refresh Token Replaced with New Tokens");
-					responseBody.put("message", "Expired Refresh Token Recreated");
-					return new ResponseEntity<>(requestBody, HttpStatus.OK);
-				} else {
-					log.error("Failed to delete: RefreshToken '{}' doesn't exist.", inputRefreshToken);
-					responseBody.put("message", "RefreshToken doesn't exist.");
-					return new ResponseEntity<>(requestBody, HttpStatus.UNAUTHORIZED);
-				}
-			}
+			// 기존 RefreshToken 비활성화
+			jwtProvider.deleteRefreshToken(inputRefreshToken);
 			
-			// RefreshToken이 유효한 경우(AccessToken만 재발급)
-			String newAccessToken = jwtProvider.generateAccessToken(authentication);
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-			
-			// accessToken을 HttpOnly 쿠키로 설정
-			Cookie accessTokenCookie = createCookies("accessToken", newAccessToken, 60*60);
-			addSameSiteCookieToResponse(response, accessTokenCookie, "None");
-			response.addCookie(accessTokenCookie);	// 응답에 쿠키 추가
-			
-			responseBody.put("message", "Refresh Token has been successfully recreated.");
-			break;
-		
-		default:
-			// 예상치 못한 상황
-			log.error("Unexpected JWT Token status: {}", jwtCode);
-			return createErrorResponse("Unexpected JWT Token status.", HttpStatus.UNAUTHORIZED); 	// 401
+			// RefreshToken 유효하지 않으면 로그인 하도록 유도
+			responseBody.put("message", "Refresh token is invalid or expired. Please log in again.");
+
+			return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED); 	// 401
 		}
 		
+		RefreshTokenListDto refreshTokenListDto = refreshTokenMapper.findByRefreshToken(inputRefreshToken);
+		UserDto userDto = userDao.mtdFindByUuid(refreshTokenListDto.getUuid());
+		
+		String email = userDto.getEmail();
+		String provider = userDto.getProvider();
+		
+		log.info("email: {}, provider: {}", email, provider);
+		
+		CustomAuthenticationToken authenticationToken = new CustomAuthenticationToken(email, null, provider, "refresh");
+		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
+		String newAccessToken = jwtProvider.generateAccessToken(authentication);
+		log.info("newAccessToken: {}", newAccessToken);
+		
+		// accessToken을 HttpOnly 쿠키로 설정
+		Cookie accessTokenCookie = createCookies("accessToken", newAccessToken, 60*60);
+		addSameSiteCookieToResponse(response, accessTokenCookie, "None");
+		response.addCookie(accessTokenCookie);	// 응답에 쿠키 추가
+		
+		responseBody.put("message", "Refresh Token has been successfully recreated.");
 		return new ResponseEntity<>(responseBody, HttpStatus.OK);
 	}
 	
