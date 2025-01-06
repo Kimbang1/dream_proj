@@ -3,6 +3,7 @@ import Join from "../../Pages/views/Join";
 import Login from "../../Pages/views/Login";
 import Jopinchoice from "../../Pages/views/Joinchoice";
 import Agree from "../../Pages/views/Agree";
+import Social from "../../Pages/views/Social";
 
 const LandingRoutes = [
   {
@@ -24,6 +25,10 @@ const LandingRoutes = [
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/Social",
+    element: <Social />,
   },
 ];
 

@@ -1,0 +1,48 @@
+div.backGround {
+  background-color: #4c5158;
+  background-image: url(/public/images/Ocean.jpg);
+  background-repeat: no-repeat;
+  background-size: cover; /* 화면을 꽉 채우도록 설정 */
+  background-position: center;
+  height: 100vh; /* 화면 높이를 100%로 설정 */
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0; /* 상단 여백 제거 */
+}
+
+div.socialbox {
+  width: 90%;
+  max-width: 500px;
+  margin: 10px auto;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+div#SocialBtnArea {
+  cursor: pointer;
+  margin-top: 3%;
+  width: 80%;
+  display: flex;
+  justify-content: space-around;
+  justify-items: center;
+}
+
+div#SocialBtnArea button {
+  cursor: pointer;
+  width: 40%; /* 기본 너비 */
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid #f80;
+  background-color: #2d3f50;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}

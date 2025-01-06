@@ -66,7 +66,7 @@ function Join() {
         <input
           className="joinFrame"
           type="text"
-          placeholder="아이디를 입력해주세요"
+          placeholder="태그 아이디를 입력해주세요"
           value={tag_id}
           onChange={(e) => setTagId(e.target.value)}
         />

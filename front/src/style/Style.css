@@ -9,6 +9,9 @@
 @import url(user/LoginStyle.css);
 @import url(user/joinchoice.css);
 
+/* 소셜 로그인 관련 css */
+@import url(user/Social.css);
+
 /*약관동의 css*/
 @import url(pages-css/Agree.css);
 

@@ -31,7 +31,6 @@ instance.interceptors.response.use(
     return response;
   },
   async (error) => {
-
     if (error.response && error.response.status === 600) {
       console.log("이거 타나?");
       try {
@@ -44,11 +43,8 @@ instance.interceptors.response.use(
         // 원래 요청을 새로운 엑세스 토큰으로 재시도 (자동으로 쿠키가 포함됨)
         const originalRequest = error.config;
         return instance(originalRequest);
-      } catch (refreshError) {
-
-      }
+      } catch (refreshError) {}
     }
-
 
     // 에러 상태 처리
     if (error.response) {
