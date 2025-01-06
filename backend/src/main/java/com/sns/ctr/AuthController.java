@@ -122,12 +122,12 @@ public class AuthController {
 	public ResponseEntity<HashMap<String, String>> login(@RequestBody HashMap<String, String> requestBody, HttpServletRequest request, HttpServletResponse response) {
 		// requestBody에서 email, password, provider값 가져옴
 		String email = requestBody.get("email");
-		String password = requestBody.get("pwd");
 		String provider = requestBody.get("provider");
+		String key = provider.equals("local") ? requestBody.get("pwd") : requestBody.get("social_key");
 		
 		// 인증 토큰 생성
 		CustomAuthenticationToken authenticationToken =
-				new CustomAuthenticationToken(email, password, provider, "login");
+				new CustomAuthenticationToken(email, key, provider, "login");
 		try {
 			// 인증 처리
 			Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
