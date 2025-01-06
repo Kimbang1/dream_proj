@@ -43,6 +43,9 @@ dependencies {
 	// google의 json 라이브러리 추가 -> 카카오 로그인에서 사용
 	implementation 'com.google.code.gson:gson:2.10.1'
 	
+	// google 로그인을 위한 의존성
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	
 	// Spring Security
    	implementation 'org.springframework.boot:spring-boot-starter-security'
    	testImplementation 'org.springframework.security:spring-security-test'
