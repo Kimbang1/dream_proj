@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 
+
 const Map = () => {
   const [mapPoint, setMapPoint] = useState({ x: 0, y: 0 });
+
 
   useEffect(() => {
     // 네이버 지도 스크립트가 로드되었는지 확인

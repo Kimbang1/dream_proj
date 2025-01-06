@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import axios from "axios";
+import AxiosApi from "../../servies/AxiosApi";
 
 function Post() {
   const [items, setItems] = useState([]); // 불러온 데이터
@@ -14,7 +14,7 @@ function Post() {
 
     try {
       // 실제 데이터 API 호출 예시
-      const response = await axios.get(`/api/posts?page=${page}`);
+      const response = await AxiosApi.get("/auth/posts");
       const newData = response.data;
 
       if (newData.length === 0) {

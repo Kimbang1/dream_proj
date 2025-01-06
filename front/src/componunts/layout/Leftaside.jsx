@@ -4,7 +4,7 @@ import { useMediaQuery } from "react-responsive";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 
-function Leftaside({ setIsMainPage }) {
+function Leftaside() {
   const hiddenAside = useMediaQuery({ maxWidth: 750 });
   const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
 
@@ -32,14 +32,17 @@ function Leftaside({ setIsMainPage }) {
   const navigate = useNavigate();
 
   const handlehomeClick = () => {
+    console.log("메인");
     navigate("/Mainview");
   };
 
   const handleUseMainClick = () => {
+    console.log("메인페이지");
     navigate("/user/UserMainpage");
   };
 
   const handleMapClick = () => {
+    console.log("지도");
     navigate("/Map");
   };
   return (

@@ -2,10 +2,10 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Bar from "../BarStyle/Bar";
 
-function SmallHeader({ setIsUserMainPage }) {
+function SmallHeader() {
   const navigate = useNavigate();
   const handlehomeClick = () => {
-    setIsUserMainPage(false);
+  
     navigate("/Mainview");
   };
   return (

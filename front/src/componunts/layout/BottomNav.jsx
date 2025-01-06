@@ -2,33 +2,33 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 // import { useRouter } from "next/router";
 
-function Bottom({ setIsUserMainPage }) {
+function Bottom() {
   const navigate = useNavigate();
   // const router = useRouter();
   const changeUserMain = () => {
     console.log("유저메인페이지로 이동");
-    setIsUserMainPage(true); // 프로필 페이지로 전환
+  
     navigate("/user/UserMainpage"); // 네비게이션 추가
     // router.push("/UserMainpage");
   };
 
   const changeGallery = () => {
-    setIsUserMainPage(true);
+   
     navigate("/Gallery"); // 네비게이션 추가
   };
 
   const changePost = () => {
-    setIsUserMainPage(true);
+  
     navigate("/Post"); // 네비게이션 추가
   };
 
   const changeContentWrite = () => {
-    setIsUserMainPage(true);
+   
     navigate("/ContentWrite"); // 네비게이션 추가
   };
 
   const changeSearchRes = () => {
-    setIsUserMainPage(true);
+ 
     navigate("/SearchRes");
   };
 

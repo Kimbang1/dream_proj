@@ -14,7 +14,7 @@ function Gallery() {
 
     try {
       // 백엔드 API에서 JSON 데이터 가져오기
-      const response = await AxiosApi.get("/api/gallery");
+      const response = await AxiosApi.get("/auth/gallery");
       const newItems = response.data; // JSON 데이터 받기
 
       setItems((prevItems) => [...prevItems, ...newItems]); // 기존 아이템에 새로운 아이템 추가
