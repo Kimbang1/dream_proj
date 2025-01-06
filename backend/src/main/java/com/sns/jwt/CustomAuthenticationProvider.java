@@ -1,37 +1,63 @@
 package com.sns.jwt;
 
+import java.util.Collection;
+
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.sns.dao.UserDao;
+import com.sns.dto.UserDto;
+
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
+@Slf4j
 public class CustomAuthenticationProvider implements AuthenticationProvider {
-	private final CustomUserDetailsService customUserDetailsService;
+	private final UserDao userDao;
 	private final PasswordEncoder passwordEncoder;
 	
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-		String email = authentication.getName();
-		String password = authentication.getCredentials().toString();
-		String provider = ((CustomAuthenticationToken) authentication).getProvider();
+		CustomAuthenticationToken token = (CustomAuthenticationToken) authentication;
 		
-		UserDetails userDetails =  customUserDetailsService.loadUserByEmailAndProvider(email, provider);
+		String email = (String) token.getPrincipal();
+		String credentials = (String) token.getCredentials();
+		String provider = token.getProvider();
+		String requestType = token.getRequestType();
+
+		// 사용자 조회
+		UserDto userDto = userDao.mtdFindByEmailAndProvider(email, provider);
 		
-		// 비밀번호 검증(이 과정은 기본적으로 PasswordEncoder를 사용)
-		if (userDetails.getPassword() == null) {
-			throw new BadCredentialsException("password null");
+		
+		if (userDto == null) {
+			log.warn("CustomAuthenticationProvider: User not found with email={} and provider={}", email, provider);
+			throw new BadCredentialsException("CustomAuthenticationProvider: User not found C");
 		}
-		if (!passwordEncoder.matches(password, userDetails.getPassword())) {
-			throw new BadCredentialsException("Invalid credentials CUstomAuthenticationProvider");
+		
+		String key = provider.equals("local") ? userDto.getPwd() : userDto.getSocial_key();
+		if (key == null || key.isEmpty()) {
+		    throw new BadCredentialsException("CustomAuthenticationProvider: Key is missing or empty");
 		}
 		
-		// 인증이 완료된 후, 4개의 매개변수로 새로운 Authentication 객체 반환
-		return new CustomAuthenticationToken(userDetails, null, userDetails.getAuthorities(), provider);
+		// 비밀번호 검증은 login 요청에서만 수행
+		if("login".equals(requestType)) {
+			// 비밀번호가 불일치 하는 경우
+			if (!passwordEncoder.matches(credentials, key)) {
+				log.warn("CustomAuthenticationProvider: Invalid credentials for email={} and provider={}", email, provider);
+				throw new BadCredentialsException("CustomAuthenticationProvider: Invalid credentials");
+			}
+		}
+		
+		// 인증 성공 시 PrincipalDetails 생성
+		PrincipalDetails principalDetails = new PrincipalDetails(userDto);
+		
+		return new CustomAuthenticationToken(principalDetails, null, principalDetails.getAuthorities(), provider, requestType);
 	}
 	
 	@Override

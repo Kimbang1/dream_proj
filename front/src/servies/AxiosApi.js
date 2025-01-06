@@ -3,7 +3,7 @@ import axios from "axios";
 //액시오스 인스턴스 생성
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL, //환경변수 사용
-  timeout: 50000, //요청제한시간
+  timeout: 5000, //요청제한시간
   withCredentials: true, //쿠키를 요청에 포함하도록 설정
   headers: {
     "Content-Type": "application/json",
@@ -31,23 +31,28 @@ instance.interceptors.response.use(
     return response;
   },
   async (error) => {
+
+    if (error.response && error.response.status === 600) {
+      console.log("이거 타나?");
+      try {
+        // /auth/refresh 엔드포인트로 요청 보내기
+        const refreshResponse = await instance.post("/auth/refresh", {});
+
+        // 새 엑세스 토큰은 서버가 쿠키에 담아서 반환하므로,
+        // 응답에서 accessToken을 받지 않고 쿠키로 자동 처리됨
+
+        // 원래 요청을 새로운 엑세스 토큰으로 재시도 (자동으로 쿠키가 포함됨)
+        const originalRequest = error.config;
+        return instance(originalRequest);
+      } catch (refreshError) {
+
+      }
+    }
+
+
     // 에러 상태 처리
     if (error.response) {
       const status = error.response.status;
-
-      let isRefreshing = false; // 토큰 재발급 중인지를 추적하는 변수
-      let failedQueue = []; // 재시도해야 할 요청들을 저장할 큐큐
-
-      const processQueue = (token, error) => {
-        failedQueue.forEach((prom) => {
-          if (token) {
-            prom.resolve(token);
-          } else {
-            prom.reject(error);
-          }
-        });
-        failedQueue = [];
-      };
 
       // 잘못된 요청
       if (status === 400) {
