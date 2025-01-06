@@ -10,6 +10,9 @@ public interface UserDao {
 	// 회원가입 처리
 	public int mtdInsert(UserDto userDto);
 	
+	// 소셜 회원 가입 처리
+	public int mtdSocialJoin(UserDto userDto);
+	
 	// uuid로 회원 찾기
 	public UserDto mtdFindByUuid(@Param("uuid") String uuid);
 	

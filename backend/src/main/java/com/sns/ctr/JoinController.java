@@ -43,39 +43,53 @@ public class JoinController {
 	public ResponseEntity<?> mtdJoinProc(@RequestBody UserDto  userDto) {
 		
 		// 가입되어있는지 체크
-		if(userDao.mtdFindByEmailAndProvider(userDto.getEmail(), userDto.getProvider()) != null) {
-			log.error("이미 존재하는 회원입니다.");
+		UserDto inputUserDto = userDao.mtdFindByEmailAndProvider(userDto.getEmail(), userDto.getProvider());
+		
+		if (inputUserDto == null) {
+			// uuid 생성
+			String create_uuid = UUID.randomUUID().toString();
+			userDto.setUuid(create_uuid);
 			
-			return ResponseEntity
-					.status(HttpStatus.CONFLICT)	// 409 상태코드
-					.body("이미 존재하는 회원입니다.");
+			// 비밀번호 passwordEncoder로 해싱하기
+			userDto.setPwd(passwordEncoder.encode(userDto.getPwd()));
+			
+			// 계정 활성화 설정
+			userDto.setIs_using(true);
+			
+			try {
+				userDao.mtdInsert(userDto);
+				return ResponseEntity
+						.status(HttpStatus.CREATED)
+						.body("회원가입 성공");
+			} catch(Exception e) {
+				// 오류 발생 시 error 페이지로 넘기기
+				log.error("회원가입 처리 중 오류 : {}", e.getMessage());
+				return ResponseEntity
+						.status(HttpStatus.INTERNAL_SERVER_ERROR)
+						.body("회원가입 처리 중 오류 발생");
+			}
+			
 		}
 		
-		// uuid 생성
-		String create_uuid = UUID.randomUUID().toString();
-		userDto.setUuid(create_uuid);
-		
-		// 비밀번호 passwordEncoder로 해싱하기
-		userDto.setPwd(passwordEncoder.encode(userDto.getPwd()));
-		
-		try {
-			userDao.mtdInsert(userDto);
+		if(!inputUserDto.getIs_using()) {
+			inputUserDto.setIs_using(true);
+			userDao.mtdSocialJoin(inputUserDto);
 			return ResponseEntity
 					.status(HttpStatus.CREATED)
 					.body("회원가입 성공");
-		} catch(Exception e) {
-			// 오류 발생 시 error 페이지로 넘기기
-			log.error("회원가입 처리 중 오류 : {}", e.getMessage());
-			return ResponseEntity
-					.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body("회원가입 처리 중 오류 발생");
 		}
+		
+		log.error("이미 존재하는 회원입니다.");
+		
+		return ResponseEntity
+				.status(HttpStatus.CONFLICT)	// 409 상태코드
+				.body("이미 존재하는 회원입니다.");
 	}
 	
 	@RequestMapping("/kakao")
 	public void mtdKakao(HttpServletResponse response) {
 	    String rest_api_key = "8f8065c3d2d2cc8e683269c8d075800c";
-	    String redirect_uri = "http://localhost:8081/auth/kakao_res";
+	    String redirect_uri = "http://localhost:8081/join/kakao_res";
 	    String uri = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + rest_api_key + "&redirect_uri=" + redirect_uri;
 	    try {
 	        response.sendRedirect(uri);
@@ -85,73 +99,57 @@ public class JoinController {
 	}
 	
 	@RequestMapping("/kakao_res")
-	public ResponseEntity<?> mtdKakaoRes(@RequestParam("code") String code, HttpServletResponse response){
-		// ^ 인가 코드 받기
+	public void mtdKakaoRes(@RequestParam("code") String code, HttpServletResponse response){
+		// ^ 1. 인가 코드 받기
 		
-		// 2. 인가 코드로 액세스 토큰 요청
-		String accessToken = kakaoApi.getAccessToken(code);
-		
-		// 3. 사용자 정보 요청
-		Map<String, Object> userInfo = kakaoApi.getUserInfo(accessToken);
-		String id = (String)userInfo.get("id");
-		String email = (String)userInfo.get("email");
-		String nickname = (String)userInfo.get("nickname"); // 나중에 지우기
-		String provider = "kakao";
-		
-		System.out.println("id : " + id);
-		System.out.println("email : " + email);
-		System.out.println("nickname : " + nickname);
-		System.out.println("accessToken : " + accessToken);
-		
-		UserDto userDto = userDao.mtdFindByEmailAndProvider(email, provider);
-		
-		// 가입 여부 확인 및 처리
-		if(userDto == null) {
-			// 새 사용자 등록
-			userDto = new UserDto();
-			String create_uuid = UUID.randomUUID().toString(); 	// uuid 생성
-			userDto.setUuid(create_uuid);
-			userDto.setEmail(email);
-			userDto.setSocial_key(id);
-			userDto.setProvider(provider);
+		try {
+			// 2. 인가 코드로 액세스 토큰 요청
+			String accessToken = kakaoApi.getAccessToken(code);
 			
-			// 사용자 데이터 저장
-			try {
+			// 3. 사용자 정보 요청
+			Map<String, Object> userInfo = kakaoApi.getUserInfo(accessToken);
+			String id = (String)userInfo.get("id");
+			String email = (String)userInfo.get("email");
+			String nickname = (String)userInfo.get("nickname"); // 나중에 지우기
+			String provider = "kakao";
+			
+			System.out.println("id : " + id);
+			System.out.println("email : " + email);
+			System.out.println("nickname : " + nickname);
+			System.out.println("accessToken : " + accessToken);
+			
+			UserDto userDto = userDao.mtdFindByEmailAndProvider(email, provider);
+			
+			// 가입 여부 확인 및 처리
+			if(userDto == null) {
+				// 새 사용자 등록
+				userDto = new UserDto();
+				String create_uuid = UUID.randomUUID().toString(); 	// uuid 생성
+				userDto.setUuid(create_uuid);
+				userDto.setEmail(email);
+				userDto.setSocial_key(passwordEncoder.encode(id));
+				userDto.setProvider(provider);
+				userDto.setIs_using(false);
+				
+				// 사용자 데이터 저장
 				userDao.mtdInsert(userDto);
 				
-				// 신규 사용자 JSON 응답
-				return ResponseEntity
-						.status(HttpStatus.CREATED)
-						.body(Map.of(
-								"status", "success",
-								"message", "회원가입 성공",
-								"data", Map.of(
-										"provider", provider,
-										"uuid", userDto.getUuid()
-										)
-								));
-			} catch (Exception e) {
-				log.error("회원가입 처리 중 오류: {}", e.getMessage());
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-						.body(Map.of(
-								"status", "error",
-								"message", "회원가입 처리 중 오류 발생"
-								));
+				// 회원가입 완료 후 프론트엔드로 리다이렉트
+				response.sendRedirect("http://localhost:3000/Social?provider=" + provider + "&uuid=" + create_uuid + "&res=join");
+			} else {
+				// 기존 회원 
+				
+				response.sendRedirect("http://localhost:3000/Social?provider=" + provider + "&email=" + email + "&res=login&key=" + id);
+			}
+			
+		} catch (IOException e) {
+			log.error("kakao_res, IOE: {}", e.getMessage());
+			try {
+				response.sendRedirect("http://localhost:3000/login?status=error&message=" + e.getMessage());
+			} catch (IOException ie) {
+				ie.printStackTrace();
 			}
 		}
-		
-		// 기존 회원 JSON 응답(로그인 데이터 반환)
-		return ResponseEntity
-				.status(HttpStatus.OK)
-				.body(Map.of(
-						"status", "success",
-						"message", "이미 존재하는 회원입니다.",
-						"data", Map.of(
-								"provider", provider,
-								"email", email,
-								"key", id
-								)
-						));
 	}
 	
 	@RequestMapping("/google")
