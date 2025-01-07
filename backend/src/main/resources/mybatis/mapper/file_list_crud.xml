@@ -10,4 +10,8 @@
 		values (#{file_id}, #{ori_filename}, #{up_filename}, #{file_path}, #{extension}, #{captured_at}, #{latitude}, #{longitude})
 	</insert>
 	
+	<select id="selectFileData" resultType="com.sns.dto.FileListDto">
+		select * from file_list where file_id = #{file_id}
+	</select>
+	
 </mapper>
