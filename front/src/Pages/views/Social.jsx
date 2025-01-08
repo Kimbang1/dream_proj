@@ -1,5 +1,5 @@
 import AxiosApi from "../../servies/AxiosApi";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Social() {
@@ -10,19 +10,67 @@ function Social() {
 
   const navigate = useNavigate();
 
-  const handleReset = ()=>{
+  const [provider, setProvider] = useState("");
+  const [uuid, setUuid] = useState("");
+  const [res, setRes] = useState("");
+  const [email, setEmail] = useState("");
+  const [key, setKey] = useState("");
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const resFromUrl = urlParams.get("res") || "";
+    setRes(resFromUrl);
+    setProvider(urlParams.get("provider") || "");
+    setUuid(urlParams.get("uuid") || "");
+    setEmail(urlParams.get("email") || "");
+    setKey(urlParams.get("key") || "");
+  }, []);
+
+  useEffect(() => {
+    // email, key, provider 값이 모두 있을 때 로그인 처리
+    if (res === "login" && email && key && provider) {
+      const loginData = {
+        email: email,
+        social_key: key,
+        provider: provider,
+      };
+      handleLogin(loginData);
+    }
+  }, [email, key, provider, res]);
+
+  const handleLogin = async (loginData) => {
+    // 로그인 로직 (백엔드에서 로그인 처리 후, 필요한 토큰 등을 받아와야 함)
+    console.log("email : ", email);
+    console.log("key : ", key);
+    console.log("provider : ", provider);
+    console.log("res : ", res);
+    try {
+      const response = await AxiosApi.post("/auth/login", loginData);
+      console.log(response.data);
+      // 로그인 후 메인뷰로 리다이렉트
+      navigate("/Mainview");
+    } catch (error) {
+      console.error("로그인 실패", error);
+      alert("로그인 실패");
+    }
+  };
+
+  const handleReset = () => {
     setUserName("");
     setTagId("");
     setPhone("");
     setBirthday("");
-  }
+  };
   const handleSubmit = async () => {
     // 사용자 데이터 준비
     const userData = {
+      uuid: uuid,
+      provider: provider,
       username: username,
       tag_id: tag_id,
       phone: phone,
       birthday: birthday,
+      email: email,
     };
 
     try {

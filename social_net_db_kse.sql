@@ -1,5 +1,6 @@
 create database social_net_db;
 use social_net_db;
+show tables;
 
 # 테스트용 테이블
 create table kse_test (
@@ -15,21 +16,21 @@ select * from kse_test;
 # user 테이블
 create table user (
 uuid		char(36)		not null		,
-username	varchar(20)		not null		,
-tag_id		varchar(20)		not null		,
+username	varchar(20)						,
+tag_id		varchar(20)						,
 email		varchar(100)	not null		,
-phone		varchar(30)		not null		,
-birthday	date			not null		,
+phone		varchar(30)						,
+birthday	date							,
 is_admin	tinyint			default 0		,
 provider	varchar(30)		not null		,
-create_at	timestamp		default now()	,
-is_using	tinyint			default	1		,
+create_at	timestamp						,
+is_using	tinyint			default	0		,
 update_at	timestamp						,
 is_update	tinyint			default 0		,
 delete_at	timestamp						,
 is_delete	tinyint			default 0		,
 pwd			varchar(100)					,
-social_key	varchar(36)						,
+social_key	varchar(100)					,
 suspended_cnt	int			default 0 		,
 introduce	varchar(100)					,
 profile_path varchar(300)					,
@@ -41,6 +42,8 @@ drop table user;
 
 desc user;
 select * from user order by create_at;
+delete from user where email="rlatjddmsrla@daum.net";
+update user set username="" where uuid="";
 
 # refresh_token 관리 테이블
 create table refresh_token_list (

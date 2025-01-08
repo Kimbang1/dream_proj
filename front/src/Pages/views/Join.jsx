@@ -32,7 +32,7 @@ function Join() {
 
     try {
       // Axios로 데이터 전송 (JSON 형식)
-      const response = await AxiosApi.post("/auth/join", userData);
+      const response = await AxiosApi.post("/join/local", userData);
       console.log(response.data);
       alert("회원가입 성공");
       navigate("/Login"); // 회원 가입 후 로그인 페이지로 이동
