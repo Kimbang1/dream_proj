@@ -28,7 +28,7 @@ function Header({ setIsMainPage }) {
       setSearchMonitor("");
       setIsAccordionOpen(false); // 검색 후 아코디언 닫기
 
-      //검색 페이지로 이동하면서 검색어 전달
+      // 검색 페이지로 이동하면서 검색어 전달
       navigate(`/SearchRes?query=${encodeURIComponent(searchMonitor)}`);
     }
   };
@@ -38,9 +38,10 @@ function Header({ setIsMainPage }) {
     setRecentSearch((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // 알람 모달 핸들러
-  const openAlarmModal = () => setIsAlramOpen(true);
-  const closeAlarmModal = () => setIsAlramOpen(false);
+  // 알람 모달 핸들러 - 상태 토글
+  const toggleAlarmModal = () => {
+    setIsAlramOpen((prev) => !prev);
+  };
 
   // 글쓰기 페이지 이동
   const handleWritePage = () => {
@@ -130,7 +131,7 @@ function Header({ setIsMainPage }) {
       {/* 기능 아이콘 영역 */}
       <div className="functionArea">
         <img
-          onClick={openAlarmModal}
+          onClick={toggleAlarmModal} // 알람 모달 토글
           className="imges"
           src="/images/bell.png"
           alt="종모양"
@@ -147,7 +148,7 @@ function Header({ setIsMainPage }) {
       {isAlramOpen && (
         <AlarmComponent
           isOpen={isAlramOpen}
-          closeAlarmModal={closeAlarmModal}
+          closeAlarmModal={toggleAlarmModal} // 모달 닫기 핸들러
         />
       )}
     </div>

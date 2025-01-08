@@ -1,54 +1,79 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AlarmComponent = ({ isOpen, closeAlarmModal }) => {
   const [alarms, setAlarms] = useState([]);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const navigate = useNavigate();
 
- //서버에서 알림 데이터 받아오기
- const fetchAlarmsFromServer = async()=> {
-  try{
-    const response = await fetch("/api/getAlarms"); //서버 API 엔드포인트
-    const data = await response.json();
-    const newAlarms = data.filter(
-      (alarm)=>!alarm.find((a)=> a.id === alarm.id) //기존 알림과 중복 방지
-    );
-
-    if(newAlarms.length > 0){
-      setAlarms((prevAlarms)=>[...prevAlarms, ...newAlarms]);
-      setUnreadCount((prevCount)=>prevCount + newAlarms.length);//새로운 알림개수 추가
+  // 서버에서 알림 데이터 받아오기
+  const fetchAlarmsFromServer = async () => {
+    try {
+      const response = await fetch("/api/getAlarms"); // 서버 API 엔드포인트
+      const data = await response.json();
+      setAlarms(data); // 알람 데이터 상태 업데이트
+    } catch (error) {
+      console.error("알림 데이터를 가져올 수 없습니다:", error);
     }
-  }catch(error){
-    console.error("알림 데이터를 가져올수 없습니다:",error);
-  }
- };
-useEffect(()=>{
-const interval = setInterval(fetchAlarmsFromServer,5000);
-return()=> clearInterval(interval);
-});
+  };
 
-//알림 클릭시 읽음 처리
-const handleAlarmClick = (alarm)=>{
-  setUnreadCount((prevCount)=> Math.max(0,prevCount-1)); //읽은 알람 제거
-  window.location.href = alarm.link;  //클릭시 해당 링크(유저페이지/공지페이지)이동
-}
+  useEffect(() => {
+    fetchAlarmsFromServer(); // 초기 로드 시 데이터 가져오기
+    const interval = setInterval(fetchAlarmsFromServer, 5000); // 5초마다 데이터 갱신
+    return () => clearInterval(interval); // 컴포넌트 언마운트 시 정리
+  }, []);
+
+  // 알림 클릭 시 이동 처리
+  const handleAlarmClick = (alarm) => {
+    navigate(alarm.link); // 알람의 링크로 이동
+  };
 
   return (
     <div className={`alarmModalArea ${isOpen ? "open" : ""}`}>
-      <div className="AlarmContet">
-        <h1>알림</h1>
-        <div className="alarm-list">
-          {alarms.length > 0?(
-            alarms.map((alarm)=>(
-              <div 
-              key={alarm.id}
-              onClick={()=>handleAlarmClick(alarm)}
-              className="alarmItem">
-                <img src="{alarm.profileImage" alt="프로필"
-                className="profileImage" />
-                <p>{alarm.content}</p>
+      <div className="alarmContent">
+        <h2>알림</h2>
+        <button className="closeButton" onClick={closeAlarmModal}>
+          닫기
+        </button>
+        <div className="alarmList">
+          {alarms.length > 0 ? (
+            alarms.map((alarm) => (
+              <div
+                key={alarm.id}
+                className="alarmItem"
+                onClick={() => handleAlarmClick(alarm)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  padding: "10px",
+                  borderBottom: "1px solid #ddd",
+                }}
+              >
+                {/* 유저 프로필 */}
+                <img
+                  src={alarm.profileImage || "/images/default-profile.png"} // 프로필 이미지
+                  alt="유저 프로필"
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "50%",
+                    marginRight: "10px",
+                  }}
+                />
+                {/* 알람 내용 */}
+                <div>
+                  <p style={{ fontWeight: "bold", margin: "0" }}>
+                    {alarm.userId} {/* 유저 ID */}
+                  </p>
+                  <p style={{ margin: "0", fontSize: "14px", color: "#555" }}>
+                    {alarm.message} {/* 알람 메시지 */}
+                  </p>
+                </div>
               </div>
             ))
-          ):(<p>새로운 알람이 없습니다.</p>)}
+          ) : (
+            <p>새로운 알림이 없습니다.</p>
+          )}
         </div>
       </div>
     </div>

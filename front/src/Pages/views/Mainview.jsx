@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // useNavigate 임포트
 import Gallery from "../../Pages/views/Gallery"; // Gallery 컴포넌트 임포트
-import RightAside from "../../componunts/layout/RightAside";
 import ViewChoice from "../../componunts/layout/ViewChoice";
 import AxiosApi from "../../servies/AxiosApi";
 
@@ -25,9 +24,6 @@ function Mainview(isMainPage) {
       {/* //프로필 페이지가 아닐때만 렌더링 */}
       <div className="ChoiceBtn">
         <ViewChoice />
-      </div>
-      <div className="RightAside">
-        <RightAside />
       </div>
       <div className="viewArea">{!isMainPage && <Gallery />}</div>
     </>

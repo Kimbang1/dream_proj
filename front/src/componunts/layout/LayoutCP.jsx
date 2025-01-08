@@ -6,7 +6,6 @@ import Bottom from "../layout/BottomNav";
 import { useMediaQuery } from "react-responsive";
 import { Outlet } from "react-router-dom";
 
-import RightAside from "./RightAside";
 import ViewChoice from "./ViewChoice";
 
 const Layout = () => {
@@ -33,9 +32,6 @@ const Layout = () => {
               {/* //프로필 페이지가 아닐때만 렌더링 */}
               <div className="ChoiceBtn">
                 <ViewChoice />
-              </div>
-              <div className="RightAside">
-                <RightAside />
               </div>
             </>
           )}
