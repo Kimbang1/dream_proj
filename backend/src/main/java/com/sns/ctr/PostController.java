@@ -96,7 +96,7 @@ public class PostController {
 				Map<String, String> responseItem = new HashMap<>();
 				responseItem.put("linkId", filePost.getLink_id());
 				responseItem.put("uuid", postData.getWrite_user());
-				responseItem.put("tagId", null);
+				responseItem.put("tagId", userDao.mtdSelectTagId(postData.getWrite_user()));
 				responseItem.put("filePath", fileData.getFile_path());
 				responseItem.put("content", postData.getContent());
 				

@@ -62,6 +62,8 @@
 	</select>
 	
 	<!-- uuid로 tag_id 가져오기 -->
-	<select id=""></select>
+	<select id="mtdSelectTagId" resultType="java.lang.String">
+		select tag_id from user where uuid = #{uuid}
+	</select>
 
 </mapper>
