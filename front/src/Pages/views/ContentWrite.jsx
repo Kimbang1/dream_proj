@@ -76,27 +76,38 @@ function ContentWrite() {
       return;
     }
 
+    // try {
+    //   const formData = new FormData();
+    //   formData.append("content", content);
+    //   formData.append("link_id", link_id);
+    //   formData.append("file", file);
+
+    //   // 단일 API 호출
+    //   const response = await AxiosApi.post("/post/postUpload", formData, {
+    //     headers: { "Content-Type": "multipart/form-data" },
+    //   });
+
+    //   console.log("파일업로드 성공:", response);
+    //   setPosts([...posts, response.data]); // 서버에서 반환된 데이터를 바로 게시물 리스트에 추가
+    //   setContent(""); // 성공적으로 업로드되면 텍스트 필드 초기화
+    //   alert("게시물이 저장되었습니다.");
+    // } catch (error) {
+    //   console.log("게시물 저장 실패:", error);
+    //   alert("게시물 저장 중 문제가 발생했습니다.");
+    // }
+
+    // =======> 이미 file 업로드가 끝났는데 file을 다시 보낼 필요가 없어요!
+
     try {
-      const formData = new FormData();
-      formData.append("content", content);
-      formData.append("link_id", link_id);
-      formData.append("file", file);
-
-      // 단일 API 호출
-      const response = await AxiosApi.post(
-        "http://localhost:8081/post/postUpload",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-
-      console.log("파일업로드 성공:", response);
-      setPosts([...posts, response.data]); // 서버에서 반환된 데이터를 바로 게시물 리스트에 추가
-      setContent(""); // 성공적으로 업로드되면 텍스트 필드 초기화
+      const response = await AxiosApi.post("/post/postUpload", {
+        content,
+        link_id,
+      });
+      setPosts([...posts, response.data]);
+      setContent("");
       alert("게시물이 저장되었습니다.");
     } catch (error) {
-      console.log("게시물 저장 실패:", error);
+      console.error("게시물 저장 실패: ", error);
       alert("게시물 저장 중 문제가 발생했습니다.");
     }
   };

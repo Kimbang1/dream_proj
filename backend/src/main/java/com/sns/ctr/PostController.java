@@ -2,17 +2,12 @@ package com.sns.ctr;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +24,6 @@ import com.sns.dao.UserDao;
 import com.sns.dto.FileListDto;
 import com.sns.dto.FilePostDto;
 import com.sns.dto.PostDto;
-import com.sns.dto.SNSDto;
 import com.sns.dto.UserDto;
 import com.sns.jwt.JwtProvider;
 import com.sns.svc.FileService;
