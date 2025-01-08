@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios"; // axios를 사용해 API 호출
+import ApiAxios from "../../servies/AxiosApi";
 
 function UserPost() {
   const [items, setItems] = useState([]); // 불러온 데이터
@@ -14,7 +15,7 @@ function UserPost() {
 
     try {
       // 실제 데이터 API 호출 예시 (여기서는 임의로 데이터를 만들어서 사용)
-      const response = await axios.get(`/api/posts?page=${page}`);
+      const response = await ApiAxios.get(`/post/postView?page=${page}`);
       const newData = response.data;
 
       if (newData.length === 0) {
@@ -60,7 +61,7 @@ function UserPost() {
           <div key={index} className="PostItem">
             <div className="left">
               <div className="userId">
-                <span>{item.id}</span>
+                <span>{item.uuid}</span>
               </div>
               <div className="content">
                 <span>{item.content}</span>
@@ -68,6 +69,11 @@ function UserPost() {
             </div>
 
             <div className="right">
+              <div className="imageContainer">
+                <img
+                  src={item.filePath}
+                  alt={`Image related to post ${item.linkId}`} />
+              </div>
               <div className="RightUpper">
                 <span>댓글 {item.comments}</span>
                 <span>좋아요 {item.likes}</span>

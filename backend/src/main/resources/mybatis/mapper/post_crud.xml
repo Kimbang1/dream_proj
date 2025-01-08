@@ -7,4 +7,8 @@
 		insert into post (post_id, write_user, content)
 		values (#{post_id}, #{write_user}, #{content})
 	</insert>
+	
+	<select id="selectAllPost" resultType="com.sns.dto.PostDto">
+		select * from post where post_id = #{post_id}
+	</select>
 </mapper>
