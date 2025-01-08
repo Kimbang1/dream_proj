@@ -1,41 +1,68 @@
 import React, { useEffect, useState } from "react";
-import mqtt from "mqtt";
 
-function AlarmPage() {
-  const [sendAlarm, setSendAlram] = useState(null);
+const AlarmPage = ({ isOpen, closeAlarmModal }) => {
+  const [alarms, setAlarms] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // 서버에서 알림 데이터 받아오기
+  const fetchAlarmsFromServer = async () => {
+    try {
+      const response = await fetch("/api/getAlarms"); // 서버 API 엔드포인트
+      const data = await response.json();
+      const newAlarms = data.filter(
+        (alarm) => !alarms.find((a) => a.id === alarm.id) // 기존 알림과 중복 방지
+      );
+
+      if (newAlarms.length > 0) {
+        setAlarms((prevAlarms) => [...prevAlarms, ...newAlarms]);
+        setUnreadCount((prevCount) => prevCount + newAlarms.length); // 새로운 알림 개수 추가
+      }
+    } catch (error) {
+      console.error("알림 데이터를 가져올 수 없습니다:", error);
+    }
+  };
 
   useEffect(() => {
-    //모스키토 브로커와 TCP 연결
-    const client = mqtt.connect("ws://localhost:1883"); //기본 TCP 포트 1883 사용
-
-    //연결 성공시
-    client.on("connect", () => {
-      console.log("Connected to MQTT broker");
-
-      //'home/temperature' 토픽을 구독
-      client.subscribe("home/temperature", (err) => {
-        if (!err) {
-          console.log("Subscribe to topic home/temperature");
-        }
-      });
-    });
-
-    //메시지 수신 시
-    client.on("message", (topic, payload) => {
-      setSendAlram(payload.toString()); //수신된 메시지 상태로 업데이트
-    });
-
-    //컴포넌트 언마운트 시 클라이언트 종료
-    return () => {
-      client.end();
-    };
+    const interval = setInterval(fetchAlarmsFromServer, 5000);
+    return () => clearInterval(interval);
   }, []);
 
+  //알람 클릭시 읽음 처리
+  const handleAlarmClick = (alarm) => {
+    setUnreadCount((prevCount) => Math.max(0, prevCount - 1)); //읽은 알람 제거
+    navigator("/UserMainpage"); //알람의 해당 유저 페이지로 이동
+  };
+
   return (
-    <div className="alramFrame">
-      <div className="alramListArea">{sendAlarm}</div>
+    <div className={`alarmModalArea ${isOpen ? "open" : ""}`}>
+      <div className="alarmContent">
+        <h1>알림</h1>
+        <button className="closeButton" onClick={closeAlarmModal}>
+          닫기
+        </button>
+        <div className="alarm-list">
+          {alarms.length > 0 ? (
+            alarms.map((alarm) => (
+              <div
+                key={alarm.id}
+                onClick={() => handleAlarmClick(alarm)}
+                className="alarmItem"
+              >
+                <img
+                  src={alarm.profileImage}
+                  alt="프로필"
+                  className="profileImage"
+                />
+                <p>{alarm.content}</p>
+              </div>
+            ))
+          ) : (
+            <p>새로운 알림이 없습니다.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default AlarmPage;
