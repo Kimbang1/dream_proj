@@ -14,4 +14,8 @@
 		update file_post set post_id = #{post_id}, is_using = true, create_at = now()
 		where link_id = #{link_id}
 	</update>
+	
+	<select id="selectAllList" resultType="com.sns.dto.FilePostDto">
+		select * from file_post order by create_at desc
+	</select>
 </mapper>

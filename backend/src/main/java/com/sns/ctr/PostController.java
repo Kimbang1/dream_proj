@@ -5,7 +5,10 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +27,9 @@ import com.sns.dao.FilePostMapper;
 import com.sns.dao.PostMapper;
 import com.sns.dao.UserDao;
 import com.sns.dto.FileListDto;
+import com.sns.dto.FilePostDto;
 import com.sns.dto.PostDto;
+import com.sns.dto.SNSDto;
 import com.sns.dto.UserDto;
 import com.sns.jwt.JwtProvider;
 import com.sns.svc.FileService;
@@ -46,6 +51,60 @@ public class PostController {
 	private final UserDao userDao;
 	private final FilePostMapper filePostMapper;
 	private final PostMapper postMapper;
+	
+	@RequestMapping("/galleryView")
+	public ResponseEntity<List<Map<String, String>>> mtdGalleryView() {
+		log.info("/galleryView까지는 왔어");
+		// 1. FilePostDto 리스트 가져오기
+		List<FilePostDto> filePostList = filePostMapper.selectAllList();
+		
+		// 2. 반환할 데이터 생성
+		List<Map<String, String>> responseList = new ArrayList<>();
+		
+		for (FilePostDto filePost : filePostList) {
+			// file_id로 FileListDto 가져오기
+			FileListDto fileData = fileListMapper.selectFileData(filePost.getFile_id());
+			
+			if(fileData != null) {
+				// file_path와 uuid를 조합 해 반환할 데이터 생성
+				Map<String, String> responseItem = new HashMap<>();
+				responseItem.put("linkId", filePost.getLink_id());
+				responseItem.put("fileName", fileData.getUp_filename());
+				responseItem.put("filePath", fileData.getFile_path());
+				
+				responseList.add(responseItem);
+			}
+		}
+		return ResponseEntity.ok(responseList);
+	}
+	
+	@RequestMapping("postView")
+	public ResponseEntity<?> mtdPostView() {
+		log.info("/postView까지는 왔어");
+		// 1. filePost 목록 가져오기
+		List<FilePostDto> filePostList = filePostMapper.selectAllList();
+		
+		// 2. 반환할 데이터 생성
+		List<Map<String, String>> responseList = new ArrayList<>();
+		
+		for (FilePostDto filePost : filePostList) {
+			// post와 file 정보 가져오기
+			FileListDto fileData = fileListMapper.selectFileData(filePost.getFile_id());
+			PostDto postData = postMapper.selectAllPost(filePost.getPost_id());
+			
+			if(fileData != null && postData != null) {
+				Map<String, String> responseItem = new HashMap<>();
+				responseItem.put("linkId", filePost.getLink_id());
+				responseItem.put("uuid", postData.getWrite_user());
+				responseItem.put("tagId", null);
+				responseItem.put("filePath", fileData.getFile_path());
+				responseItem.put("content", postData.getContent());
+				
+				responseList.add(responseItem);
+			}
+		}
+		return ResponseEntity.ok(responseList);
+	}
 	
 	@PostMapping("/fileUpload")
 	public ResponseEntity<HashMap<String, String>> mtdFileUpload(

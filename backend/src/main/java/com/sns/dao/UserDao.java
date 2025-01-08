@@ -34,4 +34,7 @@ public interface UserDao {
 	// 회원 활성화 상태
 	public boolean mtdIsUsingUser(@Param("uuid") String uuid);
 	
+	// uuid로 tag_id 가져오기
+	public String mtdSelectTagId(@Param("uuid") String uuid);
+	
 }

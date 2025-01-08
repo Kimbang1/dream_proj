@@ -210,4 +210,4 @@ public class AuthController {
 		return new ResponseEntity<>(errorResponse, status);
 	}
 	
-}
+};

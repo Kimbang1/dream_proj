@@ -68,6 +68,11 @@ function Post() {
             </div>
 
             <div className="right">
+              {item.image_url && (
+              <div className="imagArea">
+                <img src={item.image_url} alt="게시글 이미지"  className="postImage"/>
+              </div>
+              )}
               <div className="RightUpper">
                 <span>댓글 {item.comments}</span>
                 <span>좋아요 {item.likes}</span>

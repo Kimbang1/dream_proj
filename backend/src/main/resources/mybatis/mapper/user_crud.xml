@@ -60,5 +60,8 @@
 	<select id="mtdTagIdCheck" resultType="java.lang.Boolean">
 		select case when count(*) > 0 then true else false end from user where tag_id = #{tag_id}
 	</select>
+	
+	<!-- uuid로 tag_id 가져오기 -->
+	<select id=""></select>
 
 </mapper>

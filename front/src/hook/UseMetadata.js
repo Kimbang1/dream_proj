@@ -2,9 +2,9 @@ import { useState } from "react";
 import EXIF from "exif-js";
 import AxiosApi from "../servies/AxiosApi";
 
-const UseMetadata = () => {
+const useImageMetadata = () => {
   const [errorMSG, setErrorMSG] = useState("");
-  const [previewURL, setPreviewURL] = useState(null);
+  const [previewURL, setPreviewURL] = useState(null); // 상태 추가
 
   const getImageMetadata = (imageFile) => {
     return new Promise((resolve) => {
@@ -75,7 +75,13 @@ const UseMetadata = () => {
       const response = await AxiosApi.post("/post/fileUpload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      return response.data;
+
+      //서버에서 응답으로 URL을 받아 처리
+      if (response.data && response.data.url) {
+        setPreviewURL(response.data.url); // 서버에서 반환된 URL을 previewURL로 설정
+        return response.data.url; //URL을 반환
+      }
+      return false;
     } catch (error) {
       setErrorMSG("메타데이터 전송 실패");
       return false;
@@ -88,8 +94,12 @@ const UseMetadata = () => {
       return false;
     }
 
-    const previewURL = URL.createObjectURL(imageFile);
-    setPreviewURL(previewURL);
+    // FileReader를 사용하여 파일을 읽고 미리보기 URL 생성
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPreviewURL(reader.result); // 데이터 URL을 previewURL에 저장
+    };
+    reader.readAsDataURL(imageFile);
 
     const metadata = await getImageMetadata(imageFile);
     if (metadata.dateTimeOriginal || metadata.latitude || metadata.longitude) {
@@ -100,7 +110,7 @@ const UseMetadata = () => {
     }
   };
 
-  return { handleMetadataAndSend, errorMSG, previewURL };
+  return { handleMetadataAndSend, errorMSG, previewURL, setPreviewURL }; // setPreviewURL 추가
 };
 
-export default UseMetadata;
+export default useImageMetadata;

@@ -10,7 +10,8 @@ function ContentWrite() {
   const [posts, setPosts] = useState([]); // 게시물 리스트 상태
   const { validateImageTime, errorMessage: timeErrorMessage } =
     useImageTimeCheck(); // 시간 체크 훅 사용
-  const { handleMetadataAndSend, errorMSG, previewURL } = useImageMetadata(); // 메타데이터 전송 훅 사용
+  const { handleMetadataAndSend, errorMSG, previewURL, setPreviewURL } =
+    useImageMetadata(); // 메타데이터 전송 훅 사용
 
   // 파일 선택 핸들러
   const handleFileChange = async (e) => {
@@ -20,8 +21,22 @@ function ContentWrite() {
       return;
     }
 
+    // FileReader를 사용하여 미리보기 URL 생성
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPreviewURL(reader.result); // 데이터 URL을 previewURL에 저장
+    };
+
+    reader.readAsDataURL(selectedFile);
+
+    // 서버에 업로드하고 URL을 가져오는 로직
+    const metadata = await handleMetadataAndSend(selectedFile, content);
+    if (metadata) {
+      setPreviewURL(metadata); // 서버에서 반환된 URL을 previewURL로 설정
+    }
+
     // 파일 크기 및 형식 확인
-    const validTypes = ["image/jpeg", "image/png", "image/heic"];
+    const validTypes = ["image/jpeg", "image/png", "image/heic", "image/webp"];
     const maxSize = 30 * 1024 * 1024;
     if (
       selectedFile.size > maxSize ||
@@ -47,6 +62,7 @@ function ContentWrite() {
       console.log("파일이 성공적으로 처리되었습니다.");
     } else {
       alert("파일 처리에 실패했습니다.");
+      console.log("previewURL", previewURL); // 미리보기 URL 로그 출력
     }
   };
 
@@ -61,15 +77,26 @@ function ContentWrite() {
     }
 
     try {
-      const response = await AxiosApi.post("/post/postUpload", {
-        content,
-        link_id,
-      });
-      setPosts([...posts, response.data]);
-      setContent("");
+      const formData = new FormData();
+      formData.append("content", content);
+      formData.append("link_id", link_id);
+      formData.append("file", file);
+
+      // 단일 API 호출
+      const response = await AxiosApi.post(
+        "http://localhost:8080/upload",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      console.log("파일업로드 성공:", response);
+      setPosts([...posts, response.data]); // 서버에서 반환된 데이터를 바로 게시물 리스트에 추가
+      setContent(""); // 성공적으로 업로드되면 텍스트 필드 초기화
       alert("게시물이 저장되었습니다.");
     } catch (error) {
-      console.error("게시물 저장 실패:", error);
+      console.log("게시물 저장 실패:", error);
       alert("게시물 저장 중 문제가 발생했습니다.");
     }
   };
