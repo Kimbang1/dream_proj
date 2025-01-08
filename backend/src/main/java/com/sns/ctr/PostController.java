@@ -189,7 +189,7 @@ public class PostController {
             fileListDto.setCaptured_at(timestamp);
             
             log.info("file_id: " + fileListDto.getFile_id());
-            log.info("ori_filename" + fileListDto.getOri_filename());
+            log.info("ori_filename: " + fileListDto.getOri_filename());
             log.info("up_filename" + fileListDto.getUp_filename());
             log.info("file_path" + fileListDto.getFile_path());
             log.info("extension: " + fileListDto.getExtension());

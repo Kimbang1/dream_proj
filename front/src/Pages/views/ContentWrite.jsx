@@ -84,7 +84,7 @@ function ContentWrite() {
 
       // 단일 API 호출
       const response = await AxiosApi.post(
-        "http://localhost:8080/upload",
+        "http://localhost:8081/post/postUpload",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
