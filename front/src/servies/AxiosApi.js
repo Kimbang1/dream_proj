@@ -10,12 +10,30 @@ const instance = axios.create({
   },
 });
 
-
 //요청 인터셉터
 instance.interceptors.request.use(
   (config) => {
     // Authorization 헤더에 accessToken 추가(쿠키에서 자동으로 포함됨)
     // axios는 'withCredentials' 설정을 통해 자동으로 쿠키를 포함 함.
+
+    // // 현재 경로 가져오기
+    // const location = window.location.pathname;
+
+    // // 요청을 차단할 경로 목록
+    // const excludePaths = [
+    //   "/",
+    //   "/login",
+    //   "/join",
+    //   "/joinchoice",
+    //   "/Agree",
+    //   "/Social",
+    // ];
+
+    // // 특정 페이지에서만 요청을 보내지 않음
+    // if (excludePaths.includes(location)) {
+    //   return Promise.reject("현재 페이지에서는 요청을 보내지 않음");
+    // }
+
     return config;
   },
   (error) => {
@@ -45,8 +63,8 @@ instance.interceptors.response.use(
         const originalRequest = error.config;
         return instance(originalRequest);
       } catch (refreshError) {
-        console.log("리프레쉬 토큰이 날아갔습니다:",refreshError);
-        alert("세션이 만료 되었으니 다시 로그인 해주세요.")
+        console.log("리프레쉬 토큰이 날아갔습니다:", refreshError);
+        alert("세션이 만료 되었으니 다시 로그인 해주세요.");
       }
     }
 
@@ -79,8 +97,6 @@ instance.interceptors.response.use(
     }
 
     return Promise.reject(error);
-    
   }
-  
 );
 export default instance;

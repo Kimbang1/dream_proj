@@ -76,7 +76,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	    // Access Token이 없으면 요청 차단
 	    if (!StringUtils.hasText(accessToken)) {
 	        log.info("Access Token is missing");
-	        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access Token is missing");
+	        response.setStatus(600);
+	        response.getWriter().write("Access Token is missing");
+		    response.getWriter().flush();
+//	        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access Token is missing");
 	        return;
 	    }
 		

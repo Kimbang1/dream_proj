@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +28,37 @@ public class UserController {
 	
 	private final UserDao userDao;
 	private final JwtProvider jwtProvider;
+	
+	@GetMapping("/info")
+	public ResponseEntity<?> mtdUserInfo(HttpServletRequest request) {
+		
+		HashMap<String, String> responseBody = new HashMap<>();
+		String accessToken = null;
+		
+		// AccessToken 추출
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if ("accessToken".equals(cookie.getName())) {
+					accessToken = cookie.getValue();
+					break;
+				}
+			}
+		}
+		
+		if (accessToken == null) {
+		    log.error("Access token이 존재하지 않습니다.");
+		    responseBody.put("message", "로그인이 필요합니다.");
+		    return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+		}
+		
+		// AccessToken에서 사용자 정보 추출
+		String email = jwtProvider.getEmailFromToken(accessToken);
+		String provider = jwtProvider.getProviderFromToken(accessToken);
+		UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
+		
+		return ResponseEntity.ok(user);
+	}
 	
 	@PutMapping("/update")
 	public ResponseEntity<HashMap<String, String>> updateUserProfile(@RequestBody UserDto userDto, HttpServletRequest request) {

@@ -10,12 +10,14 @@ function App() {
   //   const fetchData = async () => {
   //     try {
   //       const response = await AxiosApi.get("/user/uuid");
-  //       setUuid(response.data.uuid);
+  //       setUuid(response.data.uuid); // 백엔드에서 받은 uuid
   //     } catch (error) {
   //       console.error("유유아이디 가져와야지 왜 못가지고와!:", error);
   //     }
   //   };
-  // },[]);
+
+  //   fetchData();
+  // }, []);
 
   console.log("apiBaseUrl:", apiBaseUrl);
   return (
