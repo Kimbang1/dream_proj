@@ -72,7 +72,7 @@ const useImageMetadata = () => {
       formData.append("longitude", metadata.longitude);
       formData.append("captured_at", captured_at);
 
-      const response = await AxiosApi.post("/post/fileUpload", formData, {
+      const response = await AxiosApi.post("/contents/fileUpload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

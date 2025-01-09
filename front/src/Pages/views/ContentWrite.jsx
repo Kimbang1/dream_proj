@@ -117,7 +117,7 @@ function ContentWrite() {
     // }
 
     try {
-      const response = await AxiosApi.post("/post/postUpload", {
+      const response = await AxiosApi.post("/contents/postUpload", {
         content,
         link_id,
       });
@@ -126,6 +126,7 @@ function ContentWrite() {
       setFile(null);
       setLinkId(null);
       setPreviewURL(null);
+      URL.revokeObjectURL(imagePreview);
       alert("게시물이 저장되었습니다.");
     } catch (error) {
       console.error("게시물 저장 실패: ", error);

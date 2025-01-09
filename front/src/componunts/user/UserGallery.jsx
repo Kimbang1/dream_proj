@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 // import axios from "axios"; // axios를 사용해 API 호출
-import ApiAxios from "../../servies/AxiosApi";
+import AxiosApi from "../../servies/AxiosApi";
 function UserGallery() {
   // // 상태 변수 `items`: 초기 데이터를 관리하며, 화면에 표시할 항목들을 저장
   // const [items, setItems] = useState(
@@ -60,7 +60,7 @@ function UserGallery() {
     setLoading(true);
     try {
       // 백엔드 API 호출 (페이지 기반 데이터를 가져온다고 가정)
-      const response = await ApiAxios.get(`/post/galleryView?page=${page}`);
+      const response = await AxiosApi.get(`/post/galleryView?page=${page}`);
       const newItems = response.data; // 서버에서 반환된 데이터
 
       // 기존 데이터와 새 데이터를 병합
