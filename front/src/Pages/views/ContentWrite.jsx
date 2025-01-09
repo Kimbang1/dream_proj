@@ -6,11 +6,12 @@ import useImageMetadata from "../../hook/UseMetadata"; // 메타데이터 전송
 function ContentWrite() {
   const [file, setFile] = useState(null); // 사진 파일 상태
   const [content, setContent] = useState(""); // 입력란 텍스트 상태
-  const [link_id, setLinkId] = useState(null); // 업로드된 파일의 link_id 상태
+  const [link_id, setLinkId] = useState(null);
   const [posts, setPosts] = useState([]); // 게시물 리스트 상태
   const { validateImageTime, errorMessage: timeErrorMessage } =
     useImageTimeCheck(); // 시간 체크 훅 사용
-  const { handleMetadataAndSend, errorMSG } = useImageMetadata(); // 메타데이터 전송 훅 사용
+  const { handleMetadataAndSend, errorMSG, previewURL, setPreviewURL } =
+    useImageMetadata(); // 메타데이터 전송 훅 사용
   const [imagePreview, setImagePreview] = useState(null);
 
   // 컴포넌트 언마운트 시 imagePreview 삭제
@@ -23,10 +24,8 @@ function ContentWrite() {
   }, [imagePreview]);
 
   // 파일 선택 핸들러
-  const handleFileChange = async (event) => {
-    event.preventDefault();
-    const selectedFile = event.target.files[0];
-
+  const handleFileChange = async (e) => {
+    const selectedFile = e.target.files[0];
     if (!selectedFile) {
       alert("파일을 선택하지 않았습니다.");
       return;
@@ -66,32 +65,20 @@ function ContentWrite() {
       return;
     }
 
-    // 시간 체크
+    // 시간 체크 및 메타데이터 전송
     const isValidImageTime = await validateImageTime(selectedFile);
     if (!isValidImageTime) {
       alert("업로드 가능한 시간이 초과된 사진입니다.");
-      setFile(null); // 파일 상태 초기화
       return;
     }
 
-
-    // FileReader를 사용하여 미리보기 URL 생성
-    const previewURLTest = URL.createObjectURL(selectedFile);
-    // const reader = new FileReader();
-    // reader.onload = () => {
-    //   setPreviewURL(reader.result); // 로컬 미리보기 URL 설정
-    // };
-    // reader.onerror = () => {
-    //   alert("파일을 읽는 도중 문제가 발생했습니다.");
-    // };
-    // reader.readAsDataURL(selectedFile);
-
-    // 메타데이터 전송
-    const metadata = await handleMetadataAndSend(selectedFile, content);
-    if (metadata) {
-      setFile(selectedFile); // 파일 상태 업데이트
-      setLinkId(metadata.link_id); // 서버에서 반환된 link_id 저장
-      alert("파일이 성공적으로 업로드되었습니다.");
+    const isMetadataSent = await handleMetadataAndSend(selectedFile);
+    if (isMetadataSent) {
+      setFile(selectedFile);
+      // 파일 업로드 성공 후 link_id 저장
+      const linkIdFromResponse = isMetadataSent.link_id;
+      setLinkId(linkIdFromResponse);
+      console.log("파일이 성공적으로 처리되었습니다.");
     } else {
       alert("파일 처리에 실패했습니다.");
       // console.log("previewURL", previewURL); // 미리보기 URL 로그 출력
@@ -99,10 +86,13 @@ function ContentWrite() {
     }
   };
 
-  // 게시글 작성 완료 핸들러
+  const handleTextUpdate = (e) => {
+    setContent(e.target.value);
+  };
+
   const handleComplete = async () => {
-    if (!link_id || !content.trim()) {
-      alert("사진 업로드를 완료하고 내용을 입력하세요.");
+    if (!file || !content.trim()) {
+      alert("사진과 내용을 모두 입력하세요.");
       return;
     }
 
@@ -147,15 +137,16 @@ function ContentWrite() {
   return (
     <div className="box">
       {/* 사진 업로드 영역 */}
+
       <div className="uploadArea">
-        {/* 업로드된 이미지 미리보기 */}
-
-        <img
-          src={imagePreview}
-          alt="업로드된 이미지"
-          className="uploadedImage"
-        />
-
+        {/* 업로드된 이미지 영역 */}
+        {file && (
+          <img
+            src={imagePreview}
+            alt="업로드된 이미지"
+            className="uploadedImage"
+          />
+        )}
 
         {/* 파일 선택 클릭 영역 */}
         <input
@@ -181,15 +172,13 @@ function ContentWrite() {
 
       {/* 오류 메시지 */}
       {(timeErrorMessage || errorMSG) && (
-        <p style={{ color: "red" }}>
-          {timeErrorMessage || errorMSG} {/* 하나의 오류 메시지만 표시 */}
-        </p>
+        <p style={{ color: "red" }}>{timeErrorMessage || errorMSG}</p>
       )}
 
-      {/* 게시글 작성 영역 */}
+      {/* 게시글 영역 */}
       <div className="contentArea">
         <div className="completeiconArea">
-          {/* 카메라 아이콘 */}
+          {/* 카메라 아이콘을 파일 업로드와 연결 */}
           <label htmlFor="fileInput" className="cameraIcon">
             <img
               className="cameraIcon"
@@ -205,7 +194,7 @@ function ContentWrite() {
           placeholder="입력란"
           maxLength={300}
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={handleTextUpdate}
         ></textarea>
       </div>
     </div>
