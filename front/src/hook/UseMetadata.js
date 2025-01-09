@@ -4,7 +4,7 @@ import AxiosApi from "../servies/AxiosApi";
 
 const useImageMetadata = () => {
   const [errorMSG, setErrorMSG] = useState("");
-  const [previewURL, setPreviewURL] = useState(null); // 상태 추가
+  const [previewURL, setPreviewURL] = useState(null);
 
   const getImageMetadata = (imageFile) => {
     return new Promise((resolve) => {
@@ -15,19 +15,8 @@ const useImageMetadata = () => {
         const gpsLatitudeRef = EXIF.getTag(this, "GPSLatitudeRef");
         const gpsLongitudeRef = EXIF.getTag(this, "GPSLongitudeRef");
 
-        const allTags = EXIF.getAllTags(this);
-        console.log("All EXIF tags:", allTags);
-
-        console.log("GPS data:", {
-          gpsLatitude,
-          gpsLongitude,
-          gpsLatitudeRef,
-          gpsLongitudeRef,
-        });
-
         let latitude = null;
         let longitude = null;
-
         if (gpsLatitude && gpsLongitude) {
           latitude =
             (gpsLatitude[0] + gpsLatitude[1] / 60 + gpsLatitude[2] / 3600) *
@@ -49,12 +38,10 @@ const useImageMetadata = () => {
           }
         }
 
-        const formattedTime = formattedDateTime
-          ? formattedDateTime.toISOString()
-          : new Date().toISOString(); // ISO 형식으로 변환
-
         resolve({
-          dateTimeOriginal: formattedTime,
+          dateTimeOriginal: formattedDateTime
+            ? formattedDateTime.toISOString()
+            : null,
           latitude,
           longitude,
           imageFile,
@@ -68,18 +55,17 @@ const useImageMetadata = () => {
       const captured_at = metadata.dateTimeOriginal || new Date().toISOString();
       const formData = new FormData();
       formData.append("file", metadata.imageFile);
-      formData.append("latitude", metadata.latitude);
-      formData.append("longitude", metadata.longitude);
+      formData.append("latitude", metadata.latitude || "");
+      formData.append("longitude", metadata.longitude || "");
       formData.append("captured_at", captured_at);
 
       const response = await AxiosApi.post("/post/fileUpload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      //서버에서 응답으로 URL을 받아 처리
       if (response.data && response.data.filePath) {
-        setPreviewURL(response.data.filePath); // 서버에서 반환된 URL을 previewURL로 설정
-        return response.data.filePath; //URL을 반환
+        setPreviewURL(response.data.filePath);
+        return response.data.filePath;
       }
       return false;
     } catch (error) {
@@ -89,20 +75,23 @@ const useImageMetadata = () => {
   };
 
   const handleMetadataAndSend = async (imageFile, content) => {
+    setErrorMSG(""); // 에러 메시지 초기화
+
     if (!imageFile.type.startsWith("image/")) {
       setErrorMSG("이미지 파일만 업로드 가능합니다.");
       return false;
     }
 
-    // FileReader를 사용하여 파일을 읽고 미리보기 URL 생성
     const reader = new FileReader();
     reader.onload = () => {
-      setPreviewURL(reader.result); // 데이터 URL을 previewURL에 저장
+      if (!previewURL) {
+        setPreviewURL(reader.result);
+      }
     };
     reader.readAsDataURL(imageFile);
 
     const metadata = await getImageMetadata(imageFile);
-    if (metadata.dateTimeOriginal || metadata.latitude || metadata.longitude) {
+    if (metadata) {
       return await sendMetadataToServer(metadata, content);
     } else {
       setErrorMSG("이미지 메타데이터 추출 실패");
@@ -110,7 +99,7 @@ const useImageMetadata = () => {
     }
   };
 
-  return { handleMetadataAndSend, errorMSG, previewURL, setPreviewURL }; // setPreviewURL 추가
+  return { handleMetadataAndSend, errorMSG, previewURL };
 };
 
 export default useImageMetadata;

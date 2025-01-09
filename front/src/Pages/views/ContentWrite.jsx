@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AxiosApi from "../../servies/AxiosApi";
 import useImageTimeCheck from "../../hook/TimeCheck"; // 시간 체크 훅
 import useImageMetadata from "../../hook/UseMetadata"; // 메타데이터 전송 훅
@@ -18,22 +18,11 @@ function ContentWrite() {
     event.preventDefault();
     const selectedFile = event.target.files[0];
 
+  
     if (!selectedFile) {
       alert("파일을 선택하지 않았습니다.");
       return;
     }
-
-    // FileReader를 사용하여 미리보기 URL 생성
-    const reader = new FileReader();
-    reader.onload = () => {
-      setPreviewURL(reader.result); // 데이터 URL을 previewURL에 저장
-    };
-    reader.onerror = () => {
-      alert("파일을 읽는 도중 문제가 발생했습니다.");
-    };
-
-    reader.readAsDataURL(selectedFile);
-
 
     // 파일 크기 및 형식 확인
     const validTypes = ["image/jpeg", "image/png", "image/heic", "image/webp"];
@@ -50,15 +39,28 @@ function ContentWrite() {
     const isValidImageTime = await validateImageTime(selectedFile);
     if (!isValidImageTime) {
       alert("업로드 가능한 시간이 초과된 사진입니다.");
+      setFile(null); // 파일 상태 초기화
+      setPreviewURL(null); // 미리보기 URL 초기화
       return;
     }
+
+
+    // FileReader를 사용하여 미리보기 URL 생성
+    const previewURLTest = URL.createObjectURL(selectedFile);
+    // const reader = new FileReader();
+    // reader.onload = () => {
+    //   setPreviewURL(reader.result); // 로컬 미리보기 URL 설정
+    // };
+    // reader.onerror = () => {
+    //   alert("파일을 읽는 도중 문제가 발생했습니다.");
+    // };
+    // reader.readAsDataURL(selectedFile);
 
     // 메타데이터 전송
     const metadata = await handleMetadataAndSend(selectedFile, content);
     if (metadata) {
       setFile(selectedFile); // 파일 상태 업데이트
       setLinkId(metadata.link_id); // 서버에서 반환된 link_id 저장
-      setPreviewURL(metadata.previewURL); // 서버에서 반환된 미리보기 URL 설정
       alert("파일이 성공적으로 업로드되었습니다.");
     } else {
       alert("파일 처리에 실패했습니다.");
@@ -88,10 +90,6 @@ function ContentWrite() {
       console.error("게시물 저장 실패: ", error);
       alert("게시물 저장 중 문제가 발생했습니다.");
     }
-
-
-
-    
   };
 
   return (
