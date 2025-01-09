@@ -18,7 +18,7 @@ function UserMainpage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await AxiosApi.get("/post/data"); //실제 API엔트포인트로 바꿔야함.
+        const response = await AxiosApi.get("/user/info"); //실제 API엔트포인트로 바꿔야함.
         setUser(response.data);
       } catch (error) {
         console.error("데이터 가져오기 실패:", error);
@@ -41,7 +41,7 @@ function UserMainpage() {
             <div className="InfoArea">
               <div className="useDetails">
                 <div className="FirstLayer">
-                  <div className="userName">@tagid{user.userName}</div>
+                  <div className="userName">@{user.tag_id}</div>
                   <button className="editProfileBtn" onClick={UserEditHandle}>
                     프로필 수정
                   </button>
@@ -58,8 +58,8 @@ function UserMainpage() {
                 </div>
 
                 <div className="ThirdLayer">
-                  <div className="userName">유저 이름{user.userName}</div>
-                  <div className="userContent">유저 소개글{user.Content}</div>
+                  <div className="userName">{user.username}</div>
+                  <div className="userContent">{user.introduce}</div>
                 </div>
               </div>
             </div>
@@ -69,7 +69,6 @@ function UserMainpage() {
           <ViewChoice />
         </div>
       </div>
-   
     </div>
   );
 }

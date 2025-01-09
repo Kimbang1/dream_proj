@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/contents")
 @Slf4j
 @RequiredArgsConstructor
-public class PostController {
+public class ContentController {
 	
 	private final FileService fileService;
 	private final FileListMapper fileListMapper;
