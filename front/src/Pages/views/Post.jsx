@@ -4,7 +4,6 @@ import AxiosApi from "../../servies/AxiosApi";
 function Post() {
   const [items, setItems] = useState([]); // 불러온 데이터
   const [loading, setLoading] = useState(false); // 로딩 상태
-  const [page, setPage] = useState(1); // 현재 페이지
   const [hasMore, setHasMore] = useState(true); // 더 이상 로드할 데이터가 있는지 확인
 
   // 데이터 로드 함수
@@ -14,20 +13,19 @@ function Post() {
 
     try {
       // 실제 데이터 API 호출 예시
-      const response = await AxiosApi.get("/auth/posts");
+      const response = await AxiosApi.get("/auth/postUpload");
       const newData = response.data;
 
       if (newData.length === 0) {
         setHasMore(false); // 데이터가 더 이상 없으면
       } else {
         setItems((prevItems) => [...prevItems, ...newData]); // 기존에 새로운 데이터 추가
-        setPage((prevPage) => prevPage + 1); // 다음 페이지로 이동
       }
     } catch (error) {
       console.error("데이터 로드 실패:", error);
     }
     setLoading(false);
-  }, [loading, hasMore, page]);
+  }, [loading, hasMore]);
 
   // 스크롤 이벤트 처리
   const handleScroll = useCallback(() => {
@@ -69,9 +67,13 @@ function Post() {
 
             <div className="right">
               {item.image_url && (
-              <div className="imagArea">
-                <img src={item.image_url} alt="게시글 이미지"  className="postImage"/>
-              </div>
+                <div className="imagArea">
+                  <img
+                    src={item.image_url}
+                    alt="게시글 이미지"
+                    className="postImage"
+                  />
+                </div>
               )}
               <div className="RightUpper">
                 <span>댓글 {item.comments}</span>

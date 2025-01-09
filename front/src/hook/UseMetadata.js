@@ -77,9 +77,9 @@ const useImageMetadata = () => {
       });
 
       //서버에서 응답으로 URL을 받아 처리
-      if (response.data && response.data.url) {
-        setPreviewURL(response.data.url); // 서버에서 반환된 URL을 previewURL로 설정
-        return response.data.file.path; //URL을 반환
+      if (response.data && response.data.filePath) {
+        setPreviewURL(response.data.filePath); // 서버에서 반환된 URL을 previewURL로 설정
+        return response.data.filePath; //URL을 반환
       }
       return false;
     } catch (error) {

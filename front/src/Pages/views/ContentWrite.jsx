@@ -6,7 +6,7 @@ import useImageMetadata from "../../hook/UseMetadata"; // 메타데이터 전송
 function ContentWrite() {
   const [file, setFile] = useState(null); // 사진 파일 상태
   const [content, setContent] = useState(""); // 입력란 텍스트 상태
-  const [link_id, setLinkId] = useState(null);
+  const [link_id, setLinkId] = useState(null); // 업로드된 파일의 link_id 상태
   const [posts, setPosts] = useState([]); // 게시물 리스트 상태
   const [previewURL, setPreviewURL] = useState(null); // 미리보기 URL 상태
   const { validateImageTime, errorMessage: timeErrorMessage } =
@@ -28,8 +28,12 @@ function ContentWrite() {
     reader.onload = () => {
       setPreviewURL(reader.result); // 데이터 URL을 previewURL에 저장
     };
+    reader.onerror = () => {
+      alert("파일을 읽는 도중 문제가 발생했습니다.");
+    };
 
     reader.readAsDataURL(selectedFile);
+
 
     // 파일 크기 및 형식 확인
     const validTypes = ["image/jpeg", "image/png", "image/heic", "image/webp"];
@@ -53,52 +57,49 @@ function ContentWrite() {
     const metadata = await handleMetadataAndSend(selectedFile, content);
     if (metadata) {
       setFile(selectedFile); // 파일 상태 업데이트
-      setLinkId(metadata.link_id); // 메타데이터에서 link_id 추출
+      setLinkId(metadata.link_id); // 서버에서 반환된 link_id 저장
       setPreviewURL(metadata.previewURL); // 서버에서 반환된 미리보기 URL 설정
-      console.log("파일이 성공적으로 처리되었습니다.");
+      alert("파일이 성공적으로 업로드되었습니다.");
     } else {
       alert("파일 처리에 실패했습니다.");
-      console.log("previewURL", previewURL); // 미리보기 URL 로그 출력
+      console.error("서버에서 반환된 메타데이터가 없습니다.");
     }
   };
 
-  const handleTextUpdate = (e) => {
-    setContent(e.target.value);
-  };
-
+  // 게시글 작성 완료 핸들러
   const handleComplete = async () => {
-    if (!file || !content.trim()) {
-      alert("사진과 내용을 모두 입력하세요.");
+    if (!link_id || !content.trim()) {
+      alert("사진 업로드를 완료하고 내용을 입력하세요.");
       return;
     }
 
     try {
-      const formData = new FormData();
-      formData.append("content", content);
-      formData.append("link_id", link_id);
-      formData.append("file", file);
-
-      // 단일 API 호출
-      const response = await AxiosApi.post("post/postUpload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const response = await AxiosApi.post("/post/postUpload", {
+        content,
+        link_id,
       });
-
-      console.log("파일업로드 성공:", response);
-      setPosts((prevPosts) => [...prevPosts, response.data]); // 서버에서 반환된 데이터를 바로 게시물 리스트에 추가
-      setContent(""); // 성공적으로 업로드되면 텍스트 필드 초기화
-      alert("게시물이 저장되었습니다.");
+      setPosts([...posts, response.data]); // 게시물 리스트 업데이트
+      setContent(""); // 텍스트 필드 초기화
+      setFile(null); // 파일 상태 초기화
+      setLinkId(null); // link_id 초기화
+      setPreviewURL(null); // 미리보기 URL 초기화
+      alert("게시물이 성공적으로 저장되었습니다.");
     } catch (error) {
-      console.log("게시물 저장 실패:", error);
+      console.error("게시물 저장 실패: ", error);
       alert("게시물 저장 중 문제가 발생했습니다.");
     }
+
+
+
+    
   };
 
   return (
     <div className="box">
       {/* 사진 업로드 영역 */}
       <div className="uploadArea">
-        {/* 업로드된 이미지 영역 */}
-        {file && (
+        {/* 업로드된 이미지 미리보기 */}
+        {previewURL && (
           <img
             src={previewURL}
             alt="업로드된 이미지"
@@ -135,10 +136,10 @@ function ContentWrite() {
         </p>
       )}
 
-      {/* 게시글 영역 */}
+      {/* 게시글 작성 영역 */}
       <div className="contentArea">
         <div className="completeiconArea">
-          {/* 카메라 아이콘을 파일 업로드와 연결 */}
+          {/* 카메라 아이콘 */}
           <label htmlFor="fileInput" className="cameraIcon">
             <img
               className="cameraIcon"
@@ -154,7 +155,7 @@ function ContentWrite() {
           placeholder="입력란"
           maxLength={300}
           value={content}
-          onChange={handleTextUpdate}
+          onChange={(e) => setContent(e.target.value)}
         ></textarea>
       </div>
     </div>

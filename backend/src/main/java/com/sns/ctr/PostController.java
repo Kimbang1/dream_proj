@@ -2,17 +2,12 @@ package com.sns.ctr;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +24,6 @@ import com.sns.dao.UserDao;
 import com.sns.dto.FileListDto;
 import com.sns.dto.FilePostDto;
 import com.sns.dto.PostDto;
-import com.sns.dto.SNSDto;
 import com.sns.dto.UserDto;
 import com.sns.jwt.JwtProvider;
 import com.sns.svc.FileService;
@@ -96,7 +90,7 @@ public class PostController {
 				Map<String, String> responseItem = new HashMap<>();
 				responseItem.put("linkId", filePost.getLink_id());
 				responseItem.put("uuid", postData.getWrite_user());
-				responseItem.put("tagId", null);
+				responseItem.put("tagId", userDao.mtdSelectTagId(postData.getWrite_user()));
 				responseItem.put("filePath", fileData.getFile_path());
 				responseItem.put("content", postData.getContent());
 				
@@ -189,7 +183,7 @@ public class PostController {
             fileListDto.setCaptured_at(timestamp);
             
             log.info("file_id: " + fileListDto.getFile_id());
-            log.info("ori_filename" + fileListDto.getOri_filename());
+            log.info("ori_filename: " + fileListDto.getOri_filename());
             log.info("up_filename" + fileListDto.getUp_filename());
             log.info("file_path" + fileListDto.getFile_path());
             log.info("extension: " + fileListDto.getExtension());
