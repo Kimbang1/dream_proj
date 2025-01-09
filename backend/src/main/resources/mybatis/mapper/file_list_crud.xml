@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sns.dao.FileListMapper">
+	
+	<insert id="saveFileData" parameterType="com.sns.dto.FileListDto">
+		insert into file_list
+		(file_id, ori_filename, up_filename, file_path, extension, captured_at, latitude, longitude)
+		values (#{file_id}, #{ori_filename}, #{up_filename}, #{file_path}, #{extension}, #{captured_at}, #{latitude}, #{longitude})
+	</insert>
+	
+	<select id="selectFileData" resultType="com.sns.dto.FileListDto">
+		select * from file_list where file_id = #{file_id}
+	</select>
+	
+</mapper>

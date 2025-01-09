@@ -1,23 +1,35 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+// import { useRouter } from "next/router";
 
 function Bottom() {
   const navigate = useNavigate();
-
+  // const router = useRouter();
   const changeUserMain = () => {
-      navigate("UserMainpage"); // 네비게이션 추가
+    console.log("유저메인페이지로 이동");
+  
+    navigate("/user/UserMainpage"); // 네비게이션 추가
+    // router.push("/UserMainpage");
   };
 
   const changeGallery = () => {
+   
     navigate("/Gallery"); // 네비게이션 추가
   };
 
   const changePost = () => {
+  
     navigate("/Post"); // 네비게이션 추가
   };
 
   const changeContentWrite = () => {
+   
     navigate("/ContentWrite"); // 네비게이션 추가
+  };
+
+  const changeSearchRes = () => {
+ 
+    navigate("/SearchRes");
   };
 
   return (
@@ -40,14 +52,17 @@ function Bottom() {
         </div>
 
         <div className="Bottomicon">
-          <img src="/images/dodbogi.png" alt="돋보기" />
+          <img
+            onClick={changeSearchRes}
+            src="/images/dodbogi.png"
+            alt="돋보기"
+          />
         </div>
 
         <div className="Bottomicon">
           <img onClick={changeUserMain} src="/images/cat.jpg" alt="프로필" />
         </div>
       </nav>
-
     </div>
   );
 }

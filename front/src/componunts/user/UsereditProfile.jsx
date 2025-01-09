@@ -12,10 +12,10 @@ function Useredit() {
 
   // 유저 정보 상태 관리
   const [userInfo, setUserInfo] = useState({
-    tagId: "",
-    userName: "",
+    tag_id: "",
+    username: "",
     introduce: "",
-    phoneNum: "",
+    phone: "",
     profileImage: "",
   });
 
@@ -31,7 +31,9 @@ function Useredit() {
   // 수정 완료 버튼 클릭 시 처리
   const handleSave = async () => {
     try {
-      await axios.put("/api/user/update", userInfo); // 실제 API 엔드포인트로 변경
+      await axios.put("/user/update", userInfo) // 실제 API 엔드포인트로 변경
+      .then((response) => console.log(response))
+      .catch((error) => console.error("Error:", error));
       alert("수정 완료!");
     } catch (error) {
       console.error("수정 실패:", error);
@@ -46,10 +48,10 @@ function Useredit() {
         const response = await axios.get("/api/user/details"); // 실제 API 엔드포인트로 변경
         const data = response.data;
         setUserInfo({
-          tagId: data.tagId || "",
-          userName: data.userName || "",
+          tag_id: data.tag_id || "",
+          username: data.username || "",
           introduce: data.introduce || "",
-          phoneNum: data.phoneNum || "",
+          phone: data.phone || "",
           profileImage: data.profileImage || "",
         });
       } catch (error) {
@@ -77,8 +79,8 @@ function Useredit() {
           <div className="tagIdArea label">
             <input
               type="text"
-              name="tagId"
-              value={userInfo.tagId}
+              name="tag_id"
+              value={userInfo.tag_id}
               onChange={handleChange}
               placeholder="태그 ID를 입력하세요"
             />
@@ -86,8 +88,8 @@ function Useredit() {
           <div className="useNameArea label">
             <input
               type="text"
-              name="userName"
-              value={userInfo.userName}
+              name="username"
+              value={userInfo.username}
               onChange={handleChange}
               placeholder="사용자 이름을 입력하세요"
             />
@@ -105,8 +107,8 @@ function Useredit() {
           <div className="phonNumArea label">
             <input
               type="text"
-              name="phoneNum"
-              value={userInfo.phoneNum}
+              name="phone"
+              value={userInfo.phone}
               onChange={handleChange}
               placeholder="전화번호를 입력하세요"
             />

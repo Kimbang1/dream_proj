@@ -19,8 +19,12 @@ function AppRouter() {
 
         {/* Layout을 사용하여 공통 레이아웃 적용 */}
         <Route element={<Layout />}>
-
           {allRoutes.map((route, index) => (
+            <Route key={index} path={route.path} element={route.element} />
+          ))}
+
+          {/* userRoutes */}
+          {userRoutes.map((route, index) => (
             <Route key={index} path={route.path} element={route.element} />
           ))}
         </Route>

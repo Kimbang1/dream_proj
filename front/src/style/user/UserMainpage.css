@@ -1,4 +1,4 @@
-div.UserFrame{
+div.UserFrame {
   display: flex;
   flex-direction: row;
 }
@@ -9,34 +9,34 @@ div.userpage {
 }
 
 /* 프로필 화면 상단 */
-div.ProfileArea{
- width: 100%;
- display: flex;
+div.ProfileArea {
+  width: 100%;
+  display: flex;
 }
-div.PrImgArea{
+div.PrImgArea {
   width: 30%;
 }
-div.PrImgArea img{
+div.PrImgArea img {
   width: 100%;
   border: 1px solid #f80;
   border-radius: 10px;
 }
-div.InfoArea{
+div.InfoArea {
   margin-left: 10%;
   flex: 1;
 }
-div.FirstLayer{
+div.FirstLayer {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin:10px 0;
+  margin: 10px 0;
 }
-div.SecondLayer{
+div.SecondLayer {
   display: flex;
   justify-content: space-between;
 }
-div.ThirdLayer div.userName{
- text-align: left;
+div.ThirdLayer div.userName {
+  text-align: left;
 }
 
 /*프로필 화면 하단*/
@@ -69,17 +69,25 @@ img.Btnicon {
 
 div.ViewChoiceArea {
   top: 70px;
- position: relative;
+  position: relative;
 }
 
-
-div#rightAside{
+div#rightAside {
   width: 30%;
 }
 
-@media screen and(max-width:300px) {
-
-  div#rightAside{
-    width: 0;
+@media screen and (max-width: 330px) {
+  div#rightAside {
+    display: none;
+    margin: 0;
+    padding: 0;
+  }
+  div.UserFrame {
+    width: 100%;
+  }
+  div.userpage {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
   }
 }

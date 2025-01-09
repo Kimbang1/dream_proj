@@ -134,6 +134,36 @@ public class JwtProvider {
 		return new UsernamePasswordAuthenticationToken(principalDetails, token, authorities);
 	}
 	
+	public Authentication getAuthenticationFromRefreshToken(String refreshToken) {
+		// 1. Refresh Token 유효성 검증
+		if (!validateRefreshToken(refreshToken)) {
+			throw new RuntimeException("유효하지 않은 Refresh Token입니다.");
+		}
+		
+		// 2. Refresh Token으로부터 사용자 정보 조회
+		RefreshTokenListDto refreshTokenListDto = refreshTokenMapper.findByRefreshToken(refreshToken);
+		if (refreshTokenListDto == null || !refreshTokenListDto.is_using()) {
+			throw new RuntimeException("사용할 수 없는 Refresh Token 입니다.");
+		}
+		
+		// 3. 사용자 ID를 추출하여 UserDto 가져오기
+		String userId = refreshTokenListDto.getUuid();
+		UserDto userDto = userDao.mtdFindByUuid(userId);
+		if(userDto == null) {
+			throw new RuntimeException("사용자 정보가 없습니다.");
+		}
+		
+		// 4. PrincipalDetails 객체 생성
+		PrincipalDetails principalDetails = new PrincipalDetails(userDto);
+		
+		// 5. 권한 정보 설정
+		String authority = userDto.getIs_admin() ? "ROLE_ADMIN" : "ROLE_USER";
+		List<? extends GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority(authority));
+		
+		// 6. Authentication 객체 반환
+		return new UsernamePasswordAuthenticationToken(principalDetails, refreshToken, authorities);
+	}
+	
 	// JWT Claims 복호화
 	public Claims parseClaims(String token) {
 		try {
@@ -150,18 +180,23 @@ public class JwtProvider {
 			return JwtCode.ACCESS;
 		} catch (ExpiredJwtException e) {
 			log.info("Expired JWT Token");
+			log.info(JwtCode.EXPIRED.getMessage());
 			return JwtCode.EXPIRED;
 		} catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token");
+            log.info(JwtCode.DENIED.getMessage());
             return JwtCode.DENIED;
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT Token");
+            log.info(JwtCode.DENIED.getMessage());
             return JwtCode.DENIED;
         } catch (IllegalArgumentException e) {
             log.info("JWT claims string is empty");
+            log.info(JwtCode.DENIED.getMessage());
             return JwtCode.DENIED;
         } catch (Exception e) {
             log.info("Exception");
+            log.info("예기치 않은 오류 발생");
             return JwtCode.DENIED;
         }
 	}
@@ -170,11 +205,14 @@ public class JwtProvider {
 	public boolean validateRefreshToken(String validRefreshToken) {
 		// Refresh Token 조회
 		RefreshTokenListDto reTokenDto = refreshTokenMapper.findByRefreshToken(validRefreshToken);
-					
+		log.info("RefreshToken 조회 결과: {}", reTokenDto);
+		log.info("Token is using: {}", reTokenDto.is_using());
+		log.info("ExpiresIn: {}", reTokenDto.getExpires_in());
+		log.info("Current time: {}", new Timestamp(System.currentTimeMillis()));
 		// isUsing으로 토큰 활성화 여부 체크
-		if(reTokenDto != null && reTokenDto.isUsing()) {
+		if(reTokenDto != null && reTokenDto.is_using()) {
 			// 만료 시간이 현재 시간보다 뒤에 있는지 확인
-			if(reTokenDto.getExpiresIn().after(new Timestamp(System.currentTimeMillis()))) {
+			if(reTokenDto.getExpires_in().after(new Timestamp(System.currentTimeMillis()))) {
 				return true;
 			}
 		}

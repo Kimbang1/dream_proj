@@ -10,6 +10,7 @@ const instance = axios.create({
   },
 });
 
+
 //요청 인터셉터
 instance.interceptors.request.use(
   (config) => {
@@ -30,7 +31,25 @@ instance.interceptors.response.use(
     console.log("Response:", response);
     return response;
   },
-  (error) => {
+  async (error) => {
+    if (error.response && error.response.status === 600) {
+      console.log("이거 타나?");
+      try {
+        // /auth/refresh 엔드포인트로 요청 보내기
+        const refreshResponse = await instance.post("/auth/refresh", {});
+
+        // 새 엑세스 토큰은 서버가 쿠키에 담아서 반환하므로,
+        // 응답에서 accessToken을 받지 않고 쿠키로 자동 처리됨
+
+        // 원래 요청을 새로운 엑세스 토큰으로 재시도 (자동으로 쿠키가 포함됨)
+        const originalRequest = error.config;
+        return instance(originalRequest);
+      } catch (refreshError) {
+        console.log("리프레쉬 토큰이 날아갔습니다:",refreshError);
+        alert("세션이 만료 되었으니 다시 로그인 해주세요.")
+      }
+    }
+
     // 에러 상태 처리
     if (error.response) {
       const status = error.response.status;
@@ -60,6 +79,8 @@ instance.interceptors.response.use(
     }
 
     return Promise.reject(error);
+    
   }
+  
 );
 export default instance;

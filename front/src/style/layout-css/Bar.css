@@ -1,0 +1,75 @@
+/* 헤더 스타일 */
+.header {
+  display: flex; /* 플렉스박스 사용 */
+  justify-content: space-between; /* 왼쪽과 오른쪽으로 요소 정렬 */
+  align-items: center;
+  padding-right: 20px;
+  background-color: #fff;
+  position: relative;
+}
+
+/* 삼발이 메뉴 아이콘 스타일 */
+.menu-icon {
+  font-size: 30px;
+  cursor: pointer;
+  user-select: none;
+  margin-left: auto; /*오른쪽으로 밀어냄*/
+}
+
+/* 드로어 스타일 */
+.drawer {
+  position: fixed;
+  top: 0;
+  right: -250px;
+  width: 160px;
+  height: 90%;
+  background-color: #f8f8f8;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+  transition: right 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 10px;
+}
+
+.drawer.open {
+  right: 0; /* 드로어가 열릴 때 오른쪽으로 이동 */
+}
+
+/* 드로어 메뉴 항목 스타일 */
+.drawer-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer-item {
+  margin: 10px 0;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: #e0e0e0;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.drawer-item:hover {
+  background-color: #d0d0d0;
+}
+
+/* 드로어 외부 영역 (오버레이) */
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none; /* 드로어가 닫힌 경우 숨김 */
+}
+
+.drawer.open + .drawer-overlay {
+  display: block; /* 드로어가 열리면 오버레이 표시 */
+}

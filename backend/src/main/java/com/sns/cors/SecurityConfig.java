@@ -1,4 +1,4 @@
-package com.sns.jwt;
+package com.sns.cors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +15,14 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.sns.dao.UserDao;
+import com.sns.jwt.CustomAuthenticationProvider;
+import com.sns.jwt.CustomUserDetailsService;
+import com.sns.jwt.JwtAccessDeniedHandler;
+import com.sns.jwt.JwtAuthenticationEntryPoint;
+import com.sns.jwt.JwtAuthenticationFilter;
+import com.sns.jwt.JwtProvider;
+
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -27,6 +35,7 @@ public class SecurityConfig {
 	
 	private final JwtProvider jwtProvider;
 	private final CustomUserDetailsService customUserDetailsService;
+	private final UserDao userDao;
 	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -40,7 +49,7 @@ public class SecurityConfig {
 	
 	@Bean
 	public AuthenticationProvider proAuthenticationProvider() {
-		return new CustomAuthenticationProvider(customUserDetailsService, passwordEncoder());
+		return new CustomAuthenticationProvider(userDao, passwordEncoder());
 	}
 	
 	@Bean

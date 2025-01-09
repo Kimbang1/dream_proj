@@ -27,16 +27,15 @@ function Join() {
       pwd: pwd,
       phone: phone,
       birthday: birthday,
-      provider: "local"
+      provider: "local",
     };
 
     try {
       // Axios로 데이터 전송 (JSON 형식)
-      const response = await AxiosApi.post("/auth/join", userData);
+      const response = await AxiosApi.post("/join/local", userData);
       console.log(response.data);
       alert("회원가입 성공");
       navigate("/Login"); // 회원 가입 후 로그인 페이지로 이동
-
     } catch (error) {
       console.error("회원 가입 실패:", error);
       // 에러는 인터셉터에서 처리되므로 여기선 추가 처리 필요 없음
@@ -67,7 +66,7 @@ function Join() {
         <input
           className="joinFrame"
           type="text"
-          placeholder="아이디를 입력해주세요"
+          placeholder="태그 아이디를 입력해주세요"
           value={tag_id}
           onChange={(e) => setTagId(e.target.value)}
         />

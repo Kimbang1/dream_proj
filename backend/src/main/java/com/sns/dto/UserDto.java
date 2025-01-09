@@ -3,9 +3,15 @@ package com.sns.dto;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDto {
 	private String uuid;
 	private String username;
@@ -24,4 +30,6 @@ public class UserDto {
 	private String pwd;
 	private String social_key;
 	private int suspended_cnt;
+	private String introduce;
+	private String profile_path;
 }

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AlarmComponent from "../modal/AlramModal"; // 알람 컴포넌트 임포트
 
-function Header({ setIsUserMainPage }) {
+function Header({ setIsMainPage }) {
   const [searchMonitor, setSearchMonitor] = useState("");
   const [recentSearch, setRecentSearch] = useState([]);
   const [isAlramOpen, setIsAlramOpen] = useState(false);
@@ -28,7 +28,7 @@ function Header({ setIsUserMainPage }) {
       setSearchMonitor("");
       setIsAccordionOpen(false); // 검색 후 아코디언 닫기
 
-      //검색 페이지로 이동하면서 검색어 전달
+      // 검색 페이지로 이동하면서 검색어 전달
       navigate(`/SearchRes?query=${encodeURIComponent(searchMonitor)}`);
     }
   };
@@ -38,13 +38,13 @@ function Header({ setIsUserMainPage }) {
     setRecentSearch((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // 알람 모달 핸들러
-  const openAlarmModal = () => setIsAlramOpen(true);
-  const closeAlarmModal = () => setIsAlramOpen(false);
+  // 알람 모달 핸들러 - 상태 토글
+  const toggleAlarmModal = () => {
+    setIsAlramOpen((prev) => !prev);
+  };
 
   // 글쓰기 페이지 이동
   const handleWritePage = () => {
-    setIsUserMainPage(true);
     navigate("/ContentWrite");
   };
 
@@ -131,7 +131,7 @@ function Header({ setIsUserMainPage }) {
       {/* 기능 아이콘 영역 */}
       <div className="functionArea">
         <img
-          onClick={openAlarmModal}
+          onClick={toggleAlarmModal} // 알람 모달 토글
           className="imges"
           src="/images/bell.png"
           alt="종모양"
@@ -148,7 +148,7 @@ function Header({ setIsUserMainPage }) {
       {isAlramOpen && (
         <AlarmComponent
           isOpen={isAlramOpen}
-          closeAlarmModal={closeAlarmModal}
+          closeAlarmModal={toggleAlarmModal} // 모달 닫기 핸들러
         />
       )}
     </div>

@@ -9,6 +9,9 @@
 @import url(user/LoginStyle.css);
 @import url(user/joinchoice.css);
 
+/* 소셜 로그인 관련 css */
+@import url(user/Social.css);
+
 /*약관동의 css*/
 @import url(pages-css/Agree.css);
 
@@ -21,6 +24,9 @@
 @import url(layout-css/leftaside.css);
 @import url(layout-css/smallheader.css);
 @import url(layout-css/RightAside.css);
+
+/* 메뉴 바 토글 css */
+@import url(layout-css/Bar.css);
 
 /*메인뷰 css*/
 @import url(Mainview-css/Mainviewstyle.css);
@@ -41,7 +47,13 @@
 /*검색모달*/
 /*알람모달*/
 @import url(modal-css/alramModal.css);
+/* 알람 페이지 */
+@import url(pages-css/AlramPage.css);
+
 /*검색페이지 css*/
 
 /* 게시글 작성 페이지 css */
 @import url(pages-css/ContentWrite.css);
+
+/* 지도 css */
+@import url(pages-css/Map.css);

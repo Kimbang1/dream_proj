@@ -6,10 +6,13 @@ import ContentWrite from "../../Pages/views/ContentWrite";
 import Gallery from "../../Pages/views/Gallery";
 import Post from "../../Pages/views/Post";
 import SearchRes from "../../Pages/views/SearchRes";
+import Map from "../../componunts/NaverMap/Map";
+import AlramPage from "../../Pages/views/AlramPage";
+
 
 const pageRoutes = [
   {
-    path: "/*",
+    path: "/Mainview",
     element: <Mainview />,
   },
   {
@@ -28,6 +31,15 @@ const pageRoutes = [
     path: "/SearchRes",
     element: <SearchRes />,
   },
+  {
+    path: "/Map",
+    element: <Map />,
+  },
+  {
+    path: "/Alram",
+    element: <AlramPage />,
+  },
+
 ];
 
 export default pageRoutes;
