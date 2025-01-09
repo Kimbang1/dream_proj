@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import UserPost from "../user/UserPost"; // UserPost 컴포넌트 임포트
-import UserGallery from "../user/UserGallery"; // UserGallery 컴포넌트 임포트
+import Gallery from "../../Pages/views/Gallery";
+import Post from "../../Pages/views/Post";
+import UserGallery from "../user/UserGallery";
+import UserPost from "../user/UserPost";
 
-const ViewChoice = () => {
+const ViewChoice = ({ setIsMainPage }) => {
   // 상태 관리
   const [isPosthome, setIsPosthome] = useState(true);
   const [isGalleryhome, setIsGalleryhome] = useState(false);
@@ -37,9 +39,18 @@ const ViewChoice = () => {
 
       {/* 뷰 영역 */}
       <div id="ViewArea">
-        {/* 포스트/갤러리 누르는 것에 따른 화면 전환 */}
-        {isPosthome && <UserPost />}
-        {isGalleryhome && <UserGallery />}
+        {/* 메인 페이지 여부에 따라 다른 컴포넌트 렌더링 */}
+        {setIsMainPage ? (
+          <>
+            {isPosthome && <Post />} {/* 일반 Post 화면 */}
+            {isGalleryhome && <Gallery />} {/* 일반 Gallery 화면 */}
+          </>
+        ) : (
+          <>
+            {isPosthome && <UserPost />} {/* 유저 Post 화면 */}
+            {isGalleryhome && <UserGallery />} {/* 유저 Gallery 화면 */}
+          </>
+        )}
       </div>
     </div>
   );

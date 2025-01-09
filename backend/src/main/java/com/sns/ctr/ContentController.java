@@ -78,7 +78,7 @@ public class ContentController {
       return ResponseEntity.ok(responseList);
    }
    
-   @RequestMapping("postView")
+   @RequestMapping("/postView")
    public ResponseEntity<?> mtdPostView() {
       log.info("/postView까지는 왔어");
       // 1. filePost 목록 가져오기

@@ -3,7 +3,7 @@ import AxiosApi from "../../servies/AxiosApi";
 import useImageTimeCheck from "../../hook/TimeCheck"; // 시간 체크 훅
 import useImageMetadata from "../../hook/UseMetadata"; // 메타데이터 전송 훅
 
-function ContentWrite() {
+function ContentWrite({ uuid }) {
   const [file, setFile] = useState(null); // 사진 파일 상태
   const [content, setContent] = useState(""); // 입력란 텍스트 상태
   const [link_id, setLinkId] = useState(null);

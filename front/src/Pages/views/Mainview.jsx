@@ -3,9 +3,9 @@ import React, { useState, useEffect } from "react";
 import ViewChoice from "../../componunts/layout/ViewChoice";
 import AxiosApi from "../../servies/AxiosApi";
 
-function Mainview({ isMainPage }) {
+function Mainview({ setIsMainPage }) {
   const [user, setUser] = useState([]); //불러올 데이터
-  // const [currentPage, setCurrentPage] = useState("gallery"); // 현재 페이지를 관리하는 상태
+  const [currentPage, setCurrentPage] = useState("gallery"); // 현재 페이지를 관리하는 상태
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -18,11 +18,14 @@ function Mainview({ isMainPage }) {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    setIsMainPage(true);
+  }, [setIsMainPage]);
   return (
     <>
       {/* //프로필 페이지가 아닐때만 렌더링 */}
       <div className="ChoiceBtn">
-        <ViewChoice />
+        <ViewChoice setIsMainPage={true} />
       </div>
     </>
   );
