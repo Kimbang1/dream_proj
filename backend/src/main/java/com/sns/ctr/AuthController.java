@@ -60,12 +60,12 @@ public class AuthController {
 			String refreshToken = jwtProvider.generateRefreshToken(principalDetails.getUserId(), request);
 			
 			// accessToken을 HttpOnly 쿠키로 설정
-			Cookie accessTokenCookie = createCookies("accessToken", accessToken, 60*60);
+			Cookie accessTokenCookie = createCookies("accessToken", accessToken, 60*10);
 			addSameSiteCookieToResponse(response, accessTokenCookie, "None");
 			response.addCookie(accessTokenCookie);	// 응답에 쿠키 추가
 			
 			// refreshToken을 HttpOnly 쿠키로 설정
-			Cookie refreshTokenCookie = createCookies("refreshToken", refreshToken, 60*60);
+			Cookie refreshTokenCookie = createCookies("refreshToken", refreshToken, 60*60*10);
 			addSameSiteCookieToResponse(response, refreshTokenCookie, "None");
 			response.addCookie(refreshTokenCookie);	// 응답에 쿠키 추가
 			
@@ -178,7 +178,7 @@ public class AuthController {
 		log.info("newAccessToken: {}", newAccessToken);
 		
 		// accessToken을 HttpOnly 쿠키로 설정
-		Cookie accessTokenCookie = createCookies("accessToken", newAccessToken, 60*60);
+		Cookie accessTokenCookie = createCookies("accessToken", newAccessToken, 60*10);
 		addSameSiteCookieToResponse(response, accessTokenCookie, "None");
 		response.addCookie(accessTokenCookie);	// 응답에 쿠키 추가
 		
