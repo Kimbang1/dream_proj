@@ -105,6 +105,9 @@ function ContentWrite() {
       });
       setPosts([...posts, response.data]);
       setContent("");
+      setFile(null);
+      setLinkId(null);
+      setPreviewURL(null);
       alert("게시물이 저장되었습니다.");
     } catch (error) {
       console.error("게시물 저장 실패: ", error);
