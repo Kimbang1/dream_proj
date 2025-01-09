@@ -13,7 +13,7 @@ function Post() {
 
     try {
       // 실제 데이터 API 호출 예시
-      const response = await AxiosApi.get("/auth/postUpload");
+      const response = await AxiosApi.get("/post/postUpload");
       const newData = response.data;
 
       if (newData.length === 0) {
