@@ -34,7 +34,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/post")
+@RequestMapping("/contents")
 @Slf4j
 @RequiredArgsConstructor
 public class PostController {
@@ -45,6 +45,12 @@ public class PostController {
 	private final UserDao userDao;
 	private final FilePostMapper filePostMapper;
 	private final PostMapper postMapper;
+	
+	@RequestMapping("/search")
+	public ResponseEntity<?> mtdSearch(@RequestParam String keyword) {
+		
+		return null;
+	}
 	
 	@RequestMapping("/galleryView")
 	public ResponseEntity<List<Map<String, String>>> mtdGalleryView() {
