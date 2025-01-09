@@ -106,6 +106,7 @@ public class PostController {
 			@RequestParam("latitude") String latitude,
 			@RequestParam("longitude") String longitude,
 			@RequestParam("captured_at") String captured_at,
+			@RequestParam(value="url",required = false)String url, //URL 추가
 			HttpServletRequest request
 			) {
 		// 파일 이름과 MIME 타입 확인
@@ -118,6 +119,8 @@ public class PostController {
         
         Timestamp timestamp = Timestamp.from(Instant.parse(captured_at));
         System.out.println("timestamp: " + timestamp);
+        	
+        System.out.println("URL:"+url);
         
         HashMap<String, String> responseBody = new HashMap<>();
         
@@ -219,9 +222,12 @@ public class PostController {
 		HashMap<String, String> responseBody = new HashMap<>();
 		String linkId = requestData.get("link_id");
 		String content = requestData.get("content");
+		String url = requestData.get("url"); //url 데이터 추가 처리
 		
 		System.out.println("link_id: " + linkId);
 		System.out.println("content: " + content);
+		System.out.println("URL: " + url);	//url 데이터 추가 처리
+		
 		
 		String accessToken = null;
 		
@@ -261,4 +267,4 @@ public class PostController {
 	
 	
 	
-}
+};
