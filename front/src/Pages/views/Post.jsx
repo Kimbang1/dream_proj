@@ -6,6 +6,16 @@ function Post() {
   const [loading, setLoading] = useState(false); // 로딩 상태
   const [hasMore, setHasMore] = useState(true); // 더 이상 로드할 데이터가 있는지 확인
 
+  //날짜 컷팅
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDay()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  };
+
   // 데이터 로드 함수
   const loadMoreItems = useCallback(async () => {
     if (loading || !hasMore) return; // 이미 로딩 중이거나 더 이상 로드할 데이터가 없으면 요청하지 않음
@@ -53,37 +63,39 @@ function Post() {
 
   return (
     <div className="PostView">
-      <div className="PostArea">
-        {items.map((item, index) => (
+      {items.map((item, index) => {
+        console.log(item.filePath); // 각 아이템의 imageUrl 값 출력
+        console.log(item.upFileName); // 각 아이템의 imageUrl 값 출력
+
+        return (
           <div key={index} className="PostItem">
-            <div className="left">
-              <div className="userId">
-                <span>{item.id}</span>
-              </div>
-              <div className="content">
-                <span>{item.content}</span>
-              </div>
+            {/* 이미지 영역 */}
+            <div className="PostArea">
+              <img
+                key={item.id}
+                src={`/contentImage/${item.upFileName}`}
+                alt="게시물 이미지"
+                className="PostImage"
+              />
             </div>
 
-            <div className="right">
-              {item.image_url && (
-                <div className="imagArea">
-                  <img
-                    src={item.image_url}
-                    alt="게시글 이미지"
-                    className="postImage"
-                  />
-                </div>
-              )}
-              <div className="RightUpper">
-                <span>댓글 {item.comments}</span>
-                <span>좋아요 {item.likes}</span>
+            {/* 콘텐츠 영역 */}
+            <div className="contentsArea">
+              <div className="leftContents">
+                <div className="author">{item.tagId}</div>
+                <div className="content">{item.content}</div>
               </div>
-              <div className="WriteTime">{item.writeTime}</div>
+              <div className="rightContents">
+                <div className="rightUP">
+                  <div className="comments">댓글 {item.commentCount}개</div>
+                  <div className="likes">좋아요 {item.likeCount}개</div>
+                </div>
+                <div className="date">{formatDate(item.createAt)}</div>
+              </div>
             </div>
           </div>
-        ))}
-      </div>
+        );
+      })}
       {loading && <div>로딩 중...</div>} {/* 로딩 중 텍스트 */}
       {!hasMore && <div>더 이상 불러올 데이터가 없습니다.</div>}{" "}
       {/* 데이터 없음 메시지 */}

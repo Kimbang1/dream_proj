@@ -41,7 +41,7 @@ function UserMainpage() {
             <div className="InfoArea">
               <div className="useDetails">
                 <div className="FirstLayer">
-                  <div className="userName">@tagid{user.userName}</div>
+                  <div className="userName">@tagid{user.tag_id}</div>
                   <button className="editProfileBtn" onClick={UserEditHandle}>
                     프로필 수정
                   </button>
@@ -69,7 +69,6 @@ function UserMainpage() {
           <ViewChoice />
         </div>
       </div>
-   
     </div>
   );
 }
