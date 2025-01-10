@@ -76,8 +76,8 @@ function ContentWrite({ uuid }) {
     if (isMetadataSent) {
       setFile(selectedFile);
       // 파일 업로드 성공 후 link_id 저장
-      const linkIdFromResponse = isMetadataSent.link_id;
-      setLinkId(linkIdFromResponse);
+      setLinkId(isMetadataSent.link_id);
+      console.log("link_id: ", link_id);
       console.log("파일이 성공적으로 처리되었습니다.");
     } else {
       alert("파일 처리에 실패했습니다.");

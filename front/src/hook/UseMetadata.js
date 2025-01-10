@@ -65,7 +65,7 @@ const useImageMetadata = () => {
 
       if (response.data && response.data.filePath) {
         setPreviewURL(response.data.filePath);
-        return response.data.filePath;
+        return response.data;
       }
       return false;
     } catch (error) {

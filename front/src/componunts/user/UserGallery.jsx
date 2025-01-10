@@ -15,7 +15,7 @@ function UserGallery() {
     setLoading(true);
     try {
       // 백엔드 API 호출 (페이지 기반 데이터를 가져온다고 가정)
-      const response = await AxiosApi.get("/contents/galleryView");
+      const response = await AxiosApi.get("/contents/userGalleryView");
       const newItems = response.data; // 서버에서 반환된 데이터
 
       // 기존 데이터와 새 데이터를 병합

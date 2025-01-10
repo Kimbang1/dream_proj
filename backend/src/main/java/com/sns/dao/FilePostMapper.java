@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.sns.dto.FilePostDto;
+import com.sns.dto.JoinFilePostDto;
 
 @Mapper
 public interface FilePostMapper {
@@ -15,4 +16,6 @@ public interface FilePostMapper {
 	public int addPostId(@Param("link_id")String link_id, @Param("post_id")String post_id);
 	
 	public List<FilePostDto> selectAllList();
+	
+	public List<JoinFilePostDto> selectChoiceList(@Param("uuid") String uuid);
 }

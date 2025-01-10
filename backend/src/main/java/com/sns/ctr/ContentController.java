@@ -23,6 +23,7 @@ import com.sns.dao.PostMapper;
 import com.sns.dao.UserDao;
 import com.sns.dto.FileListDto;
 import com.sns.dto.FilePostDto;
+import com.sns.dto.JoinFilePostDto;
 import com.sns.dto.PostDto;
 import com.sns.dto.UserDto;
 import com.sns.jwt.JwtProvider;
@@ -50,6 +51,40 @@ public class ContentController {
    public ResponseEntity<?> mtdSearch(@RequestParam String keyword) {
       
       return null;
+   }
+   
+   @RequestMapping("/userGalleryView")
+   public ResponseEntity<?> mtdUserGalleryView(HttpServletRequest request) {
+	   log.info("/userGalleryView까지 왔어");
+	   
+	   HashMap<String, String> responseBody = new HashMap<>();
+	   String accessToken = null;
+		
+	   // AccessToken 추출
+	   Cookie[] cookies = request.getCookies();
+	   if (cookies != null) {
+		   for (Cookie cookie : cookies) {
+			   if ("accessToken".equals(cookie.getName())) {
+				   accessToken = cookie.getValue();
+				   break;
+			   }
+		   }
+	   }
+		
+	   if (accessToken == null) {
+		   log.error("Access token이 존재하지 않습니다.");
+		   responseBody.put("message", "로그인이 필요합니다.");
+		   return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+	   }
+		
+	   // AccessToken에서 사용자 정보 추출
+	   String email = jwtProvider.getEmailFromToken(accessToken);
+	   String provider = jwtProvider.getProviderFromToken(accessToken);
+	   UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
+	   
+	   List<JoinFilePostDto> filePostList = filePostMapper.selectChoiceList(user.getUuid());
+	   
+	   return null;
    }
    
    @RequestMapping("/galleryView")
@@ -261,6 +296,8 @@ public class ContentController {
       postMapper.savePost(postDto);
       
       filePostMapper.addPostId(linkId, post_id);
+      
+      System.out.println(postDto.getWrite_user());
       
       return null;
    }

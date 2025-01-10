@@ -111,3 +111,21 @@ constraint primary key(link_id)
 drop table file_post;
 
 select * from file_post order by create_at;
+
+SELECT 
+    p.post_id AS post_id,
+    p.content,
+    p.create_at,
+    f.file_id AS file_id,
+    f.up_filename,
+    f.file_path
+FROM 
+    post p
+LEFT JOIN 
+    file_post fp ON p.post = fp.post_id
+LEFT JOIN 
+    file_list f ON fp.file_id = f.file_id
+WHERE 
+    p.write_user = '9a6fdc66-46cc-4445-8d2b-dd8a8ed2705c'
+ORDER BY 
+    p.create_at DESC;

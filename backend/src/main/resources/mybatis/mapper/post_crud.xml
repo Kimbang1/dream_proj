@@ -9,6 +9,6 @@
 	</insert>
 	
 	<select id="selectAllPost" resultType="com.sns.dto.PostDto">
-		select * from post where post_id = #{post_id}
+		select * from post where post_id = #{post_id} order by create_at desc
 	</select>
 </mapper>
