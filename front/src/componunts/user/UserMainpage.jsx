@@ -41,11 +41,9 @@ function UserMainpage() {
             <div className="InfoArea">
               <div className="useDetails">
                 <div className="FirstLayer">
-<<<<<<< HEAD
+
                   <div className="userName">@{user.tag_id}</div>
-=======
-                  <div className="userName">@tagid{user.tag_id}</div>
->>>>>>> 34ea833c664b13c00309233b6971ab748b2d8ba1
+
                   <button className="editProfileBtn" onClick={UserEditHandle}>
                     프로필 수정
                   </button>

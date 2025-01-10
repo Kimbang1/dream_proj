@@ -1,11 +1,18 @@
 import React, { useState, useCallback, useEffect } from "react";
 import AxiosApi from "../../servies/AxiosApi";
+import { useNavigate } from "react-router-dom";
 
 function Post() {
   const [items, setItems] = useState([]); // 불러온 데이터
   const [loading, setLoading] = useState(false); // 로딩 상태
   const [hasMore, setHasMore] = useState(true); // 더 이상 로드할 데이터가 있는지 확인
 
+  //상세페이지로 이동
+  const navigate = useNavigate();
+
+  const handleDetails = () => {
+    navigate("/DetailsPage");
+  };
   //날짜 컷팅
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
@@ -68,7 +75,7 @@ function Post() {
         console.log(item.upFileName); // 각 아이템의 imageUrl 값 출력
 
         return (
-          <div key={index} className="PostItem">
+          <div key={index} className="PostItem" onClick={handleDetails}>
             {/* 이미지 영역 */}
             <div className="PostArea">
               <img
