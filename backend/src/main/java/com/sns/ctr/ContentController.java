@@ -78,7 +78,7 @@ public class ContentController {
       return ResponseEntity.ok(responseList);
    }
    
-   @RequestMapping("/postView")
+   @RequestMapping("postView")
    public ResponseEntity<?> mtdPostView() {
       log.info("/postView까지는 왔어");
       // 1. filePost 목록 가져오기
@@ -98,7 +98,11 @@ public class ContentController {
             responseItem.put("uuid", postData.getWrite_user());
             responseItem.put("tagId", userDao.mtdSelectTagId(postData.getWrite_user()));
             responseItem.put("filePath", fileData.getFile_path());
+            responseItem.put("upFileName", fileData.getUp_filename());
+            System.out.println(fileData.getUp_filename());
             responseItem.put("content", postData.getContent());
+            responseItem.put("createAt", postData.getCreate_at().toString());
+            
             
             responseList.add(responseItem);
          }
