@@ -2,16 +2,17 @@ import React, { useState, useEffect } from "react";
 import AxiosApi from "../../servies/AxiosApi";
 import useImageTimeCheck from "../../hook/TimeCheck"; // 시간 체크 훅
 import useImageMetadata from "../../hook/UseMetadata"; // 메타데이터 전송 훅
+import { useNavigate } from "react-router-dom";
 
 function ContentWrite({ uuid }) {
   const [file, setFile] = useState(null); // 사진 파일 상태
   const [content, setContent] = useState(""); // 입력란 텍스트 상태
   const [link_id, setLinkId] = useState(null);
   const [posts, setPosts] = useState([]); // 게시물 리스트 상태
+  
   const { validateImageTime, errorMessage: timeErrorMessage } =
     useImageTimeCheck(); // 시간 체크 훅 사용
-  const { handleMetadataAndSend, errorMSG, previewURL, setPreviewURL } =
-    useImageMetadata(); // 메타데이터 전송 훅 사용
+  const { handleMetadataAndSend, errorMSG } = useImageMetadata(); // 메타데이터 전송 훅 사용
   const [imagePreview, setImagePreview] = useState(null);
 
   // 컴포넌트 언마운트 시 imagePreview 삭제
@@ -39,20 +40,6 @@ function ContentWrite({ uuid }) {
     // 새 미리보기 URL 생성성
     const previewUrlTest = URL.createObjectURL(selectedFile);
     setImagePreview(previewUrlTest);
-
-    // // FileReader를 사용하여 미리보기 URL 생성
-    // const reader = new FileReader();
-    // reader.onload = () => {
-    //   setPreviewURL(reader.result); // 데이터 URL을 previewURL에 저장
-    // };
-
-    // reader.readAsDataURL(selectedFile);
-
-    // // 서버에 업로드하고 URL을 가져오는 로직
-    // const metadata = await handleMetadataAndSend(selectedFile, content);
-    // if (metadata) {
-    //   setPreviewURL(metadata); // 서버에서 반환된 URL을 previewURL로 설정
-    // }
 
     // 파일 크기 및 형식 확인
     const validTypes = ["image/jpeg", "image/png", "image/heic", "image/webp"];
@@ -90,31 +77,14 @@ function ContentWrite({ uuid }) {
     setContent(e.target.value);
   };
 
+  const navigate = useNavigate();
   const handleComplete = async () => {
     if (!file || !content.trim()) {
       alert("사진과 내용을 모두 입력하세요.");
-      return;
+      navigate("/ContentWrite");
+    } else {
+      navigate("/user/UserMainpage");
     }
-
-    // try {
-    //   const formData = new FormData();
-    //   formData.append("content", content);
-    //   formData.append("link_id", link_id);
-    //   formData.append("file", file);
-
-    //   // 단일 API 호출
-    //   const response = await AxiosApi.post("/post/postUpload", formData, {
-    //     headers: { "Content-Type": "multipart/form-data" },
-    //   });
-
-    //   console.log("파일업로드 성공:", response);
-    //   setPosts([...posts, response.data]); // 서버에서 반환된 데이터를 바로 게시물 리스트에 추가
-    //   setContent(""); // 성공적으로 업로드되면 텍스트 필드 초기화
-    //   alert("게시물이 저장되었습니다.");
-    // } catch (error) {
-    //   console.log("게시물 저장 실패:", error);
-    //   alert("게시물 저장 중 문제가 발생했습니다.");
-    // }
 
     try {
       const response = await AxiosApi.post("/contents/postUpload", {

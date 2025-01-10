@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-// import axios from "axios"; // axios를 사용해 API 호출
 import AxiosApi from "../../servies/AxiosApi";
+
+
 function UserGallery() {
     
   const [items, setItems] = useState([]); // 초기 데이터는 빈 배열로 설정

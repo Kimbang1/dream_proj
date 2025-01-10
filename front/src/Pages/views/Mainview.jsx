@@ -5,7 +5,7 @@ import AxiosApi from "../../servies/AxiosApi";
 
 function Mainview({ setIsMainPage }) {
   const [user, setUser] = useState([]); //불러올 데이터
-  const [currentPage, setCurrentPage] = useState("gallery"); // 현재 페이지를 관리하는 상태
+  // const [currentPage, setCurrentPage] = useState("gallery"); // 현재 페이지를 관리하는 상태
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -19,7 +19,9 @@ function Mainview({ setIsMainPage }) {
   }, []);
 
   useEffect(() => {
-    setIsMainPage(true);
+    if (typeof setIsMainPage === "function") {
+      setIsMainPage(true); // 함수인지 확인 후 호출
+    }
   }, [setIsMainPage]);
   return (
     <>

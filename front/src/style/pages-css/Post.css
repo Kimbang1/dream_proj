@@ -1,1 +1,32 @@
+div.PostView {
+  /* border: 1px solid #000; */
+}
+div.PostItem {
+  flex-direction: column;
+  border: 1px solid #000;
+  margin: 10px;
+  height: 80vh;
+}
 
+div.PostArea {
+  /* border: 1px solid #000; */
+  margin: 10px 10px 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+img.PostImage{
+    border: 1px solid #000;
+    height: 65vh;
+}
+
+div.contentsArea {
+  border: 1px solid #000;
+  margin: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+div.rightUP{
+    display: flex;
+    flex-direction: row;
+}
