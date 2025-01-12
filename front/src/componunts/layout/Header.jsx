@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AlarmComponent from "../modal/AlramModal"; // 알람 컴포넌트 임포트
+import AxiosApi from "../../servies/AxiosApi";
 
 function Header({ setIsMainPage }) {
   const [searchMonitor, setSearchMonitor] = useState("");
@@ -18,7 +19,7 @@ function Header({ setIsMainPage }) {
   };
 
   // 검색어 제출 핸들러
-  const handleSearchSubmit = (e) => {
+  const handleSearchSubmit = async (e) => {
     e.preventDefault();
     if (searchMonitor.trim() !== "") {
       setRecentSearch((prev) => {
@@ -28,8 +29,22 @@ function Header({ setIsMainPage }) {
       setSearchMonitor("");
       setIsAccordionOpen(false); // 검색 후 아코디언 닫기
 
-      // 검색 페이지로 이동하면서 검색어 전달
-      navigate(`/SearchRes?query=${encodeURIComponent(searchMonitor)}`);
+      // 백엔드로 검색어 전송
+      try {
+        const response = await AxiosApi.get(
+          "/contents/search",
+          {params: {query: searchMonitor}}
+        );
+        console.log("검색 결과: ", response.data);
+
+        // 검색 페이지로 이동하면서 검색어 전달
+        navigate(`/SearchRes?query=${encodeURIComponent(searchMonitor)}`,
+        {state: { searchResults: response.data},
+        });
+      } catch(error) {
+        console.error("검색 요청 실패: ", error);
+      }
+
     }
   };
 

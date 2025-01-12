@@ -25,6 +25,7 @@ import com.sns.dto.FileListDto;
 import com.sns.dto.FilePostDto;
 import com.sns.dto.JoinFilePostDto;
 import com.sns.dto.PostDto;
+import com.sns.dto.SearchResponseDto;
 import com.sns.dto.UserDto;
 import com.sns.jwt.JwtProvider;
 import com.sns.svc.FileService;
@@ -48,12 +49,19 @@ public class ContentController {
    private final PostMapper postMapper;
    
    @RequestMapping("/search")
-   public ResponseEntity<?> mtdSearch(@RequestParam String keyword) {
+   public ResponseEntity<?> mtdSearch(@RequestParam("query") String keyword) {
+      log.info("검색어: " + keyword);
+      List<JoinFilePostDto> joinFilePostList = filePostMapper.selectSearchList(keyword);
+      List<UserDto> userList = userDao.mtdSearchUser(keyword);
       
-      return null;
+      SearchResponseDto responseDto = new SearchResponseDto();
+      responseDto.setFilePostList(joinFilePostList);
+      responseDto.setUserList(userList);
+      
+      return ResponseEntity.ok(responseDto);
    }
    
-   @RequestMapping("/userGalleryView")
+   @RequestMapping("/userView")
    public ResponseEntity<?> mtdUserGalleryView(HttpServletRequest request) {
 	   log.info("/userGalleryView까지 왔어");
 	   
@@ -84,7 +92,22 @@ public class ContentController {
 	   
 	   List<JoinFilePostDto> filePostList = filePostMapper.selectChoiceList(user.getUuid());
 	   
-	   return null;
+	   List<Map<String, String>> responseList = new ArrayList<>();
+	   
+	   for (JoinFilePostDto joinFilePostDto : filePostList) {
+		   Map<String, String> responseItem = new HashMap<>();
+		   responseItem.put("postId", joinFilePostDto.getPost_id());
+		   responseItem.put("content", joinFilePostDto.getContent());
+		   responseItem.put("createAt", joinFilePostDto.getCreate_at().toString());
+		   responseItem.put("fileId", joinFilePostDto.getFile_id());
+		   responseItem.put("upFileName", joinFilePostDto.getUp_filename());
+		   responseItem.put("filePath", joinFilePostDto.getFile_path());
+		   responseItem.put("tagId", joinFilePostDto.getTag_id());
+		   
+		   responseList.add(responseItem);
+	   }
+	   
+	   return ResponseEntity.ok(responseList);
    }
    
    @RequestMapping("/galleryView")
@@ -134,7 +157,6 @@ public class ContentController {
             responseItem.put("tagId", userDao.mtdSelectTagId(postData.getWrite_user()));
             responseItem.put("filePath", fileData.getFile_path());
             responseItem.put("upFileName", fileData.getUp_filename());
-            System.out.println(fileData.getUp_filename());
             responseItem.put("content", postData.getContent());
             responseItem.put("createAt", postData.getCreate_at().toString());
             

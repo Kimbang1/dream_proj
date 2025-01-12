@@ -30,6 +30,9 @@ function SearchRes() {
   const searchParams = new URLSearchParams(location.search);
   const query = searchParams.get("query") || ""; //검색어를 가져오기
 
+  // 전달된 검색 결과 가져오기
+  const {filePostList, userList} = location.state?.searchResults || [];
+
   // Intersection Observer 설정 (스크롤 끝에 도달하면 새로운 데이터 로드)
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -57,6 +60,44 @@ function SearchRes() {
 
   return (
     <>
+      <div>
+        {/* 검색된 사용자 목록 */}
+        <div>
+          <h2>검색된 사용자</h2>
+          {userList.length === 0 ? (
+            <p>검색된 사용자가 없습니다.</p>
+          ) : (
+            <ul>
+              {userList.map((user) => (
+                <li>
+                  <p>{user.username}</p>
+                  <p>{user.tag_id}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* 검색된 게시글 목록 */}
+        <div>
+          <h2>검색된 게시글 목록</h2>
+          {filePostList.length === 0 ? (
+            <p>검색된 게시글이 없습니다.</p>
+          ) : (
+            <ul>
+              {filePostList.map((post) => (
+                <li>
+                  <img
+                    src={`/contentImage/${post.upFileName}`}
+                    alt={post.filePath} />
+                  <p>{post.content}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+
       {/* 데이터가 없으면 작성된 글이 없습니다. 표시 */}
       {items.length === 0 ? (
         <p style={{ texAlign: "center", marginTop: "20px " }}>

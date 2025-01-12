@@ -1,5 +1,7 @@
 package com.sns.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -36,5 +38,8 @@ public interface UserDao {
 	
 	// uuid로 tag_id 가져오기
 	public String mtdSelectTagId(@Param("uuid") String uuid);
+	
+	// username, tag_id, introduce로 회원 찾기
+	public List<UserDto> mtdSearchUser(@Param("keyword") String keyword);
 	
 }

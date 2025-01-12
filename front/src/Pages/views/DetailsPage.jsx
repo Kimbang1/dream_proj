@@ -3,7 +3,7 @@ import AxiosApi from "../../servies/AxiosApi";
 import { useParams } from "react-router-dom"; // 라우터를 사용하여 파라미터를 받을 수 있음
 
 function DetailsPage() {
-  const { postId } = useParams(); // URL에서 postId를 받아옴
+  const { linkId } = useParams(); // URL에서 postId를 받아옴
   const [item, setItem] = useState(null); // 게시물 데이터 (단일 게시물)
   const [comments, setComments] = useState([]); // 댓글 상태
   const [newComment, setNewComment] = useState(""); // 새 댓글 입력 상태
@@ -12,17 +12,17 @@ function DetailsPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await AxiosApi.get(`/contents/postView/${postId}`); // 게시물 ID에 맞는 API 호출
+        const response = await AxiosApi.get(`/contents/postView/${linkId}`); // 게시물 ID에 맞는 API 호출
         setItem(response.data); // 단일 게시물 데이터 설정
       } catch (error) {
         console.error("데이터 로드 실패:", error);
       }
     };
 
-    if (postId) {
+    if (linkId) {
       fetchData();
     }
-  }, [postId]); // postId가 변경될 때마다 데이터 새로 요청
+  }, [linkId]); // postId가 변경될 때마다 데이터 새로 요청
 
   // 댓글 추가 함수
   const handleAddComment = (itemId) => {
