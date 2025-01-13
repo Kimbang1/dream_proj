@@ -6,9 +6,13 @@
 	
 	<insert id="mtdInsertComment" parameterType="com.sns.dto.CommentDto">
 		INSERT INTO comment
-		(comment_id, user_id, parent_post, content)
+		(comment_id, user_id, user_tag_id, parent_post, content)
 		VALUES
-		(#{comment_id}, #{user_id}, #{parent_post}, #{content})
+		(#{comment_id}, #{user_id}, #{user_tag_id}, #{parent_post}, #{content})
 	</insert>
+	
+	<select id="mtdSelectCommentOfPost" resultType="com.sns.dto.CommentDto">
+		SELECT * FROM comment WHERE parent_post = #{post_id} ORDER BY create_at DESC
+	</select>
 	
 </mapper>

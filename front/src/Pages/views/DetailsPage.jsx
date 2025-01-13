@@ -14,7 +14,7 @@ function DetailsPage() {
   const [comments, setComments] = useState([]); // 댓글 상태
   const [newComment, setNewComment] = useState(""); // 새 댓글 입력 상태
 
-  console.log(itemId); // itemId 값이 제대로 전달되었는지 확인
+  console.log(linkId); // itemId 값이 제대로 전달되었는지 확인
 
   useEffect(() => {
     if (!linkId) return;
@@ -36,7 +36,27 @@ function DetailsPage() {
       }
     };
 
+    const fetchComments = async () => {
+      try {
+        const response = await AxiosApi.get(`/comment/list?linkId=${linkId}`);
+        const commentData = response.data || [];
+
+        // .map()을 사용하여 상태 업데이트트
+        setComments(
+          commentData.map((comment) => ({
+            commentId: comment.comment_id,
+            content: comment.content,
+            user_tag_id: comment.user_tag_id,
+            replies: [],
+          }))
+        );
+      } catch (error) {
+        console.error("댓글 데이터 로드 실패: ", error);
+      }
+    };
+
     fetchData();
+    fetchComments();
   }, [linkId]);
 
   // 댓글 추가 함수
@@ -51,15 +71,16 @@ function DetailsPage() {
       });
 
       // 백엔드에서 저장된 댓글 정보 응답 받음
-      const saveComment = response.data;
+      const saveComment = response.data.comment;
 
       // 프론트엔드의 상태 업데이트트
       setComments((prev) => [
         ...prev,
         {
-          id: saveComment.comment_id,
-          linkId: saveComment.linkId,
-          text: saveComment.content,
+          commentId: saveComment.comment_id,
+          linkId: saveComment.link_id,
+          content: saveComment.content,
+          user_tag_id: saveComment.user_tag_id,
           replies: [],
         },
       ]);
@@ -136,19 +157,16 @@ function DetailsPage() {
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="댓글을 입력해 주세요"
             />
-            <button onClick={() => handleAddComment(linkId.id)}>
-              댓글 작성
-            </button>
+            <button onClick={handleAddComment}>댓글 작성</button>
           </div>
 
           {/* 댓글 리스트 */}
           <div className="CommentsList">
-            {comments
-              .filter((comment) => comment.linkId === item?.id)
-              .map((comment) => (
-                <div key={comment.id} className="CommentItem">
+            {comments.length > 0 ? (
+              comments.map((comment) => (
+                <div key={comment.commentId} className="CommentItem">
                   <div className="CommentContent">
-                    <strong>댓글:</strong> {comment.text}
+                    <strong>{comment.user_tag_id}</strong> {comment.content}
                   </div>
 
                   {/* 댓글의 댓글 영역 */}
@@ -158,23 +176,26 @@ function DetailsPage() {
                         ↳ {reply.text}
                       </div>
                     ))}
+                  </div>
 
-                    {/* 댓글의 댓글 입력 */}
-                    <div className="ReplyInput">
-                      <input
-                        type="text"
-                        placeholder="댓글의 댓글을 입력하세요"
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            handleAddReply(comment.id, e.target.value);
-                            e.target.value = ""; // 입력값 초기화
-                          }
-                        }}
-                      />
-                    </div>
+                  {/* 댓글의 댓글 입력 */}
+                  <div className="ReplyInput">
+                    <input
+                      type="text"
+                      placeholder="댓글의 댓글을 입력하세요"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleAddReply(comment.id, e.target.value);
+                          e.target.value = ""; // 입력값 초기화
+                        }
+                      }}
+                    />
                   </div>
                 </div>
-              ))}
+              ))
+            ) : (
+              <div>댓글이 없습니다.</div>
+            )}
           </div>
         </div>
       </div>

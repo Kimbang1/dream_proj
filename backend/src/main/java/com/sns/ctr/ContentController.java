@@ -331,9 +331,8 @@ public class ContentController {
       
       filePostMapper.addPostId(linkId, post_id);
       
-      System.out.println(postDto.getWrite_user());
-      
-      return null;
+      responseBody.put("message", "게시글 작성이 완료되었습니다.");
+      return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
    }
    
    
