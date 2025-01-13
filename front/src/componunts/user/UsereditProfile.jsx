@@ -45,7 +45,7 @@ function Useredit() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get("/api/user/details"); // 실제 API 엔드포인트로 변경
+        const response = await axios.get("/user/info"); // 실제 API 엔드포인트로 변경
         const data = response.data;
         setUserInfo({
           tag_id: data.tag_id || "",

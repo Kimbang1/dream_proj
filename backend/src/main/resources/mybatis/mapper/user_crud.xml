@@ -29,6 +29,10 @@
 		)
 	</insert>
 	
+	<update id="mtdUserResign">
+		UPDATE user SET is_using = false, is_delete = true, delete_at = now() WHERE uuid = #{uuid}
+	</update>
+	
 	<!-- 소셜 회원가입 사용자 정보 추가 -->
 	<update id="mtdSocialJoin" parameterType="com.sns.dto.UserDto">
 		update user set username=#{username}, tag_id=#{tag_id}, phone=#{phone}, birthday=#{birthday}, is_using=#{is_using}, create_at=now()

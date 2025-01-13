@@ -12,6 +12,9 @@ public interface UserDao {
 	// 회원가입 처리
 	public int mtdInsert(UserDto userDto);
 	
+	// 회원탈퇴 처리
+	public int mtdUserResign(@Param("uuid")String uuid);
+	
 	// 소셜 회원 가입 처리
 	public int mtdSocialJoin(UserDto userDto);
 	

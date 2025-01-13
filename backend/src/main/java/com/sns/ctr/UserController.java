@@ -62,6 +62,7 @@ public class UserController {
 	
 	@RequestMapping("/resign")
 	public ResponseEntity<?> userResign(HttpServletRequest request) {
+		log.info("/user/resign 도착");
 		HashMap<String, String> responseBody = new HashMap<>();
 		String accessToken = null;
 		
@@ -87,9 +88,11 @@ public class UserController {
 		String provider = jwtProvider.getProviderFromToken(accessToken);
 		UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
 		
+		userDao.mtdUserResign(user.getUuid());
 		
-		
-		return null;
+		log.info("탈퇴가 완료되었습니다.");
+		responseBody.put("message", "탈퇴가 완료되었습니다.");
+	    return new ResponseEntity<>(responseBody, HttpStatus.OK);
 	}
 	
 	@PutMapping("/update")

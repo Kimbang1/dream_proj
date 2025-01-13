@@ -44,7 +44,7 @@ constraint primary key(uuid)
 drop table user;
 
 desc user;
-select * from user order by create_at;
+select * from user order by create_at desc;
 delete from user where email="rlatjddmsrla@daum.net";
 update user set username="" where uuid="";
 
