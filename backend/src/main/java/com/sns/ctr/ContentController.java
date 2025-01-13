@@ -61,9 +61,17 @@ public class ContentController {
       return ResponseEntity.ok(responseDto);
    }
    
+   @RequestMapping("/viewDetails")
+   public ResponseEntity<?> mtdViewDetails(@RequestParam("linkId") String linkId) {
+	   log.info("/viewDetails 도착");
+	   JoinFilePostDto joinFilePostDto = filePostMapper.selectOnePost(linkId);
+	   
+	   return ResponseEntity.ok(joinFilePostDto);
+   }
+   
    @RequestMapping("/userView")
    public ResponseEntity<?> mtdUserGalleryView(HttpServletRequest request) {
-	   log.info("/userGalleryView까지 왔어");
+	   log.info("/userView까지 왔어");
 	   
 	   HashMap<String, String> responseBody = new HashMap<>();
 	   String accessToken = null;

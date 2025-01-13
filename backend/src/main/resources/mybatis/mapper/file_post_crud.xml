@@ -22,6 +22,23 @@
 		select * from file_post order by create_at desc
 	</select>
 	
+	<!-- 특정 게시물 정보 반환 -->
+	<!--
+	<select id="selectOnePost" resultType="com.sns.dto.FilePostDto">
+		SELECT * FROM file_post WHERE link_id = #{link_id}
+	</select>
+	 -->
+	
+	<!-- 특정 게시물 상세 정보 반환 -->
+	<select id="selectOnePost" resultType="com.sns.dto.JoinFilePostDto">
+		SELECT p.post_id AS post_id, p.content, p.create_at, f.file_id AS file_id, f.up_filename, f.file_path, u.tag_id AS tag_id
+		FROM post p
+		LEFT JOIN file_post fp ON p.post_id = fp.post_id
+		LEFT JOIN file_list f ON fp.file_id = f.file_id
+		LEFT JOIN user u ON p.write_user = u.uuid
+		WHERE fp.link_id = #{link_id}
+	</select>
+	
 	<!-- 특정 사용자의 게시글 목록 반환 -->
 	<select id="selectChoiceList" resultType="com.sns.dto.JoinFilePostDto">
 		SELECT p.post_id AS post_id, p.content, p.create_at, f.file_id AS file_id, f.up_filename, f.file_path, u.tag_id AS tag_id
