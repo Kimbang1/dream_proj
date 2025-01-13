@@ -104,6 +104,7 @@ public class ContentController {
 	   
 	   for (JoinFilePostDto joinFilePostDto : filePostList) {
 		   Map<String, String> responseItem = new HashMap<>();
+		   responseItem.put("linkId", joinFilePostDto.getLink_id());
 		   responseItem.put("postId", joinFilePostDto.getPost_id());
 		   responseItem.put("content", joinFilePostDto.getContent());
 		   responseItem.put("createAt", joinFilePostDto.getCreate_at().toString());

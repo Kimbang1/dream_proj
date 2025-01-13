@@ -39,7 +39,7 @@
 	
 	<!-- 특정 사용자의 게시글 목록 반환 -->
 	<select id="selectChoiceList" resultType="com.sns.dto.JoinFilePostDto">
-		SELECT p.post_id AS post_id, p.content, p.create_at, f.file_id AS file_id, f.up_filename, f.file_path, u.tag_id AS tag_id
+		SELECT p.post_id AS post_id, p.content, p.create_at, f.file_id AS file_id, f.up_filename, f.file_path, fp.link_id AS link_id, u.tag_id AS tag_id
 		FROM post p
 		LEFT JOIN file_post fp ON p.post_id = fp.post_id
 		LEFT JOIN file_list f ON fp.file_id = f.file_id
