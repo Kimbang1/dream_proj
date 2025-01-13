@@ -4,7 +4,6 @@
   justify-content: space-between; /* 왼쪽과 오른쪽으로 요소 정렬 */
   align-items: center;
   padding-right: 20px;
-  background-color: #fff;
   position: relative;
 }
 
@@ -14,6 +13,7 @@
   cursor: pointer;
   user-select: none;
   margin-left: auto; /*오른쪽으로 밀어냄*/
+  margin-top: 10px;
 }
 
 /* 드로어 스타일 */

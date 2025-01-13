@@ -120,8 +120,9 @@ div.completeiconArea button:hover {
     display: none;
   }
 }
-@media screen and (max-width: 360px) {
+@media screen and (max-width: 320px) {
   div.box {
+    margin: 10px 1px;
     padding: 10px;
     height: 73vh;
     width: 100%;

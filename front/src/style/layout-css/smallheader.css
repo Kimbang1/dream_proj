@@ -8,6 +8,10 @@ div#smallHeda {
   top: 0; /* 페이지 상단에 고정 */
   z-index: 1000; /* 다른 요소보다 위에 배치 */
   background-color: #fff; /* 배경색 추가 (필수) */
+  justify-content: space-between;
+  background-color: cornflowerblue;
+  border-bottom-right-radius: 10%;
+  border-bottom-left-radius: 10%;
 }
 
 div.logo {
@@ -21,7 +25,4 @@ div.logo img {
   max-height: 100%; /* 로고 이미지 최대 높이 */
   width: auto; /* 비율 유지 */
   height: auto; /* 비율 유지 */
-}
-div.right{
-  padding-left: 10px;
 }

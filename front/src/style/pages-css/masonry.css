@@ -3,7 +3,6 @@
 .masonry {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  grid-auto-rows: 20px;
   gap: 20px;
 }
 
@@ -16,28 +15,17 @@
   transition: transform 0.3s;
   display: block;
   overflow: hidden; /* 이미지가 넘칠 경우 숨김 */
+  position: relative;
 }
 
 .item img {
   width: 100%;
-  height: 100%;
+  height: auto;
   object-fit: cover; /* 이미지 비율 유지하며 채우기 */
 }
 
 .item:hover {
   transform: translateY(-10px);
-}
-
-.height1 {
-  grid-row: span 15;
-}
-
-.height2 {
-  grid-row: span 20;
-}
-
-.height3 {
-  grid-row: span 25;
 }
 
 @media screen and (max-width: 770px) and (min-width: 320px) {

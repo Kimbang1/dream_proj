@@ -1,51 +1,41 @@
 import React, { useState, useCallback, useEffect } from "react";
 import AxiosApi from "../../servies/AxiosApi";
 import { useNavigate } from "react-router-dom";
-import { LinkedIn } from "@mui/icons-material";
 
 function Post() {
   const [items, setItems] = useState([]); // 불러온 데이터
   const [loading, setLoading] = useState(false); // 로딩 상태
   const [hasMore, setHasMore] = useState(true); // 더 이상 로드할 데이터가 있는지 확인
 
-  //상세페이지로 이동
+  // 상세페이지로 이동
   const navigate = useNavigate();
 
-  // Post 컴포넌트에서
   const handleDetails = (event, linkId) => {
-    event.preventDefault(); // PointerEvent를 처리할 때는 preventDefault()를 호출할 수 있음
-    console.log("Navigating to DetailsPage with linkId:", linkId);
+    event.preventDefault();
     navigate("/DetailsPage", { state: { linkId } });
   };
 
-  //날짜 컷팅
+  // 날짜 컷팅
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
-    console.log(`${year} - ${month} - ${day}`);
-
     return `${year}-${month}-${day}`;
   };
 
   // 데이터 로드 함수
   const loadMoreItems = useCallback(async () => {
-    if (loading || !hasMore) return; // 이미 로딩 중이거나 더 이상 로드할 데이터가 없으면 요청하지 않음
+    if (loading || !hasMore) return;
     setLoading(true);
 
     try {
-      // 실제 데이터 API 호출 예시
       const response = await AxiosApi.get("/contents/postView");
       const newData = response.data;
-      console.log("포스트의 뉴데이터의 값:", newData);
-
       if (newData.length === 0) {
-        setHasMore(false); // 데이터가 더 이상 없으면
+        setHasMore(false);
       } else {
-        //기존에 있던 데이터와 중복되지 않는 새로운 데이터 추가
         setItems((prevItems) => {
-          //새로운 데이터와 기존 데티어에서 중복되면 필터링
           const uniqueItems = [...prevItems, ...newData].filter(
             (value, index, self) =>
               index === self.findIndex((t) => t.linkId === value.linkId)
@@ -59,18 +49,43 @@ function Post() {
     setLoading(false);
   }, [loading, hasMore]);
 
+  // 좋아요 클릭 시 서버로 업데이트
+  const handleHeartClick = async (linkId, currentLikeCount) => {
+    try {
+      // 새로운 likeCount 계산
+      const newLikeCount = currentLikeCount + 1;
+
+      // 백엔드로 좋아요 갯수 업데이트 요청
+      const response = await AxiosApi.post("/contents/updateLikeCount", {
+        linkId,
+        newLikeCount,
+      });
+
+      if (response.data.success) {
+        // 성공적으로 업데이트되었으면, 클라이언트에서 해당 아이템의 likeCount 업데이트
+        setItems((prevItems) =>
+          prevItems.map((item) =>
+            item.linkId === linkId
+              ? { ...item, likeCount: newLikeCount, heartClicked: true }
+              : item
+          )
+        );
+      }
+    } catch (error) {
+      console.error("좋아요 업데이트 실패:", error);
+    }
+  };
+
   // 스크롤 이벤트 처리
   const handleScroll = useCallback(() => {
     const scrollPosition = window.scrollY + window.innerHeight;
     const bottomPosition = document.documentElement.scrollHeight;
 
-    // 페이지 끝에 거의 다 도달했을 때 데이터 로드
     if (scrollPosition + 10 >= bottomPosition) {
-      loadMoreItems(); // 페이지 끝에 가까우면 데이터 로드
+      loadMoreItems();
     }
   }, [loadMoreItems]);
 
-  // 컴포넌트 마운트 시 이벤트 리스너 등록
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => {
@@ -78,34 +93,27 @@ function Post() {
     };
   }, [handleScroll]);
 
-  // 컴포넌트 초기 데이터 로드
   useEffect(() => {
     loadMoreItems();
   }, []); // 처음 렌더링 시 데이터 로드
 
   return (
     <div className="PostView">
-      {items.map((item, index) => {
-        console.log(item.filePath); // 각 아이템의 imageUrl 값 출력
-        console.log(item.upFileName); // 각 아이템의 imageUrl 값 출력
-
+      {items.map((item) => {
         return (
           <div
-            key={index}
+            key={item.linkId}
             className="PostItem"
             onClick={(e) => handleDetails(e, item.linkId)}
           >
-            {/* 이미지 영역 */}
             <div className="PostArea">
               <img
-                key={item.id}
                 src={`/contentImage/${item.upFileName}`}
                 alt="게시물 이미지"
                 className="PostImage"
               />
             </div>
 
-            {/* 콘텐츠 영역 */}
             <div className="contentsArea">
               <div className="leftContents">
                 <div className="author">{item.tagId}</div>
@@ -114,7 +122,23 @@ function Post() {
               <div className="rightContents">
                 <div className="rightUP">
                   <div className="comments">댓글 {item.commentCount}개</div>
-                  <div className="likes">좋아요 {item.likeCount}개</div>
+                  <div className="likes">
+                    <img
+                      className="heart"
+                      src={
+                        item.heartClicked
+                          ? "/images/redheart.png"
+                          : "/images/heart.png"
+                      }
+                      alt="하트 아이콘"
+                      onClick={(e) => {
+                        e.stopPropagation(); // 클릭 이벤트가 부모로 전파되지 않도록
+                        handleHeartClick(item.linkId, item.likeCount);
+                      }}
+                      style={{ cursor: "pointer" }}
+                    />
+                    {item.likeCount}개
+                  </div>
                 </div>
                 <div className="date">{formatDate(item.createAt)}</div>
               </div>
@@ -122,9 +146,8 @@ function Post() {
           </div>
         );
       })}
-      {loading && <div>로딩 중...</div>} {/* 로딩 중 텍스트 */}
-      {!hasMore && <div>더 이상 불러올 데이터가 없습니다.</div>}{" "}
-      {/* 데이터 없음 메시지 */}
+      {loading && <div>로딩 중...</div>}
+      {!hasMore && <div>더 이상 불러올 데이터가 없습니다.</div>}
     </div>
   );
 }

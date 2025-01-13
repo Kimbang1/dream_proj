@@ -68,6 +68,12 @@ function UserGallery() {
     fetchGalleryItems();
   }, []); // 빈 배열 의존성: 최초 1회만 실행
 
+  // 아이템마다 동적 높이 설정 (랜덤 높이)
+  const getRandomHeight = () => {
+    const heights = [15, 20, 25]; // 높이 범위
+    return heights[Math.floor(Math.random() * heights.length)];
+  };
+
   return (
     <div className="userGalleryView">
       {/* 사진이 없으면 로딩 메시지를 표시 */}
@@ -80,8 +86,9 @@ function UserGallery() {
           {items.map((item) => (
             <div
               onClick={handleDetails}
-              className={`item ${item.heightClass}`}
+              className="item"
               key={item.linkId}
+              style={{ gridRowEnd: `span ${getRandomHeight()}` }} // 랜덤 높이 적용
             >
               <img
                 src={`/contentImage/${item.upFileName}`}

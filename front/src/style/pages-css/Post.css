@@ -29,4 +29,8 @@ div.contentsArea {
 div.rightUP{
     display: flex;
     flex-direction: row;
+    justify-content: space-around;
+}
+img.heart{
+  width: 20px;
 }
