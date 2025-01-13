@@ -84,7 +84,7 @@ function Post() {
           <div
             key={index}
             className="PostItem"
-            onClick={(e) => handleDetails(e, item.id)}
+            onClick={(e) => handleDetails(e, item.linkId)}
           >
             {/* 이미지 영역 */}
             <div className="PostArea">

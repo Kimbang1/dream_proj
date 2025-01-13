@@ -19,6 +19,9 @@ public interface FilePostMapper {
 	// 모든 게시글 리스트 확인
 	public List<FilePostDto> selectAllList();
 	
+	// link_id로 게시글 확인
+	public JoinFilePostDto selectOnePost(@Param("link_id") String linkId);
+	
 	// uuid로 file_list, post 정보 함께 가져오기
 	public List<JoinFilePostDto> selectChoiceList(@Param("uuid") String uuid);
 	

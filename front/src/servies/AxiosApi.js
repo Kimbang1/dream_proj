@@ -1,5 +1,4 @@
 import axios from "axios";
-import { redirect } from "react-router-dom";
 
 //액시오스 인스턴스 생성
 const instance = axios.create({
