@@ -19,9 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FileService {
 	
-	// 로컬 저장 경로 설정
-	@Value("${file.upload-dir}")
-	private String uploadDir;
+	// 게시물 이미지 로컬 저장 경로 설정
+	@Value("${file.upload-dir.content}")
+	private String contentUploadDir;
+	
+	// 프로필 이미지 로컬 저장 경로 설정
+	@Value("${file.upload-dir.profile}")
+	private String profileUploadDir;
 	
 	// 로컬 파일 저장
 	public String saveFile(MultipartFile file) throws IOException {
@@ -29,7 +33,7 @@ public class FileService {
 		String oriFileName = file.getOriginalFilename();
 		String upFileName = System.currentTimeMillis() + "_" + oriFileName;
 		
-		Path path = Paths.get(uploadDir + File.separator + upFileName);
+		Path path = Paths.get(contentUploadDir + File.separator + upFileName);
 		
 		File folder = new File(path.toString());
 		if(folder.isDirectory() == false) {
