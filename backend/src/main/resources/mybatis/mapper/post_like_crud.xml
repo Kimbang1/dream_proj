@@ -4,7 +4,7 @@
 
 <mapper namespace="com.sns.dao.PostLikeMapper">
 	<!-- 좋아요 생성 -->
-	<insert id="mtdInsert" parameterType="com.sns.dto.PostLikeDto">
+	<insert id="mtdInsert" parameterType="java.lang.String">
 		INSERT INTO post_like
 		(user_id, post_id)
 		VALUES

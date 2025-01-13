@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sns.dao.FileListMapper;
 import com.sns.dao.FilePostMapper;
+import com.sns.dao.PostLikeMapper;
 import com.sns.dao.PostMapper;
 import com.sns.dao.UserDao;
 import com.sns.dao.ViewListMapper;
@@ -52,6 +53,7 @@ public class ContentController {
    private final FilePostMapper filePostMapper;
    private final PostMapper postMapper;
    private final ViewListMapper viewListMapper;
+   private final PostLikeMapper postLikeMapper;
    
    @RequestMapping("/search")
    public ResponseEntity<?> mtdSearch(@RequestParam("query") String keyword) {
@@ -68,7 +70,46 @@ public class ContentController {
    
    @RequestMapping("/like")
    public ResponseEntity<?> mtdLikeCheck(@RequestParam("linkId")String linkId, HttpServletRequest request) {
-	   return null;
+	   HashMap<String, Object> responseBody = new HashMap<>();
+	   String accessToken = null;
+		
+	   // AccessToken 추출
+	   Cookie[] cookies = request.getCookies();
+	   if (cookies != null) {
+		   for (Cookie cookie : cookies) {
+			   if ("accessToken".equals(cookie.getName())) {
+				   accessToken = cookie.getValue();
+				   break;
+			   }
+		   }
+	   }
+		
+	   if (accessToken == null) {
+		   log.error("Access token이 존재하지 않습니다.");
+		   responseBody.put("message", "로그인이 필요합니다.");
+		   return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+	   }
+		
+	   // AccessToken에서 사용자 정보 추출
+	   String email = jwtProvider.getEmailFromToken(accessToken);
+	   String provider = jwtProvider.getProviderFromToken(accessToken);
+	   UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
+	   
+	   FilePostDto filePostDto = filePostMapper.selectOne(linkId);
+	   
+	   int isLike = postLikeMapper.mtdIsLike(user.getUuid(), filePostDto.getPost_id());
+	   
+	   if (isLike > 0) {
+		   postLikeMapper.mtdDelete(user.getUuid(), filePostDto.getPost_id());
+		   responseBody.put("heartClicked", true);
+		   responseBody.put("message", "좋아요가 등록되었습니다.");
+	   } else {
+		   postLikeMapper.mtdInsert(user.getUuid(), filePostDto.getPost_id());
+		   responseBody.put("heartClicked", false);
+		   responseBody.put("message", "좋아요가 삭제되었습니다.");
+	   }
+	   
+	   return new ResponseEntity<>(responseBody, HttpStatus.OK);
    }
    
    @RequestMapping("/viewDetails")
