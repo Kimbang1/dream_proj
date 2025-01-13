@@ -1,4 +1,5 @@
 import axios from "axios";
+import { redirect } from "react-router-dom";
 
 //액시오스 인스턴스 생성
 const instance = axios.create({
@@ -9,6 +10,27 @@ const instance = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+// 리프레시 요청용 별도 axios 인스턴스 생성
+const refreshInstance = axios.create({
+  baseURL: process.env.REACT_APP_API_BASE_URL,
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+let isRefreshing = false;
+let refreshSubscribers = []; // 요청을 대기 시키는 배열
+
+function subscribeTokenRefresh(callback) {
+  refreshSubscribers.push(callback);
+}
+
+function onRefreshed() {
+  refreshSubscribers.forEach((callback) => callback());
+  refreshSubscribers = [];
+}
 
 //요청 인터셉터
 instance.interceptors.request.use(
@@ -50,22 +72,33 @@ instance.interceptors.response.use(
     return response;
   },
   async (error) => {
+    const originalRequest = error.config;
     if (error.response && error.response.status === 600) {
       console.log("이거 타나?");
-      try {
-        // /auth/refresh 엔드포인트로 요청 보내기
-        const refreshResponse = await instance.post("/auth/refresh", {});
+      if(!isRefreshing) {
+        isRefreshing = true;
+        try {
+          // 새 토큰 요청
+          await refreshInstance.post("/auth/refresh", {});
+          isRefreshing = false;
 
-        // 새 엑세스 토큰은 서버가 쿠키에 담아서 반환하므로,
-        // 응답에서 accessToken을 받지 않고 쿠키로 자동 처리됨
-
-        // 원래 요청을 새로운 엑세스 토큰으로 재시도 (자동으로 쿠키가 포함됨)
-        const originalRequest = error.config;
-        return instance(originalRequest);
-      } catch (refreshError) {
-        console.log("리프레쉬 토큰이 날아갔습니다:", refreshError);
-        alert("세션이 만료 되었으니 다시 로그인 해주세요.");
+          // 대기 중인 요청 실행
+          onRefreshed();
+        } catch (refreshError) {
+          console.error("토큰 리프레시 실패: ", refreshError);
+          isRefreshing = false;
+          alert("세션이 만료되었습니다. 다시 로그인 해주세요.");
+          window.location.href = "/login";
+          return Promise.reject(refreshError);
+        }
       }
+      
+      // 요청 대기
+      return new Promise((resolve) => {
+        subscribeTokenRefresh(() => {
+          resolve(instance(originalRequest));
+        });
+      });
     }
 
     // 에러 상태 처리
