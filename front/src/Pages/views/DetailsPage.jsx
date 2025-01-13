@@ -14,6 +14,8 @@ function DetailsPage() {
   const [comments, setComments] = useState([]); // 댓글 상태
   const [newComment, setNewComment] = useState(""); // 새 댓글 입력 상태
 
+  console.log(itemId); // itemId 값이 제대로 전달되었는지 확인
+
   useEffect(() => {
     if (!linkId) return;
 
