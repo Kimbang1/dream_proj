@@ -24,7 +24,7 @@ function Post() {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
-    console.log(`${year} - ${month} - ${day}`)
+    console.log(`${year} - ${month} - ${day}`);
 
     return `${year}-${month}-${day}`;
   };
@@ -84,7 +84,7 @@ function Post() {
           <div
             key={index}
             className="PostItem"
-            onClick={(e) => handleDetails(e, item.id)}
+            onClick={(e) => handleDetails(e, item.linkId)}
           >
             {/* 이미지 영역 */}
             <div className="PostArea">
