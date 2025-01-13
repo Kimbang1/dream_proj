@@ -2,6 +2,8 @@ package com.sns.ctr;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,14 +21,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sns.dao.FileListMapper;
 import com.sns.dao.FilePostMapper;
+import com.sns.dao.PostLikeMapper;
 import com.sns.dao.PostMapper;
 import com.sns.dao.UserDao;
+import com.sns.dao.ViewListMapper;
 import com.sns.dto.FileListDto;
 import com.sns.dto.FilePostDto;
 import com.sns.dto.JoinFilePostDto;
 import com.sns.dto.PostDto;
 import com.sns.dto.SearchResponseDto;
 import com.sns.dto.UserDto;
+import com.sns.dto.ViewListDto;
 import com.sns.jwt.JwtProvider;
 import com.sns.svc.FileService;
 
@@ -47,6 +52,8 @@ public class ContentController {
    private final UserDao userDao;
    private final FilePostMapper filePostMapper;
    private final PostMapper postMapper;
+   private final ViewListMapper viewListMapper;
+   private final PostLikeMapper postLikeMapper;
    
    @RequestMapping("/search")
    public ResponseEntity<?> mtdSearch(@RequestParam("query") String keyword) {
@@ -61,10 +68,108 @@ public class ContentController {
       return ResponseEntity.ok(responseDto);
    }
    
+   @RequestMapping("/like")
+   public ResponseEntity<?> mtdLikeCheck(@RequestParam("linkId")String linkId, HttpServletRequest request) {
+	   HashMap<String, Object> responseBody = new HashMap<>();
+	   String accessToken = null;
+		
+	   // AccessToken 추출
+	   Cookie[] cookies = request.getCookies();
+	   if (cookies != null) {
+		   for (Cookie cookie : cookies) {
+			   if ("accessToken".equals(cookie.getName())) {
+				   accessToken = cookie.getValue();
+				   break;
+			   }
+		   }
+	   }
+		
+	   if (accessToken == null) {
+		   log.error("Access token이 존재하지 않습니다.");
+		   responseBody.put("message", "로그인이 필요합니다.");
+		   return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+	   }
+		
+	   // AccessToken에서 사용자 정보 추출
+	   String email = jwtProvider.getEmailFromToken(accessToken);
+	   String provider = jwtProvider.getProviderFromToken(accessToken);
+	   UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
+	   
+	   FilePostDto filePostDto = filePostMapper.selectOne(linkId);
+	   
+	   int isLike = postLikeMapper.mtdIsLike(user.getUuid(), filePostDto.getPost_id());
+	   
+	   if (isLike > 0) {
+		   postLikeMapper.mtdDelete(user.getUuid(), filePostDto.getPost_id());
+		   responseBody.put("heartClicked", true);
+		   responseBody.put("message", "좋아요가 등록되었습니다.");
+	   } else {
+		   postLikeMapper.mtdInsert(user.getUuid(), filePostDto.getPost_id());
+		   responseBody.put("heartClicked", false);
+		   responseBody.put("message", "좋아요가 삭제되었습니다.");
+	   }
+	   
+	   return new ResponseEntity<>(responseBody, HttpStatus.OK);
+   }
+   
    @RequestMapping("/viewDetails")
-   public ResponseEntity<?> mtdViewDetails(@RequestParam("linkId") String linkId) {
+   public ResponseEntity<?> mtdViewDetails(@RequestParam("linkId") String linkId, HttpServletRequest request) {
 	   log.info("/viewDetails 도착");
 	   JoinFilePostDto joinFilePostDto = filePostMapper.selectOnePost(linkId);
+	   
+	   HashMap<String, Object> responseBody = new HashMap<>();
+	   String accessToken = null;
+		
+	   // AccessToken 추출
+	   Cookie[] cookies = request.getCookies();
+	   if (cookies != null) {
+		   for (Cookie cookie : cookies) {
+			   if ("accessToken".equals(cookie.getName())) {
+				   accessToken = cookie.getValue();
+				   break;
+			   }
+		   }
+	   }
+		
+	   if (accessToken == null) {
+		   log.error("Access token이 존재하지 않습니다.");
+		   responseBody.put("message", "로그인이 필요합니다.");
+		   return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+	   }
+		
+	   // AccessToken에서 사용자 정보 추출
+	   String email = jwtProvider.getEmailFromToken(accessToken);
+	   String provider = jwtProvider.getProviderFromToken(accessToken);
+	   UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
+	   
+	   List<ViewListDto> viewList = viewListMapper.mtdSelectSearch(user.getUuid(), joinFilePostDto.getPost_id());
+	   ViewListDto viewListDto = new ViewListDto();
+	   
+	   // 현재 날짜의 월 가져오기
+       int currentMonth = LocalDate.now().getMonthValue();
+
+       // 월을 기준으로 분기 계산 (1~3: 1, 4~6: 2, 7~9: 3, 10~12: 4)
+       int quarter = (currentMonth - 1) / 3 + 1;
+       
+	   if(viewList == null || viewList.isEmpty()) {
+		   viewListDto.setPost_id(joinFilePostDto.getPost_id());
+		   viewListDto.setUser_id(user.getUuid());
+		   viewListDto.setQuarter(quarter);
+		   viewListMapper.mtdInsert(viewListDto);
+		   postMapper.addViewCnt(joinFilePostDto.getPost_id());
+	   } else {
+		   LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
+		   for(ViewListDto viewListItems : viewList) {
+			   LocalDateTime checkDay = viewListItems.getCreate_at().toLocalDateTime();
+			   if(checkDay.isBefore(threeDaysAgo)) {
+				   viewListDto.setPost_id(joinFilePostDto.getPost_id());
+				   viewListDto.setUser_id(user.getUuid());
+				   viewListDto.setQuarter(quarter);
+				   viewListMapper.mtdInsert(viewListDto);
+				   postMapper.addViewCnt(joinFilePostDto.getPost_id());
+			   }
+		   }
+	   }
 	   
 	   return ResponseEntity.ok(joinFilePostDto);
    }
@@ -157,7 +262,7 @@ public class ContentController {
       for (FilePostDto filePost : filePostList) {
          // post와 file 정보 가져오기
          FileListDto fileData = fileListMapper.selectFileData(filePost.getFile_id());
-         PostDto postData = postMapper.selectAllPost(filePost.getPost_id());
+         PostDto postData = postMapper.selectPost(filePost.getPost_id());
          
          if(fileData != null && postData != null) {
             Map<String, String> responseItem = new HashMap<>();
@@ -335,7 +440,5 @@ public class ContentController {
       responseBody.put("message", "게시글 작성이 완료되었습니다.");
       return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
    }
-   
-   
    
 }
