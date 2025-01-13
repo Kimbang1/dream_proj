@@ -10,6 +10,7 @@ function Post() {
   const navigate = useNavigate();
   // UserPost 컴포넌트에서
   const handleDetails = (event, linkId) => {
+    event.preventDefault();
     console.log("Navigating to DetailsPage with linkId:", linkId);
     navigate("/DetailsPage", { state: { linkId } });
   };
