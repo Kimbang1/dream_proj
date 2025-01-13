@@ -60,6 +60,38 @@ public class UserController {
 		return ResponseEntity.ok(user);
 	}
 	
+	@RequestMapping("/resign")
+	public ResponseEntity<?> userResign(HttpServletRequest request) {
+		HashMap<String, String> responseBody = new HashMap<>();
+		String accessToken = null;
+		
+		// AccessToken 추출
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if ("accessToken".equals(cookie.getName())) {
+					accessToken = cookie.getValue();
+					break;
+				}
+			}
+		}
+		
+		if (accessToken == null) {
+		    log.error("Access token이 존재하지 않습니다.");
+		    responseBody.put("message", "로그인이 필요합니다.");
+		    return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+		}
+		
+		// AccessToken에서 사용자 정보 추출
+		String email = jwtProvider.getEmailFromToken(accessToken);
+		String provider = jwtProvider.getProviderFromToken(accessToken);
+		UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
+		
+		
+		
+		return null;
+	}
+	
 	@PutMapping("/update")
 	public ResponseEntity<HashMap<String, String>> updateUserProfile(@RequestBody UserDto userDto, HttpServletRequest request) {
 		log.info("tag_id: {}", userDto.getTag_id());
