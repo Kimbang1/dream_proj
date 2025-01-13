@@ -52,6 +52,33 @@ function Post() {
     setLoading(false);
   }, [loading, hasMore]);
 
+  // 좋아요 클릭 시 서버로 업데이트
+  const handleHeartClick = async (linkId, currentLikeCount) => {
+    try {
+      // 새로운 likeCount 계산
+      const newLikeCount = currentLikeCount + 1;
+
+      // 백엔드로 좋아요 갯수 업데이트 요청
+      const response = await AxiosApi.post("/contents/updateLikeCount", {
+        linkId,
+        newLikeCount,
+      });
+
+      if (response.data.success) {
+        // 성공적으로 업데이트되었으면, 클라이언트에서 해당 아이템의 likeCount 업데이트
+        setItems((prevItems) =>
+          prevItems.map((item) =>
+            item.linkId === linkId
+              ? { ...item, likeCount: newLikeCount, heartClicked: true }
+              : item
+          )
+        );
+      }
+    } catch (error) {
+      console.error("좋아요 업데이트 실패:", error);
+    }
+  };
+
   // 스크롤 이벤트 처리
   const handleScroll = useCallback(() => {
     const scrollPosition = window.scrollY + window.innerHeight;
@@ -82,9 +109,7 @@ function Post() {
         <div
           key={index}
           className="PostItem"
-          onClick={() =>
-            handleDetails(item.linkId)
-          }
+          onClick={() => handleDetails(item.linkId)}
         >
           {/* 이미지 영역 */}
           <div className="PostArea">
@@ -104,7 +129,23 @@ function Post() {
             <div className="rightContents">
               <div className="rightUP">
                 <div className="comments">댓글 {item.commentCount}개</div>
-                <div className="likes">좋아요 {item.likeCount}개</div>
+                <div className="likes">
+                  <img
+                    className="heart"
+                    src={
+                      item.heartClicked
+                        ? "/images/redheart.png"
+                        : "/images/heart.png"
+                    }
+                    alt="하트 아이콘"
+                    onClick={(e) => {
+                      e.stopPropagation(); // 클릭 이벤트가 부모로 전파되지 않도록
+                      handleHeartClick(item.linkId, item.likeCount);
+                    }}
+                    style={{ cursor: "pointer" }}
+                  />
+                  {item.likeCount}개
+                </div>
               </div>
               <div className="date">{formatDate(item.createAt)}</div>
             </div>
