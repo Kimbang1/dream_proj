@@ -16,7 +16,7 @@ function Gallery() {
       // 백엔드 API에서 JSON 데이터 가져오기
       const response = await AxiosApi.get("/contents/galleryView");
       const newItems = response.data; // JSON 데이터 받기
-
+      console.log("API 응답 데이터:", response.data);
       setItems((prevItems) => [...prevItems, ...newItems]); // 기존 아이템에 새로운 아이템 추가
     } catch (error) {
       console.error("데이터 로드 실패:", error);
@@ -60,10 +60,10 @@ function Gallery() {
       ) : (
         <div className="masonry">
           {/* 사진들 출력 */}
-          {items.map((item) => (
+          {items.map((item,index) => (
             <div
               className={`item height${(item.linkId % 3) + 1}`}
-              key={item.linkId}
+              key={`${item.linkId}-${index}`} //고유한 key 생성
             >
               <img
                 src={`/contentImage/${item.upFileName}`} // 이미지 URL을 JSON에서 가져옴

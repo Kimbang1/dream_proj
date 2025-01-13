@@ -2,7 +2,7 @@ div.mainview {
   width: 71%;
 }
 div.viewArea {
-  display: flex;
+  /* display: flex; */
   flex-direction: row;
   overflow-y: scroll;
   height: 90vh;
