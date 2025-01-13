@@ -8,6 +8,7 @@ import lombok.Data;
 public class CommentDto {
 	private String comment_id;
 	private String user_id;
+	private String user_tag_id;
 	private String parent_post;
 	private String content;
 	private Timestamp create_at;
