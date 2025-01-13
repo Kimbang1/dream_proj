@@ -22,13 +22,6 @@
 		select * from file_post order by create_at desc
 	</select>
 	
-	<!-- 특정 게시물 정보 반환 -->
-	<!--
-	<select id="selectOnePost" resultType="com.sns.dto.FilePostDto">
-		SELECT * FROM file_post WHERE link_id = #{link_id}
-	</select>
-	 -->
-	
 	<!-- 특정 게시물 상세 정보 반환 -->
 	<select id="selectOnePost" resultType="com.sns.dto.JoinFilePostDto">
 		SELECT p.post_id AS post_id, p.content, p.create_at, f.file_id AS file_id, f.up_filename, f.file_path, u.tag_id AS tag_id
@@ -47,7 +40,7 @@
 		LEFT JOIN file_list f ON fp.file_id = f.file_id
 		LEFT JOIN user u ON p.write_user = u.uuid
 		WHERE p.write_user = #{uuid} AND fp.is_using = 1
-		ORDER BY p.create_at DESC;
+		ORDER BY p.create_at DESC
 	</select>
 	
 	<!-- 특정 단어가 들어간 게시글 목록 반환 -->
@@ -59,6 +52,6 @@
 		LEFT JOIN user u ON p.write_user = u.uuid
 		WHERE p.content LIKE CONCAT("%", #{keyword}, "%")
 		AND fp.is_using = 1
-		ORDER BY p.create_at DESC;
+		ORDER BY p.create_at DESC
 	</select>
 </mapper>

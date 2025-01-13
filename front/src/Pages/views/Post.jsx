@@ -12,10 +12,10 @@ function Post() {
   const navigate = useNavigate();
 
   // Post 컴포넌트에서
-  const handleDetails = (event, itemId) => {
+  const handleDetails = (event, linkId) => {
     event.preventDefault(); // PointerEvent를 처리할 때는 preventDefault()를 호출할 수 있음
-    console.log("Navigating to DetailsPage with itemId:", itemId);
-    navigate("/DetailsPage", { state: { itemId } });
+    console.log("Navigating to DetailsPage with linkId:", linkId);
+    navigate("/DetailsPage", { state: { linkId } });
   };
 
   //날짜 컷팅

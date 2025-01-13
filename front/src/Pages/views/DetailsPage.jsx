@@ -4,35 +4,69 @@ import { useLocation, useParams } from "react-router-dom"; // 라우터를 사�
 
 function DetailsPage() {
   const location = useLocation();
-  const { itemId } = location.state || {};
-  const [item, setItem] = useState(null); // 불러온 데이터
+  const { linkId } = location.state || {};
+  const [item, setItem] = useState({
+    up_filename: "",
+    create_at: "",
+    tag_id: "",
+    content: "",
+  }); // 불러온 데이터
   const [comments, setComments] = useState([]); // 댓글 상태
   const [newComment, setNewComment] = useState(""); // 새 댓글 입력 상태
 
   useEffect(() => {
-    if (!itemId) return;
+    if (!linkId) return;
 
     const fetchData = async () => {
       try {
-        const response = await AxiosApi.get(`/contents/postView/${itemId}`);
-        setItem(response.data); // 데이터 로드 성공 시 상태 설정
+        const response = await AxiosApi.get(
+          `/contents/viewDetails?linkId=${linkId}`
+        );
+        const data = response.data || {};
+        setItem({
+          up_filename: data.up_filename || "",
+          create_at: data.create_at || "",
+          tag_id: data.tag_id || "",
+          content: data.content || "",
+        }); // 데이터 로드 성공 시 상태 설정
       } catch (error) {
         console.error("데이터 로드 실패:", error);
       }
     };
 
     fetchData();
-  }, [itemId]);
+  }, [linkId]);
 
   // 댓글 추가 함수
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     if (!newComment.trim()) return;
 
-    setComments((prev) => [
-      ...prev,
-      { id: Date.now(), itemId, text: newComment, replies: [] },
-    ]);
-    setNewComment(""); //댓글 입력 초기화
+    try {
+      // 백엔드로 댓글 저장 요청
+      const response = await AxiosApi.post("/comment/write", {
+        linkId, // 현재 게시물의 Id
+        content: newComment, // 댓글 내용용
+      });
+
+      // 백엔드에서 저장된 댓글 정보 응답 받음
+      const saveComment = response.data;
+
+      // 프론트엔드의 상태 업데이트트
+      setComments((prev) => [
+        ...prev,
+        {
+          id: saveComment.comment_id,
+          linkId: saveComment.linkId,
+          text: saveComment.content,
+          replies: [],
+        },
+      ]);
+
+      setNewComment(""); //댓글 입력 초기화
+    } catch (error) {
+      console.log("댓글 저장 실패: ", error);
+      alert("댓글 저장에 실패했습니다. 다시 시도해주세요.");
+    }
   };
 
   // 댓글의 댓글 추가 함수
@@ -65,7 +99,7 @@ function DetailsPage() {
     )}-${String(date.getDate()).padStart(2, "0")}`;
   };
 
-  if (!itemId) return <div>Loading...</div>; // 게시물이 로딩 중일 때
+  if (!linkId || !item) return <div>Loading...</div>; // 게시물이 로딩 중일 때
 
   return (
     <div className="DetailFrame">
@@ -74,21 +108,21 @@ function DetailsPage() {
         {/* 이미지 영역 */}
         <div className="DetailImgArea">
           <img
-            src={`/contentImage/${item?.upFileName || ""}`}
+            src={`/contentImage/${item?.up_filename || ""}`}
             alt="게시물 이미지"
             className="PostImage"
           />
-          <div className="date">{formatDate(item?.createAt)}</div>
+          <div className="date">{formatDate(item?.create_at)}</div>
         </div>
 
         {/* 콘텐츠 영역 */}
         <div className="DetailRight">
           <div className="detailContentArea">
             <div className="up">
-              <div className="author">{itemId.tagId}</div>
-              <div className="likes">좋아요{itemId.likeCount}개</div>
+              <div className="author">@{item?.tag_id || ""}</div>
+              <div className="likes">좋아요{linkId.likeCount}개</div>
             </div>
-            <div className="content">{itemId.content}</div>
+            <div className="content">{item?.content || ""}</div>
           </div>
 
           {/* 댓글 입력 영역 */}
@@ -100,7 +134,7 @@ function DetailsPage() {
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="댓글을 입력해 주세요"
             />
-            <button onClick={() => handleAddComment(itemId.id)}>
+            <button onClick={() => handleAddComment(linkId.id)}>
               댓글 작성
             </button>
           </div>
@@ -108,7 +142,7 @@ function DetailsPage() {
           {/* 댓글 리스트 */}
           <div className="CommentsList">
             {comments
-              .filter((comment) => comment.itemId === item?.id)
+              .filter((comment) => comment.linkId === item?.id)
               .map((comment) => (
                 <div key={comment.id} className="CommentItem">
                   <div className="CommentContent">

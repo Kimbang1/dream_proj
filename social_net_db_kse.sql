@@ -2,6 +2,9 @@ create database social_net_db;
 use social_net_db;
 show tables;
 
+select @@time_zone, @@system_time_zone;
+select now();
+
 # 테스트용 테이블
 create table kse_test (
 num			int			auto_increment	,
@@ -130,3 +133,19 @@ WHERE
     p.write_user = '9a6fdc66-46cc-4445-8d2b-dd8a8ed2705c'
 ORDER BY 
     p.create_at DESC;
+    
+create table comment (
+comment_id		char(36)		not null		,
+user_id			char(36)		not null		,
+parent_post		char(36)		not null		,
+content			varchar(300)	not null		,
+create_at		timestamp		default now()	,
+is_using		tinyint			default 1		,
+update_at		timestamp						,
+is_update		tinyint			default 0		,
+delete_at		timestamp						,
+is_delete		tinyint			default 0		,
+constraint fk_comment_post foreign key(parent_post) references post(post_id) on delete cascade,
+constraint fk_comment_user foreign key(user_id) references user(uuid) on delete cascade,
+constraint primary key(comment_id)
+);
