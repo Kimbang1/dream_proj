@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class JoinFilePostDto {
-	
+	private String link_id;
 	private String post_id;
     private String content;
     private LocalDateTime create_at;

@@ -149,3 +149,4 @@ constraint fk_comment_post foreign key(parent_post) references post(post_id) on 
 constraint fk_comment_user foreign key(user_id) references user(uuid) on delete cascade,
 constraint primary key(comment_id)
 );
+select * from comment order by create_at desc;

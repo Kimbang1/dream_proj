@@ -104,6 +104,7 @@ public class ContentController {
 	   
 	   for (JoinFilePostDto joinFilePostDto : filePostList) {
 		   Map<String, String> responseItem = new HashMap<>();
+		   responseItem.put("linkId", joinFilePostDto.getLink_id());
 		   responseItem.put("postId", joinFilePostDto.getPost_id());
 		   responseItem.put("content", joinFilePostDto.getContent());
 		   responseItem.put("createAt", joinFilePostDto.getCreate_at().toString());
@@ -331,9 +332,8 @@ public class ContentController {
       
       filePostMapper.addPostId(linkId, post_id);
       
-      System.out.println(postDto.getWrite_user());
-      
-      return null;
+      responseBody.put("message", "게시글 작성이 완료되었습니다.");
+      return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
    }
    
    
