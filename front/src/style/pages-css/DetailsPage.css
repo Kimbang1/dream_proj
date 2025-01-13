@@ -30,8 +30,8 @@
 
 .DetailImgArea img {
   width: 100%;
-  height: auto;
-  border-radius: 10px 0 0 10px;
+  height: 100%;
+  border-radius: 10px;
 }
 
 .DetailImgArea .date {
@@ -95,20 +95,18 @@
   font-size: 14px;
 }
 
-.CommentArea button {
+button.comentPush {
   margin-left: 10px;
   padding: 10px 15px;
-  background-color: #007bff;
-  color: #fff;
+  border: 1px solid #f80;
+  background-color: #2d3f50;
+  color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
 }
 
-.CommentArea button:hover {
-  background-color: #0056b3;
-}
 
 .CommentsList {
   margin-top: 20px;

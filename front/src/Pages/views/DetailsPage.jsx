@@ -14,7 +14,7 @@ function DetailsPage() {
   const [comments, setComments] = useState([]); // 댓글 상태
   const [newComment, setNewComment] = useState(""); // 새 댓글 입력 상태
 
-  console.log(itemId); // itemId 값이 제대로 전달되었는지 확인
+  console.log(linkId); // itemId 값이 제대로 전달되었는지 확인
 
   useEffect(() => {
     if (!linkId) return;
@@ -136,7 +136,9 @@ function DetailsPage() {
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="댓글을 입력해 주세요"
             />
-            <button onClick={() => handleAddComment(linkId.id)}>
+            <button
+            className="comentPush"
+            onClick={() => handleAddComment(linkId.id)}>
               댓글 작성
             </button>
           </div>

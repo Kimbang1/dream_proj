@@ -38,6 +38,7 @@ function Post() {
       // 실제 데이터 API 호출 예시
       const response = await AxiosApi.get("/contents/postView");
       const newData = response.data;
+      console.log("포스트의 뉴데이터의 값:", newData);
 
       if (newData.length === 0) {
         setHasMore(false); // 데이터가 더 이상 없으면
