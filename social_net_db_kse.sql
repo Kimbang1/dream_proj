@@ -172,3 +172,4 @@ constraint fk_postLike_user foreign key(user_id) references user(uuid) on delete
 constraint fk_postLike_post foreign key(post_id) references post(post_id) on delete cascade,
 constraint primary key(num)
 );
+select * from post_like order by num desc;
