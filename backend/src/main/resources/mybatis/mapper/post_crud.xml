@@ -8,7 +8,11 @@
 		values (#{post_id}, #{write_user}, #{content})
 	</insert>
 	
-	<select id="selectAllPost" resultType="com.sns.dto.PostDto">
+	<select id="selectPost" resultType="com.sns.dto.PostDto">
 		select * from post where post_id = #{post_id} order by create_at desc
 	</select>
+	
+	<update id="addViewCnt">
+		UPDATE post SET view_cnt = post.view_cnt + 1 WHERE post_id = #{post_id}
+	</update>
 </mapper>

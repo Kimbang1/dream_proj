@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sns.dao.PostLikeMapper">
+	<!-- 좋아요 생성 -->
+	<insert id="mtdInsert" parameterType="com.sns.dto.PostLikeDto">
+		INSERT INTO post_like
+		(user_id, post_id)
+		VALUES
+		(#{user_id}, #{post_id})
+	</insert>
+	
+	<!-- 좋아요 삭제 -->
+	<delete id="mtdDelete">
+		DELETE FROM post_like WHERE user_id = #{user_id} AND post_id = #{post_id}
+	</delete>
+	
+	<!-- 특정 게시물에 좋아요 눌렀는지 여부 -->
+	<select id="mtdIsLike" resultType="java.lang.Integer">
+ 		SELECT COUNT(*) FROM post_like WHERE user_id = #{user_id} AND post_id = #{post_id}
+	</select>
+	
+	<!-- 내가 좋아요 누른 게시물 목록 -->
+	<select id="mtdPostLikeList" resultType="com.sns.dto.PostLikeDto">
+ 		SELECT * FROM post_like WHERE user_id = #{user_id}
+	</select>
+	
+	<!-- 특정 게시물에 좋아요 누른 사람 목록 -->
+	<select id="mtdUserLikeList" resultType="com.sns.dto.PostLikeDto">
+ 		SELECT * FROM post_like WHERE post_id = #{post_id}
+	</select>
+	
+</mapper>

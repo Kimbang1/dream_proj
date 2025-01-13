@@ -14,5 +14,8 @@ public interface PostMapper {
 	public int savePost(PostDto postDto);
 	
 	// 특정 게시글 불러오기
-	public PostDto selectAllPost(@Param("post_id")String post_id);
+	public PostDto selectPost(@Param("post_id")String post_id);
+	
+	// 게시글 조회 수 올리기
+	public int addViewCnt(@Param("post_id")String post_id);
 }
