@@ -10,7 +10,7 @@ import com.sns.dto.PostLikeDto;
 @Mapper
 public interface PostLikeMapper {
 	// 좋아요 생성
-	public int mtdInsert(PostLikeDto postLikeDto);
+	public int mtdInsert(@Param("user_id")String user_id, @Param("post_id")String post_id);
 
 	// 좋아요 삭제
 	public int mtdDelete(@Param("user_id")String user_id, @Param("post_id")String post_id);

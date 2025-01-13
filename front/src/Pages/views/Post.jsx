@@ -56,7 +56,7 @@ function Post() {
       const newLikeCount = currentLikeCount + 1;
 
       // 백엔드로 좋아요 갯수 업데이트 요청
-      const response = await AxiosApi.post("/contents/updateLikeCount", {
+      const response = await AxiosApi.post("/contents/like", {
         linkId,
         newLikeCount,
       });
