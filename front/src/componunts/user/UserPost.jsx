@@ -9,9 +9,9 @@ function Post() {
 
   const navigate = useNavigate();
   // UserPost 컴포넌트에서
-  const handleDetails = (itemId) => {
-    console.log("Navigating to DetailsPage with itemId:", itemId);
-    navigate("/DetailsPage", { state: { itemId } });
+  const handleDetails = (event, linkId) => {
+    console.log("Navigating to DetailsPage with linkId:", linkId);
+    navigate("/DetailsPage", { state: { linkId } });
   };
 
   // 날짜 컷팅
@@ -105,53 +105,55 @@ function Post() {
 
   return (
     <div className="UserPostView">
-      {items.map((item, index) => (
-        <div
-          key={index}
-          className="PostItem"
-          onClick={() => handleDetails(item.linkId)}
-        >
-          {/* 이미지 영역 */}
-          <div className="PostArea">
-            <img
-              src={`/contentImage/${item.upFileName}`}
-              alt="게시물 이미지"
-              className="PostImage"
-            />
-          </div>
+      {items.map((item) => {
+        return (
+          <div
+            key={item.linkId}
+            className="PostItem"
+            onClick={(e) => handleDetails(e, item.linkId)}
+          >
+            {/* 이미지 영역 */}
+            <div className="PostArea">
+              <img
+                src={`/contentImage/${item.upFileName}`}
+                alt="게시물 이미지"
+                className="PostImage"
+              />
+            </div>
 
-          {/* 콘텐츠 영역 */}
-          <div className="contentsArea">
-            <div className="leftContents">
-              <div className="author">{item.tagId}</div>
-              <div className="content">{item.content}</div>
-            </div>
-            <div className="rightContents">
-              <div className="rightUP">
-                <div className="comments">댓글 {item.commentCount}개</div>
-                <div className="likes">
-                  <img
-                    className="heart"
-                    src={
-                      item.heartClicked
-                        ? "/images/redheart.png"
-                        : "/images/heart.png"
-                    }
-                    alt="하트 아이콘"
-                    onClick={(e) => {
-                      e.stopPropagation(); // 클릭 이벤트가 부모로 전파되지 않도록
-                      handleHeartClick(item.linkId, item.likeCount);
-                    }}
-                    style={{ cursor: "pointer" }}
-                  />
-                  {item.likeCount}개
-                </div>
+            {/* 콘텐츠 영역 */}
+            <div className="contentsArea">
+              <div className="leftContents">
+                <div className="author">{item.tagId}</div>
+                <div className="content">{item.content}</div>
               </div>
-              <div className="date">{formatDate(item.createAt)}</div>
+              <div className="rightContents">
+                <div className="rightUP">
+                  <div className="comments">댓글 {item.commentCount}개</div>
+                  <div className="likes">
+                    <img
+                      className="heart"
+                      src={
+                        item.heartClicked
+                          ? "/images/redheart.png"
+                          : "/images/heart.png"
+                      }
+                      alt="하트 아이콘"
+                      onClick={(e) => {
+                        e.stopPropagation(); // 클릭 이벤트가 부모로 전파되지 않도록
+                        handleHeartClick(item.linkId, item.likeCount);
+                      }}
+                      style={{ cursor: "pointer" }}
+                    />
+                    {item.likeCount}개
+                  </div>
+                </div>
+                <div className="date">{formatDate(item.createAt)}</div>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
       {loading && <div>로딩 중...</div>}
       {!hasMore && <div>더 이상 불러올 데이터가 없습니다.</div>}
     </div>
