@@ -98,7 +98,7 @@ constraint primary key(post_id)
 );
 drop table post;
 
-select * from post order by create_at;
+select * from post order by create_at desc;
 
 # file_post 파일과 게시글을 묶어주는 중간 테이블
 create table file_post (
@@ -149,4 +149,26 @@ constraint fk_comment_post foreign key(parent_post) references post(post_id) on 
 constraint fk_comment_user foreign key(user_id) references user(uuid) on delete cascade,
 constraint primary key(comment_id)
 );
+drop table comment;
 select * from comment order by create_at desc;
+
+create table view_list (
+num			int			auto_increment	,
+user_id		char(36)	not null		,
+post_id		char(36)	not null		,
+create_at	timestamp   default now()	,
+quarter		int							,
+constraint fk_viewList_post foreign key(post_id) references post(post_id) on delete cascade,
+constraint fk_viewList_user foreign key(user_id) references user(uuid) on delete cascade,
+constraint primary key(num)
+);
+select * from view_list order by create_at desc;
+
+create table post_like (
+num			int			auto_increment	,
+user_id		char(36)					,
+post_id		char(36)					,
+constraint fk_postLike_user foreign key(user_id) references user(uuid) on delete cascade,
+constraint fk_postLike_post foreign key(post_id) references post(post_id) on delete cascade,
+constraint primary key(num)
+);

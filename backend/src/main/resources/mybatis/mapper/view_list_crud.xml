@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sns.dao.ViewListMapper">
+	<!-- 조회 기록하기 -->
+	<insert id="mtdInsert" parameterType="com.sns.dto.ViewListDto">
+		INSERT INTO view_list
+		(user_id, post_id, quarter)
+		VALUES
+		(#{user_id}, #{post_id}, #{quarter})
+	</insert>
+	
+	<!-- 조회 기록 찾기 -->
+	<select id="mtdSelectSearch" resultType="com.sns.dto.ViewListDto">
+ 		SELECT * FROM view_list WHERE user_id = #{user_id} AND post_id = #{post_id}
+	</select>
+	
+</mapper>
