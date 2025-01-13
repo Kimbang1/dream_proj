@@ -8,8 +8,11 @@ function Post() {
   const [hasMore, setHasMore] = useState(true); // 더 이상 로드할 데이터가 있는지 확인
 
   const navigate = useNavigate();
-
-  
+  // UserPost 컴포넌트에서
+  const handleDetails = (itemId) => {
+    console.log("Navigating to DetailsPage with itemId:", itemId);
+    navigate("/DetailsPage", { state: { itemId } });
+  };
 
   // 날짜 컷팅
   const formatDate = (dateStr) => {
@@ -79,8 +82,8 @@ function Post() {
         <div
           key={index}
           className="PostItem"
-          onClick={(e) =>
-            navigate("/DetailsPage", { state: { itemId: item.linkId } })
+          onClick={() =>
+            handleDetails(item.linkId)
           }
         >
           {/* 이미지 영역 */}
