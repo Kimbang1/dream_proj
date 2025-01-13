@@ -2,9 +2,6 @@ create database social_net_db;
 use social_net_db;
 show tables;
 
-select @@time_zone, @@system_time_zone;
-select now();
-
 # 테스트용 테이블
 create table kse_test (
 num			int			auto_increment	,
@@ -70,7 +67,7 @@ ori_filename	varchar(100)	not null		,
 up_filename		varchar(100)	not null		,
 file_path		varchar(300)	not null		,
 insert_at		timestamp		default now()	,
-is_using		tinyint							,
+is_using		tinyint			default 0		,
 extension		varchar(20)		not null		,
 captured_at		timestamp						,
 latitude		double							,
@@ -79,7 +76,6 @@ constraint primary key(file_id)
 );
 drop table file_list;
 
-desc file_list;
 select * from file_list order by insert_at desc;
 
 # post 게시글 테이블
@@ -99,8 +95,7 @@ constraint primary key(post_id)
 );
 drop table post;
 
-desc post;
-select * from post order by create_at desc;
+select * from post order by create_at;
 
 # file_post 파일과 게시글을 묶어주는 중간 테이블
 create table file_post (
@@ -119,6 +114,7 @@ select * from file_post order by create_at desc;
 
 SELECT 
     p.post_id AS post_id,
+    p.write_user,
     p.content,
     p.create_at,
     f.file_id AS file_id,
@@ -132,8 +128,5 @@ LEFT JOIN
     file_list f ON fp.file_id = f.file_id
 WHERE 
     p.write_user = '9a6fdc66-46cc-4445-8d2b-dd8a8ed2705c'
-    and
-    fp.is_using = 1
 ORDER BY 
     p.create_at DESC;
-    
