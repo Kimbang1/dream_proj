@@ -50,23 +50,28 @@ function Post() {
   }, [loading, hasMore]);
 
   // 좋아요 클릭 시 서버로 업데이트
-  const handleHeartClick = async (linkId, currentLikeCount) => {
+  const handleHeartClick = async (linkId, currentLikeCount, heartClicked) => {
     try {
-      // 새로운 likeCount 계산
-      const newLikeCount = currentLikeCount + 1;
+      const newLikeCount = heartClicked
+        ? currentLikeCount - 1
+        : currentLikeCount + 1;
 
       // 백엔드로 좋아요 갯수 업데이트 요청
-      const response = await AxiosApi.post("/contents/updateLikeCount", {
+      const response = await AxiosApi.post("/contents/like", {
         linkId,
         newLikeCount,
       });
 
       if (response.data.success) {
-        // 성공적으로 업데이트되었으면, 클라이언트에서 해당 아이템의 likeCount 업데이트
+        // 성공적으로 업데이트되었으면, 클라이언트에서 해당 아이템의 likeCount와 heartClicked 상태 업데이트
         setItems((prevItems) =>
           prevItems.map((item) =>
             item.linkId === linkId
-              ? { ...item, likeCount: newLikeCount, heartClicked: true }
+              ? {
+                  ...item,
+                  likeCount: newLikeCount,
+                  heartClicked: !heartClicked,
+                }
               : item
           )
         );
@@ -133,7 +138,11 @@ function Post() {
                       alt="하트 아이콘"
                       onClick={(e) => {
                         e.stopPropagation(); // 클릭 이벤트가 부모로 전파되지 않도록
-                        handleHeartClick(item.linkId, item.likeCount);
+                        handleHeartClick(
+                          item.linkId,
+                          item.likeCount,
+                          item.heartClicked
+                        );
                       }}
                       style={{ cursor: "pointer" }}
                     />

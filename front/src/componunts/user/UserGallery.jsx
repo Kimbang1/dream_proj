@@ -9,8 +9,10 @@ function UserGallery() {
   const [loading, setLoading] = useState(false); // 로딩 상태
 
   const navigate = useNavigate();
-  const handleDetails = () => {
-    navigate("/DetailsPage");
+  const handleDetails = (event, linkId) => {
+    event.preventDefault();
+    console.log("Navigating to DetailsPage with linkId:", linkId);
+    navigate("/DetailsPage", { state: { linkId } });
   };
 
   // API 호출을 통해 데이터를 가져오는 함수
@@ -85,7 +87,7 @@ function UserGallery() {
         <div className="masonry">
           {items.map((item) => (
             <div
-              onClick={handleDetails}
+              onClick={(e) => handleDetails(e, item.linkId)}
               className="item"
               key={item.linkId}
               style={{ gridRowEnd: `span ${getRandomHeight()}` }} // 랜덤 높이 적용
