@@ -1,0 +1,147 @@
+.DetailFrame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+  height: 80vh;
+  margin: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #000;
+}
+
+.DetailItem {
+  width: 70%;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  overflow: hidden;
+  display: flex;
+}
+
+.DetailImgArea {
+  flex: 1;
+  position: relative;
+}
+
+.DetailImgArea img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px 0 0 10px;
+}
+
+.DetailImgArea .date {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.DetailRight {
+  flex: 2;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.detailContentArea {
+  margin-bottom: 20px;
+}
+
+.detailContentArea .up {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.detailContentArea .author {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.detailContentArea .likes {
+  font-size: 14px;
+  color: #888;
+}
+
+.detailContentArea .content {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-top: 10px;
+  color: #333;
+}
+
+.CommentArea {
+  display: flex;
+  margin-top: 20px;
+  border-top: 1px solid #e6e6e6;
+  padding-top: 10px;
+}
+
+.CommentInputArea {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #e6e6e6;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.CommentArea button {
+  margin-left: 10px;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.CommentArea button:hover {
+  background-color: #0056b3;
+}
+
+.CommentsList {
+  margin-top: 20px;
+}
+
+.CommentItem {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #e6e6e6;
+  border-radius: 5px;
+  background-color: #f8f9fa;
+}
+
+.CommentContent {
+  margin-bottom: 10px;
+}
+
+.Replies {
+  margin-left: 20px;
+}
+
+.ReplyItem {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.ReplyInput {
+  margin-top: 10px;
+}
+
+.ReplyInput input {
+  width: 90%;
+  padding: 5px;
+  border: 1px solid #e6e6e6;
+  border-radius: 5px;
+  font-size: 14px;
+}

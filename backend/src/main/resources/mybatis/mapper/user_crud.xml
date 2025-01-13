@@ -65,5 +65,14 @@
 	<select id="mtdSelectTagId" resultType="java.lang.String">
 		select tag_id from user where uuid = #{uuid}
 	</select>
+	
+	<!-- username, tag_id, introduce로 회원 찾기 -->
+	<select id="mtdSearchUser" resultType="com.sns.dto.UserDto">
+		SELECT * FROM user
+		WHERE username LIKE CONCAT("%", #{keyword}, "%")
+		OR tag_id LIKE CONCAT("%", #{keyword}, "%")
+		OR introduce LIKE CONCAT("%", #{keyword}, "%")
+		ORDER BY create_at DESC
+	</select>
 
 </mapper>

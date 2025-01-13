@@ -8,7 +8,7 @@ import Post from "../../Pages/views/Post";
 import SearchRes from "../../Pages/views/SearchRes";
 import Map from "../../componunts/NaverMap/Map";
 import AlramPage from "../../Pages/views/AlramPage";
-
+import DetailsPage from "../../Pages/views/DetailsPage";
 
 const pageRoutes = [
   {
@@ -39,7 +39,10 @@ const pageRoutes = [
     path: "/Alram",
     element: <AlramPage />,
   },
-
+  {
+    path: "/DetailsPage",
+    element: <DetailsPage />,
+  },
 ];
 
 export default pageRoutes;

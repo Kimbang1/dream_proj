@@ -8,11 +8,10 @@ import lombok.Data;
 public class JoinFilePostDto {
 	
 	private String post_id;
-    private String write_user;
     private String content;
     private LocalDateTime create_at;
     private String file_id;
-    private String fileName;
-    private String fileUrl;
-	
+    private String up_filename;
+    private String file_path;
+	private String tag_id;
 }

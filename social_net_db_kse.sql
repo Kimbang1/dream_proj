@@ -2,6 +2,9 @@ create database social_net_db;
 use social_net_db;
 show tables;
 
+select @@time_zone, @@system_time_zone;
+select now();
+
 # 테스트용 테이블
 create table kse_test (
 num			int			auto_increment	,
@@ -76,6 +79,7 @@ constraint primary key(file_id)
 );
 drop table file_list;
 
+desc file_list;
 select * from file_list order by insert_at desc;
 
 # post 게시글 테이블
@@ -84,7 +88,7 @@ post_id			char(36)		not null		,
 write_user		char(36)						,
 content			varchar(300)	not null		,
 create_at		timestamp		default now()	,
-is_using		tinyint			default 0		,
+is_using		tinyint			default 1		,
 update_at		timestamp						,
 is_update		tinyint			default 0		,
 delete_at		timestamp						,
@@ -95,7 +99,8 @@ constraint primary key(post_id)
 );
 drop table post;
 
-select * from post order by create_at;
+desc post;
+select * from post order by create_at desc;
 
 # file_post 파일과 게시글을 묶어주는 중간 테이블
 create table file_post (
@@ -110,7 +115,7 @@ constraint primary key(link_id)
 );
 drop table file_post;
 
-select * from file_post order by create_at;
+select * from file_post order by create_at desc;
 
 SELECT 
     p.post_id AS post_id,
@@ -122,10 +127,13 @@ SELECT
 FROM 
     post p
 LEFT JOIN 
-    file_post fp ON p.post = fp.post_id
+    file_post fp ON p.post_id = fp.post_id
 LEFT JOIN 
     file_list f ON fp.file_id = f.file_id
 WHERE 
     p.write_user = '9a6fdc66-46cc-4445-8d2b-dd8a8ed2705c'
+    and
+    fp.is_using = 1
 ORDER BY 
     p.create_at DESC;
+    

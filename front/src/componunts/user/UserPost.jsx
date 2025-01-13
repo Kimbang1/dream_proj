@@ -15,7 +15,7 @@ function UserPost() {
 
     try {
       // 실제 데이터 API 호출 예시 (여기서는 임의로 데이터를 만들어서 사용)
-      const response = await AxiosApi.get(`/contents/postView?page=${page}`);
+      const response = await AxiosApi.get(`/contents/userView?page=${page}`);
       const newData = response.data;
 
       if (newData.length === 0) {
@@ -61,7 +61,7 @@ function UserPost() {
           <div key={index} className="PostItem">
             <div className="left">
               <div className="userId">
-                <span>{item.uuid}</span>
+                <span>@{item.tagId}</span>
               </div>
               <div className="content">
                 <span>{item.content}</span>
@@ -71,15 +71,15 @@ function UserPost() {
             <div className="right">
               <div className="imageContainer">
                 <img
-                  src={item.filePath}
-                  alt={`Image related to post ${item.linkId}`}
+                  src={`/contentImage/${item.upFileNamef}`}
+                  alt={`Image related to post ${item.filePath}`}
                 />
               </div>
               <div className="RightUpper">
                 <span>댓글 {item.comments}</span>
                 <span>좋아요 {item.likes}</span>
               </div>
-              <div className="WriteTime">{item.writeTime}</div>
+              <div className="WriteTime">{item.createAt}</div>
             </div>
           </div>
         ))}

@@ -16,7 +16,7 @@ function UserGallery() {
     setLoading(true);
     try {
       // 백엔드 API 호출 (페이지 기반 데이터를 가져온다고 가정)
-      const response = await AxiosApi.get("/contents/userGalleryView");
+      const response = await AxiosApi.get("/contents/userView");
       const newItems = response.data; // 서버에서 반환된 데이터
 
       // 기존 데이터와 새 데이터를 병합
@@ -70,8 +70,8 @@ function UserGallery() {
           {items.map((item, index) => (
             <div className={`item ${item.heightClass}`} key={index}>
               <img
-                src={item.filePath}
-                alt={item.fileName}
+                src={`/contentImage/${item.upFileName}`}
+                alt={item.upFileName}
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
             </div>

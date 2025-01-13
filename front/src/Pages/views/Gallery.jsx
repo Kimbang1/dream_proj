@@ -66,7 +66,7 @@ function Gallery() {
               key={item.linkId}
             >
               <img
-                src={item.filePath} // 이미지 URL을 JSON에서 가져옴
+                src={`/contentImage/${item.upFileName}`} // 이미지 URL을 JSON에서 가져옴
                 alt={item.fileName} // 이미지 제목을 JSON에서 가져옴
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />

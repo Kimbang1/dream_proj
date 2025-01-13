@@ -1,17 +1,30 @@
 import React, { useState, useCallback, useEffect } from "react";
 import AxiosApi from "../../servies/AxiosApi";
+import { useNavigate } from "react-router-dom";
+import { LinkedIn } from "@mui/icons-material";
 
 function Post() {
   const [items, setItems] = useState([]); // 불러온 데이터
   const [loading, setLoading] = useState(false); // 로딩 상태
   const [hasMore, setHasMore] = useState(true); // 더 이상 로드할 데이터가 있는지 확인
 
+  //상세페이지로 이동
+  const navigate = useNavigate();
+
+  // Post 컴포넌트에서
+  const handleDetails = (event, itemId) => {
+    event.preventDefault(); // PointerEvent를 처리할 때는 preventDefault()를 호출할 수 있음
+    console.log("Navigating to DetailsPage with itemId:", itemId);
+    navigate("/DetailsPage", { state: { itemId } });
+  };
+
   //날짜 컷팅
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDay()).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    console.log(`${year} - ${month} - ${day}`)
 
     return `${year}-${month}-${day}`;
   };
@@ -68,7 +81,11 @@ function Post() {
         console.log(item.upFileName); // 각 아이템의 imageUrl 값 출력
 
         return (
-          <div key={index} className="PostItem">
+          <div
+            key={index}
+            className="PostItem"
+            onClick={(e) => handleDetails(e, item.id)}
+          >
             {/* 이미지 영역 */}
             <div className="PostArea">
               <img
