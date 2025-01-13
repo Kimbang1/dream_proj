@@ -6,6 +6,7 @@ import Useredit from "../../componunts/user/UsereditProfile";
 import UserResign from "../../componunts/user/UserResign";
 import UserPost from "../../componunts/user/UserPost";
 import UserGallery from "../../componunts/user/UserGallery";
+
 const userRoutes = [
   {
     path: "/user/*",
@@ -26,7 +27,8 @@ const userRoutes = [
   {
     path:"/UserGallery",
     element:<UserGallery/>,
-  }
+  },
+  
 ];
 
 export default userRoutes;

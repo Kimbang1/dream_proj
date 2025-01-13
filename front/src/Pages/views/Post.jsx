@@ -42,7 +42,15 @@ function Post() {
       if (newData.length === 0) {
         setHasMore(false); // 데이터가 더 이상 없으면
       } else {
-        setItems((prevItems) => [...prevItems, ...newData]); // 기존에 새로운 데이터 추가
+        //기존에 있던 데이터와 중복되지 않는 새로운 데이터 추가
+        setItems((prevItems) => {
+          //새로운 데이터와 기존 데티어에서 중복되면 필터링
+          const uniqueItems = [...prevItems, ...newData].filter(
+            (value, index, self) =>
+              index === self.findIndex((t) => t.linkId === value.linkId)
+          );
+          return uniqueItems;
+        });
       }
     } catch (error) {
       console.error("데이터 로드 실패:", error);
