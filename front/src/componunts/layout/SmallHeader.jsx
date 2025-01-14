@@ -5,7 +5,6 @@ import Bar from "../BarStyle/Bar";
 function SmallHeader() {
   const navigate = useNavigate();
   const handlehomeClick = () => {
-  
     navigate("/Mainview");
   };
   return (
