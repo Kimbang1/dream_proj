@@ -45,6 +45,17 @@ function Leftaside() {
     console.log("지도");
     navigate("/Map");
   };
+
+  const handleUserList = () => {
+    console.log("회원페이지 관리자 전용");
+    navigate("/UserList");
+  };
+
+  const handelPostList = () => {
+    console.log("게시물리스트 관리자 전용");
+    navigate("/PostList");
+  };
+
   return (
     <div className="wrap">
       {!hiddenAside && (
@@ -83,11 +94,11 @@ function Leftaside() {
             </div>
 
             <div className="Manager">
-              <div className="menu">
+              <div className="menu" onClick={handleUserList}>
                 <span>회원목록</span>
               </div>
 
-              <div className="menu">
+              <div className="menu" onClick={handelPostList}>
                 <span>게시글 목록</span>
               </div>
             </div>

@@ -1,20 +1,42 @@
 import React, { useEffect, useState } from "react";
 import AxiosApi from "../../servies/AxiosApi";
-import { useLocation, useParams } from "react-router-dom"; // 라우터를 사용하여 파라미터를 받을 수 있음
+import { useLocation } from "react-router-dom"; // 라우터를 사용하여 파라미터를 받을 수 있음
 
 function DetailsPage() {
   const location = useLocation();
   const { linkId } = location.state || {};
-  const [item, setItem] = useState({
-    up_filename: "",
-    create_at: "",
-    tag_id: "",
-    content: "",
-  }); // 불러온 데이터
+  const [item, setItems] = useState({}); // 불러온 데이터
   const [comments, setComments] = useState([]); // 댓글 상태
   const [newComment, setNewComment] = useState(""); // 새 댓글 입력 상태
 
   console.log(linkId); // itemId 값이 제대로 전달되었는지 확인
+  // 좋아요 클릭 시 서버로 업데이트 요청 및 로컬 상태 반영
+  const handleHeartClick = async (linkId) => {
+    try {
+      // 백엔드로 좋아요 상태 업데이트 요청
+      const response = await AxiosApi.post(
+        `/contents/like?linkId=${linkId}`,
+        {}
+      );
+
+      // 서버에서 반환된 값 (참/거짓)
+      if (response.data) {
+        // 서버에서 true 반환 시, 하트를 빨간색으로 설정
+        setItems((prevItem) => ({
+          ...prevItem,
+          heartClicked: !prevItem.heartClicked, // 상태 반전
+        }));
+      } else {
+        // 서버에서 false 반환 시, 하트를 기본 하트로 설정
+        setItems((prevItem) => ({
+          ...prevItem,
+          heartClicked: !prevItem.heartClicked, // 상태 반전
+        }));
+      }
+    } catch (error) {
+      console.error("좋아요 상태 업데이트 실패:", error);
+    }
+  };
 
   useEffect(() => {
     if (!linkId) return;
@@ -25,7 +47,7 @@ function DetailsPage() {
           `/contents/viewDetails?linkId=${linkId}`
         );
         const data = response.data || {};
-        setItem({
+        setItems({
           up_filename: data.up_filename || "",
           create_at: data.create_at || "",
           tag_id: data.tag_id || "",
@@ -143,7 +165,23 @@ function DetailsPage() {
           <div className="detailContentArea">
             <div className="up">
               <div className="author">@{item?.tag_id || ""}</div>
-              <div className="likes">좋아요{linkId.likeCount}개</div>
+              <div className="likes">
+                <img
+                  className="heart"
+                  src={
+                    item.heartClicked
+                      ? "/images/redheart.png"
+                      : "/images/heart.png"
+                  }
+                  alt="하트 아이콘"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleHeartClick(item.linkId);
+                  }}
+                  style={{ cusror: "pointer" }}
+                />
+                좋아요{linkId.likeCount}개
+              </div>
             </div>
             <div className="content">{item?.content || ""}</div>
           </div>

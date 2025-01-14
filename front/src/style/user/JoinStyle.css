@@ -2,14 +2,14 @@ div#background {
   background-color: #4c5158;
   background-image: url(/public/images/Ocean.jpg);
   background-repeat: no-repeat;
-  background-size:cover; /* 화면을 꽉 채우도록 설정 */
+  background-size: cover; /* 화면을 꽉 채우도록 설정 */
   background-position: center;
-  height: 100vh;/* 화면 높이를 100%로 설정 */
+  height: 100vh; /* 화면 높이를 100%로 설정 */
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 0;/* 상단 여백 제거 */
+  margin-top: 0; /* 상단 여백 제거 */
 }
 
 div#joinBox {
@@ -43,6 +43,13 @@ input.joinFrame {
 input.joinFrame:nth-child(2) {
   margin-top: 20px;
 }
+
+/* 입력 필드 에러 상태 */
+input.joinFrame.error {
+  border: 2px solid red;
+  box-shadow: 0 0 5px red;
+}
+
 button#signBtn {
   cursor: pointer;
   width: 50%;
@@ -66,7 +73,7 @@ button#signBtn {
     margin-top: 30px;
     margin-left: 20%;
   }
-  input.joinFrame{
+  input.joinFrame {
     width: 90%;
   }
   div#joinBox span {
@@ -77,5 +84,10 @@ button#signBtn {
     margin-top: 30px;
     margin-left: 0;
     align-items: center;
+  }
+
+  /* 모바일 반응형 - 에러 상태 */
+  input.joinFrame.error {
+    border: 2px solid red;
   }
 }
