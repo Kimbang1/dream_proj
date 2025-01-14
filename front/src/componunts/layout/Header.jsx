@@ -44,7 +44,6 @@ function Header({ setIsMainPage }) {
       } catch(error) {
         console.error("검색 요청 실패: ", error);
       }
-
     }
   };
 

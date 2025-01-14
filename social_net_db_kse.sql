@@ -45,7 +45,7 @@ drop table user;
 
 desc user;
 select * from user order by create_at desc;
-delete from user where email="rlatjddmsrla@daum.net";
+delete from user where email="admin@admin.com";
 update user set username="" where uuid="";
 
 # refresh_token 관리 테이블
