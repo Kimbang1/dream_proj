@@ -1,7 +1,8 @@
 div.UserListframe {
-  /* border: 1px solid #000; */
+  border: 1px solid #000;
   margin: 10px auto;
   display: flex;
+  padding: 10px;
   flex-direction: row;
   height: 80vh;
 }
@@ -11,6 +12,7 @@ div.listView {
   border-radius: 20px;
   margin: 10px;
   padding: 10px;
+  width: 70%;
 }
 
 input.AdminUseSearch {
@@ -31,7 +33,7 @@ img#dodbogi {
   cursor: pointer;
   width: 40px;
   position: relative;
-  transform: translate(355px, -40px);
+  transform: translate(335px, -40px);
 }
 
 /* 버튼 3개 짜리 작업 시작 */
@@ -59,6 +61,7 @@ div.ListBox {
 div.AdminCommitClear {
   display: flex;
   justify-content: space-around;
+  align-items: center;
   margin: 10px 0;
 }
 button.twins {

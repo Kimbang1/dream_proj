@@ -2,7 +2,7 @@
  */
 
 import UserList from "../../Pages/AdminPage/UserList";
-import PostList from "../../Pages/AdminPage/PostList";
+import GalleryList from "../../Pages/AdminPage/GalleryList";
 
 const AdminRoutes = [
   {
@@ -10,8 +10,8 @@ const AdminRoutes = [
     element: <UserList />,
   },
   {
-    path: "/PostList",
-    element: <PostList />,
+    path: "/GalleryList",
+    element: <GalleryList />,
   },
 ];
 

@@ -4,15 +4,24 @@ import AxiosApi from "../../servies/AxiosApi"; // axios로 API 호출
 function UserList() {
   // 상태 관리: 유저 데이터
   const [users, setUsers] = useState([]);
-
+  const [loading,setLoading] = useState(true);
   // API 호출 (컴포넌트가 렌더링될 때 한 번 실행)
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const response = await AxiosApi.get("/user/info"); // API 경로
-        setUsers(response.data); // 응답 데이터를 상태에 저장
+        setLoading(true);
+        const response = await AxiosApi.get("/user/info");
+        if (Array.isArray(response.data)) {
+          setUsers(response.data); // 배열일 때만 상태 업데이트
+        } else {
+          console.error("API 응답이 배열이 아닙니다:", response.data);
+          setUsers([]); // 비정상 데이터 처리
+        }
       } catch (error) {
         console.error("유저 데이터를 가져오는 중 오류 발생:", error);
+        setUsers([]); // 오류 발생 시 빈 배열로 설정
+      } finally {
+        setLoading(false); // 로딩 상태 해제
       }
     }
     fetchUsers();
@@ -41,19 +50,25 @@ function UserList() {
 
         {/* 유저 리스트 출력 */}
         <div className="ListBox">
-          {users.map((user) => (
-            <div key={user.id} className="userItem">
-              <input type="checkbox" />
-              <img
-                src={user.image}
-                alt={`${user.name} 이미지`}
-                style={{ width: "50px", height: "50px", objectFit: "cover" }}
-              />
-              <span>
-                {user.name} / {user.role}
-              </span>
-            </div>
-          ))}
+          {loading ? (
+            <div>로딩 중...</div>
+          ) : users.length > 0 ? (
+            users.map((user) => (
+              <div key={user.id} className="userItem">
+                <input type="checkbox" />
+                <img
+                  src={user.image}
+                  alt={`${user.name} 이미지`}
+                  style={{ width: "50px", height: "50px", objectFit: "cover" }}
+                />
+                <span>
+                  {user.name} / {user.role}
+                </span>
+              </div>
+            ))
+          ) : (
+            <div>유저 데이터가 없습니다.</div>
+          )}
         </div>
 
         <div className="AdminCommitClear">
