@@ -44,6 +44,22 @@ public class AuthController {
 		String email = requestBody.get("email");
 		String provider = requestBody.get("provider");
 		String key = provider.equals("local") ? requestBody.get("pwd") : requestBody.get("social_key");
+		HashMap<String, String> responseBody = new HashMap<>();
+		String falseType = "no_users";
+		
+		UserDto userDto = userDao.mtdFindByEmailAndProvider(email, provider);
+		if (userDto == null) {
+			responseBody.put("message", "가입 정보가 없습니다.");
+			responseBody.put("falseType", falseType);
+			return new ResponseEntity<>(responseBody, HttpStatus.FORBIDDEN);	// 403			
+		} else {
+			if (userDto.getIs_using() == false) {
+				falseType = (userDto.getIs_delete() == false) ? "block" : "resign";
+				responseBody.put("message", "계정 정지/탈퇴한 회원입니다.");
+				responseBody.put("falseType", falseType);
+				return new ResponseEntity<>(responseBody, HttpStatus.FORBIDDEN);	// 403
+			}			
+		}
 		
 		// 인증 토큰 생성
 		CustomAuthenticationToken authenticationToken =
