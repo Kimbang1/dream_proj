@@ -7,11 +7,11 @@ import PostList from "../../Pages/AdminPage/PostList";
 const AdminRoutes = [
   {
     path: "/UserList",
-    Element: <UserList />,
+    element: <UserList />,
   },
   {
     path: "/PostList",
-    Element: <PostList />,
+    element: <PostList />,
   },
 ];
 
