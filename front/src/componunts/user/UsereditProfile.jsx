@@ -6,8 +6,13 @@ import UserResign from "./UserResign";
 
 function Useredit() {
   const [isOnresign, setIsOnresign] = useState(false);
-  const { imagePreview, fileInputRef, profilehandle, handleImageClick } =
-    useImagePreview();
+  const {
+    imagePreviews,
+    fileInputRef,
+    profilehandle,
+    handleImageClick,
+    openFileDialog,
+  } = useImagePreview();
   const { userInfo, handleChange } = useUserInfo();
   const { isLoading, updateUserInfo } = useUpdateUserInfo();
 
@@ -23,23 +28,40 @@ function Useredit() {
       {!isOnresign && (
         <>
           <div className="ProfileimgArea">
-            <div className="miribogi" onClick={handleImageClick}>
-              <img
-                src={imagePreview || "/profileImage/defaultProfile.png"}
-                alt="프로필 미리보기"
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
+            <div className="miribogi" onClick={openFileDialog}>
+              {imagePreviews.length > 0 ? (
+                imagePreviews.map((preview, index) => (
+                  <img
+                    key={index}
+                    src={preview}
+                    alt={`프로필 미리보기 ${index + 1}`}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                ))
+              ) : (
+                <img
+                  src="/profileImage/defaultProfile.png"
+                  alt="프로필 미리보기"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              )}
             </div>
             <img
               src="/images/profiletrade.png"
               alt="교체아이콘"
               className="trade"
+              onClick={openFileDialog}
             />
             <input
               type="file"
               ref={fileInputRef}
               style={{ display: "none" }}
               accept="image/jpg,image/png,image/heic,image/jpeg"
+              multiple
               onChange={profilehandle}
             />
           </div>
