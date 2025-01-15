@@ -3,7 +3,7 @@
 	"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.sns.dao.FilePostMapper">
-	<!-- file_id 추가 -->
+	<!-- file_id 저장 -->
 	<insert id="saveFileId">
 		insert into file_post
 		(link_id, file_id)
@@ -11,13 +11,13 @@
 		(#{link_id}, #{file_id})
 	</insert>
 	
-	<!-- post_id 추가 -->
+	<!-- post_id 저장 -->
 	<update id="addPostId">
 		update file_post set post_id = #{post_id}, is_using = true, create_at = now()
 		where link_id = #{link_id}
 	</update>
 	
-	<!-- 모든 게시글 목록 반환 -->
+	<!-- 모든 게시글 리스트 확인(file_post) -->
 	<select id="selectAllList" resultType="com.sns.dto.FilePostDto">
 		select * from file_post order by create_at desc
 	</select>
@@ -68,4 +68,14 @@
 		AND fp.is_using = 1
 		ORDER BY p.create_at DESC
 	</select>
+	
+	<!-- 게시글 비활성화 -->
+	<update id="mtdUsingStatusFalse">
+		UPDATE file_post SET is_using = false WHERE link_id = #{link_id}
+	</update>
+	
+	<!-- 게시글 활성화 -->
+	<update id="mtdUsingStatusTrue">
+		UPDATE file_post SET is_using = true WHERE link_id = #{link_id}
+	</update>
 </mapper>

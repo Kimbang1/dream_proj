@@ -187,7 +187,21 @@ drop table post_like;
 desc post_like;
 select * from post_like order by num desc;
 
+create table content_del_list (
+del_id		char(36)		not null		,
+content_id	char(36)		not null		,
+manager		varchar(20)		not null		,
+manager_id	char(36)		not null		,
+reason		varchar(300)					,
+create_at	timestamp		default now()	,
+# constraint fk_contentDelList_user foreign key(manager_id) references user(uuid) on delete cascade,
+# constraint fk_contentDelList_filePost foreign key(content_id) references file_post(link_id) on delete cascade,
+constraint primary key(del_id)
+);
+drop table content_del_list;
 
+desc content_del_list;
+select * from content_del_list order by create_at desc;
 
 create table user_del_list (
 del_id		char(36)		not null		,
@@ -201,3 +215,23 @@ create_at	timestamp		default now()	,
 constraint primary key(del_id)
 );
 drop table user_del_list;
+
+desc user_del_list;
+select * from user_del_list order by create_at desc;
+
+create table user_block_list (
+block_id	char(36)		not null		,
+block_user	char(36)		not null		,
+manager		varchar(20)		not null		,
+manager_id	char(36)		not null		,
+reason		varchar(300)					,
+create_at	timestamp		default now()	,
+# constraint fk_userBlockList_user_manager foreign key(manager_id) references user(uuid) on delete cascade,
+# constraint fk_userBlockList_user_user foreign key(del_user) references user(uuid) on delete cascade,
+constraint primary key(block_id)
+);
+drop table user_block_list;
+
+desc user_block_list;
+select * from user_block_list order by create_at desc;
+

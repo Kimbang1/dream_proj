@@ -10,13 +10,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sns.dao.ContentDelListMapper;
+import com.sns.dao.FileListMapper;
 import com.sns.dao.FilePostMapper;
+import com.sns.dao.PostMapper;
 import com.sns.dao.RefreshTokenMapper;
 import com.sns.dao.UserBlockListMapper;
 import com.sns.dao.UserDao;
 import com.sns.dao.UserDelListMapper;
+import com.sns.dto.ContentDelListDto;
+import com.sns.dto.FilePostDto;
 import com.sns.dto.JoinFilePostDto;
 import com.sns.dto.UserBlockListDto;
 import com.sns.dto.UserDelListDto;
@@ -37,10 +43,27 @@ public class AdminController {
 	
 	private final UserDao userDao;
 	private final FilePostMapper filePostMapper;
+	private final FileListMapper fileListMapper;
+	private final PostMapper postMapper;
 	private final JwtProvider jwtProvider;
 	private final UserDelListMapper userDelListMapper;
 	private final UserBlockListMapper userBlockListMapper;
 	private final TakeOutATokenService takeOutATokenService;
+	private final ContentDelListMapper contentDelListMapper;
+	
+	// 관리자용 회원 검색
+	@RequestMapping("/userSearch")
+	public ResponseEntity<?> mtdUserSearch(@RequestParam("query") String keyword) {
+		List<UserDto> userList = userDao.mtdSearchUser(keyword);
+		return ResponseEntity.ok(userList);
+	}
+	
+	// 관리자용 관리자 목록
+	@RequestMapping("/adminList")
+	public ResponseEntity<?> mtdAdminList() {
+		List<UserDto> adminList = userDao.mtdSelectAllAdmin();
+		return ResponseEntity.ok(adminList);
+	}
 	
 	// 관리자용 회원 목록
 	@RequestMapping("/userList")
@@ -124,17 +147,30 @@ public class AdminController {
 		return ResponseEntity.ok(responseBody);
 	}
 	
+	// 게시글 삭제 처리
 	@RequestMapping("/contentDelete")
-	public ResponseEntity<?> mtdContentDelete(HttpServletRequest request){
+	public ResponseEntity<?> mtdContentDelete(@RequestBody HashMap<String, String> requestData){
+		Map<String, String> responseBody = new HashMap<>();
 		
-		HashMap<String, Object> responseBody = takeOutATokenService.takeOutAToken(request);
-		UserDto user = (UserDto)responseBody.get("data");
+		String managerTagId = requestData.get("managerTagId");
+		String linkId = requestData.get("linkId");
 		
-		if(user == null) {
-			return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
-		}
+		ContentDelListDto contentDelListDto = new ContentDelListDto();
+		contentDelListDto.setDel_id(UUID.randomUUID().toString());
+		contentDelListDto.setContent_id(linkId);
+		contentDelListDto.setManager(requestData.get("manager"));
+		contentDelListDto.setManager_id(requestData.get("managerUuid"));
+		contentDelListDto.setReason(requestData.get("reason"));
 		
+		contentDelListMapper.mtdContentDel(contentDelListDto);
 		
-		return null;
+		FilePostDto filePostDto = filePostMapper.selectOne(linkId);
+		filePostMapper.mtdUsingStatusFalse(linkId);
+		fileListMapper.mtdUsingStatusFalse(filePostDto.getFile_id());
+		postMapper.mtdUsingStatusFalse(filePostDto.getPost_id());
+		
+		responseBody.put("message", "게시글 삭제 처리 완료");
+		
+		return ResponseEntity.ok(responseBody);
 	}
 }

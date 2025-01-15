@@ -51,4 +51,6 @@ public interface UserDao {
 	// username, tag_id, introduce로 회원 찾기
 	public List<UserDto> mtdSearchUser(@Param("keyword") String keyword);
 	
+	// 관리자 목록 확인
+	public List<UserDto> mtdSelectAllAdmin();
 }
