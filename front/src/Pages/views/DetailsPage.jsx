@@ -186,7 +186,11 @@ function DetailsPage() {
                 좋아요{linkId.likeCount}개
               </div>
             </div>
-            <div className="content">{item?.content || ""}</div>
+            <div
+              className="content"
+              dangerouslySetInnerHTML={{ __html: item.content || "" }}
+            >
+            </div>
           </div>
 
           {/* 댓글 입력 영역 */}

@@ -8,7 +8,7 @@ export const useUserInfo = () => {
     username: "",
     introduce: "",
     phone: "",
-    profileImage: "",
+    profile_image: "",
   });
 
   useEffect(() => {
@@ -17,11 +17,11 @@ export const useUserInfo = () => {
         const response = await AxiosApi.get("/user/info");
         const data = response.data;
         setUserInfo({
-          tag_id: data.tag_id || "",
-          username: data.username || "",
-          introduce: data.introduce || "",
-          phone: data.phone || "",
-          profileImage: data.profileImage || "",
+          tag_id: data?.user?.tag_id || "",
+          username: data?.user?.username || "",
+          introduce: data?.user?.introduce || "",
+          phone: data?.user?.phone || "",
+          profile_image: data?.profile_image || "",
         });
       } catch (error) {
         console.error("유저 정보를 가져오지 못했습니다.:", error);

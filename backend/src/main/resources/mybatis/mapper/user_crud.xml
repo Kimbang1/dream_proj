@@ -62,7 +62,7 @@
 	
 	<!-- 회원 정보 수정 -->
 	<update id="mtdUpdateUser" parameterType="com.sns.dto.UserDto">
-		update user set tag_id = #{tag_id}, username = #{username}, phone = #{phone}
+		update user set tag_id = #{tag_id}, username = #{username}, phone = #{phone}, is_update = true, update_at = now(), introduce = #{introduce}
 		where uuid = #{uuid}
 	</update>
 	

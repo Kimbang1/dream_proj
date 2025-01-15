@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sns.dao.UserDao;
+import com.sns.dao.UserProfileMapper;
 import com.sns.dto.UserDto;
+import com.sns.dto.UserProfileDto;
 import com.sns.social.GoogleApi;
 import com.sns.social.KakaoApi;
 
@@ -34,9 +36,13 @@ public class JoinController {
 	private final KakaoApi kakaoApi;
 	private final GoogleApi googleApi;
 	private final PasswordEncoder passwordEncoder;
+	private final UserProfileMapper userProfileMapper;
 	
 	@Value("${spring.security.oauth2.client.registration.google.client-id}")
 	private String googleClientId;
+	
+	@Value("${user.default.image}")
+	private String defaultProfile;
 	
 	@PostMapping("/local")
 	@Transactional
@@ -55,10 +61,16 @@ public class JoinController {
 			
 			// 계정 활성화 설정
 			userDto.setIs_using(true);
-			userDto.setProfile_path("defaultProfile.png");
+			
 			
 			try {
 				userDao.mtdInsert(userDto);
+				UserProfileDto userProfileDto = new UserProfileDto();
+				userProfileDto.setLink_id(UUID.randomUUID().toString());
+				userProfileDto.setUser_id(create_uuid);
+				userProfileDto.setFile_id(defaultProfile);
+				userProfileMapper.mtdInsert(userProfileDto);
+				userProfileMapper.mtdUsingStatusTrue(userProfileDto.getLink_id());
 				return ResponseEntity
 						.status(HttpStatus.CREATED)
 						.body("회원가입 성공");
@@ -131,10 +143,16 @@ public class JoinController {
 				userDto.setSocial_key(passwordEncoder.encode(id));
 				userDto.setProvider(provider);
 				userDto.setIs_using(false);
-				userDto.setProfile_path("defaultProfile.png");
 				
 				// 사용자 데이터 저장
 				userDao.mtdInsert(userDto);
+				
+				UserProfileDto userProfileDto = new UserProfileDto();
+				userProfileDto.setLink_id(UUID.randomUUID().toString());
+				userProfileDto.setUser_id(create_uuid);
+				userProfileDto.setFile_id(defaultProfile);
+				userProfileMapper.mtdInsert(userProfileDto);
+				userProfileMapper.mtdUsingStatusTrue(userProfileDto.getLink_id());
 				
 				// 회원가입 완료 후 프론트엔드로 리다이렉트
 				response.sendRedirect("http://localhost:3000/Social?provider=" + provider + "&uuid=" + create_uuid + "&res=join");
