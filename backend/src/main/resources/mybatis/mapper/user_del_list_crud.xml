@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper namespace="com.sns.dao.UserDelListMapper">
+	
+	<insert id="mtdUserResign" parameterType="com.sns.dto.UserDelListDto">
+		INSERT INTO user_del_list
+		(del_id, del_user, manager, manager_id, reason)
+		VALUES
+		(#{del_id}, #{del_user}, #{manager}, #{}manager_id, #{reason})
+	</insert>
+
+</mapper>

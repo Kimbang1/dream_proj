@@ -22,6 +22,9 @@ public interface FilePostMapper {
 	// link_id로 게시글 검색
 	public FilePostDto selectOne(@Param("link_id") String linkId);
 	
+	// 모든 게시물의 상세 정보 목록 반환
+	public List<JoinFilePostDto> selectAllPost();
+	
 	// link_id로 게시글 검색, Join해서 file_list, post 정보 함께 가져오기
 	public JoinFilePostDto selectOnePost(@Param("link_id") String linkId);
 	

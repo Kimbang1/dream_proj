@@ -29,6 +29,7 @@
 		)
 	</insert>
 	
+	<!-- 회원 탈퇴 처리 -->
 	<update id="mtdUserResign">
 		UPDATE user SET is_using = false, is_delete = true, delete_at = now() WHERE uuid = #{uuid}
 	</update>
@@ -38,6 +39,11 @@
 		update user set username=#{username}, tag_id=#{tag_id}, phone=#{phone}, birthday=#{birthday}, is_using=#{is_using}, create_at=now()
 		where uuid=#{uuid}
 	</update>
+	
+	<!-- 전체 회원 목록 반환 -->
+	<select id="mtdSelectAllUser" resultType="com.sns.dto.UserDto">
+		SELECT * FROM user ORDER BY create_at DESC
+	</select>
 	
 	<!-- uuid로 회원 찾기 -->
 	<select id="mtdFindByUuid" resultType="com.sns.dto.UserDto">
@@ -63,6 +69,21 @@
 	<!-- tag_id 중복 확인 -->
 	<select id="mtdTagIdCheck" resultType="java.lang.Boolean">
 		select case when count(*) > 0 then true else false end from user where tag_id = #{tag_id}
+	</select>
+	
+	<!-- 회원 비활성화 처리 -->
+	<update id="mtdUsingStatusFalse">
+		UPDATE user SET is_using = false WHERE uuid = #{uuid}
+	</update>
+	
+	<!-- 회원 활성화 처리 -->
+	<update id="mtdUsingStatusTrue">
+		UPDATE user SET is_using = true WHERE uuid = #{uuid}
+	</update>
+	
+	<!-- 회원 활성화 상태 -->
+	<select id="mtdIsUsingUser" resultType="java.lang.Boolean">
+		SELECT is_using FROM user WHERE uuid = #{uuid}
 	</select>
 	
 	<!-- uuid로 tag_id 가져오기 -->

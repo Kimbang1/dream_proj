@@ -186,3 +186,18 @@ drop table post_like;
 
 desc post_like;
 select * from post_like order by num desc;
+
+
+
+create table user_del_list (
+del_id		char(36)		not null		,
+del_user	char(36)		not null		,
+manager		varchar(20)		not null		,
+manager_id	char(36)		not null		,
+reason		varchar(300)					,
+create_at	timestamp		default now()	,
+# constraint fk_userDelList_user_manager foreign key(manager_id) references user(uuid) on delete cascade,
+# constraint fk_userDelList_user_user foreign key(del_user) references user(uuid) on delete cascade,
+constraint primary key(del_id)
+);
+drop table user_del_list;

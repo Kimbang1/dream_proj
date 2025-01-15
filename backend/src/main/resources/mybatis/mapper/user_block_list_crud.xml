@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper namespace="com.sns.dao.UserBlockListMapper">
+	
+	<insert id="mtdUserBlock" parameterType="com.sns.dto.UserBlockListDto">
+		INSERT INTO user_block_list
+		(block_id, block_user, manager, manager_id, reason)
+		VALUES
+		(#{block_id}, #{block_user}, #{manager}, #{}manager_id, #{reason})
+	</insert>
+
+</mapper>
