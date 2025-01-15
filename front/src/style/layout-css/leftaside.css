@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 /* div.wrap {
-  width: 307px;
+  width: 20vh;
   height: 1000px;
   border: 1px solid #aaa;
 } */
@@ -21,7 +21,7 @@ div.LogoArea img {
 div.gnbArea {
   width: 80%;
   height: 30px;
-  margin: 130px auto;
+  margin: 60px 15px;
 }
 
 div.menu {
