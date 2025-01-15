@@ -398,7 +398,7 @@ public class ContentController {
         try {
            // 1. 파일 로컬에 저장
            
-            String filePath = fileService.saveFile(file);
+            String filePath = fileService.saveFile(file, "content");
             
             // 2. DB에 파일 정보 저장
             FileListDto fileListDto = new FileListDto();
@@ -449,7 +449,7 @@ public class ContentController {
    public ResponseEntity<HashMap<String, String>> mtdPostUpload(@RequestBody HashMap<String, String> requestData, HttpServletRequest request) {
       HashMap<String, String> responseBody = new HashMap<>();
       String linkId = requestData.get("link_id");
-      String content = requestData.get("content");
+      String content = requestData.get("content").replace("\n", "<br>");
       
       System.out.println("link_id: " + linkId);
       System.out.println("content: " + content);
