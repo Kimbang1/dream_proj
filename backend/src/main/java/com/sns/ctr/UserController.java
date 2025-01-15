@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sns.dao.UserDao;
 import com.sns.dto.UserDto;
 import com.sns.jwt.JwtProvider;
+import com.sns.svc.FileService;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +29,7 @@ public class UserController {
 	
 	private final UserDao userDao;
 	private final JwtProvider jwtProvider;
+	private final FileService fileService;
 	
 	@GetMapping("/info")
 	public ResponseEntity<?> mtdUserInfo(HttpServletRequest request) {

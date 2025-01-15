@@ -9,7 +9,7 @@ function DetailsPage() {
   const [comments, setComments] = useState([]); // 댓글 상태
   const [newComment, setNewComment] = useState(""); // 새 댓글 입력 상태
 
-  console.log(linkId); // itemId 값이 제대로 전달되었는지 확인
+  console.log("linkId: ", linkId); // itemId 값이 제대로 전달되었는지 확인
   // 좋아요 클릭 시 서버로 업데이트 요청 및 로컬 상태 반영
   const handleHeartClick = async (linkId) => {
     try {
@@ -46,12 +46,15 @@ function DetailsPage() {
         const response = await AxiosApi.get(
           `/contents/viewDetails?linkId=${linkId}`
         );
+        // 기존 정보는 data.postDetails.변수명 으로 가져옵니다.
+        // 좋아요 눌렀는지는 true/false는 data.likeCheck 으로 가져옵니다.
+        // 게시글에 대한 좋아요 개수는 data.likeCount 으로 가져옵니다.
         const data = response.data || {};
         setItems({
-          up_filename: data.up_filename || "",
-          create_at: data.create_at || "",
-          tag_id: data.tag_id || "",
-          content: data.content || "",
+          up_filename: data.postDetails.up_filename || "",
+          create_at: data.postDetails.create_at || "",
+          tag_id: data.postDetails.tag_id || "",
+          content: data.postDetails.content || "",
         }); // 데이터 로드 성공 시 상태 설정
       } catch (error) {
         console.error("데이터 로드 실패:", error);
@@ -176,7 +179,7 @@ function DetailsPage() {
                   alt="하트 아이콘"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleHeartClick(item.linkId);
+                    handleHeartClick(linkId);
                   }}
                   style={{ cusror: "pointer" }}
                 />

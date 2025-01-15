@@ -7,9 +7,9 @@
 	<!-- 회원 가입 sql provider가 local이면 pwd는 받아온 값 저장, local이 아니면 null로 저장-->
 	<insert id="mtdInsert" parameterType="com.sns.dto.UserDto">
 		insert into user
-		(uuid, username, tag_id, email, phone, birthday, provider, is_using, create_at, pwd, social_key)
+		(uuid, username, tag_id, email, phone, birthday, provider, is_using, create_at, profile_path, pwd, social_key)
 		values
-		(#{uuid}, #{username}, #{tag_id}, #{email}, #{phone}, #{birthday}, #{provider}, #{is_using}, now(),
+		(#{uuid}, #{username}, #{tag_id}, #{email}, #{phone}, #{birthday}, #{provider}, #{is_using}, now(), #{profile_path},
 		<choose>
 			<when test="provider == 'local'">
 				#{pwd}
@@ -29,6 +29,7 @@
 		)
 	</insert>
 	
+	<!-- 회원 탈퇴 처리 -->
 	<update id="mtdUserResign">
 		UPDATE user SET is_using = false, is_delete = true, delete_at = now() WHERE uuid = #{uuid}
 	</update>
@@ -38,6 +39,11 @@
 		update user set username=#{username}, tag_id=#{tag_id}, phone=#{phone}, birthday=#{birthday}, is_using=#{is_using}, create_at=now()
 		where uuid=#{uuid}
 	</update>
+	
+	<!-- 전체 회원 목록 반환 -->
+	<select id="mtdSelectAllUser" resultType="com.sns.dto.UserDto">
+		SELECT * FROM user ORDER BY create_at DESC
+	</select>
 	
 	<!-- uuid로 회원 찾기 -->
 	<select id="mtdFindByUuid" resultType="com.sns.dto.UserDto">
@@ -65,6 +71,21 @@
 		select case when count(*) > 0 then true else false end from user where tag_id = #{tag_id}
 	</select>
 	
+	<!-- 회원 비활성화 처리 -->
+	<update id="mtdUsingStatusFalse">
+		UPDATE user SET is_using = false WHERE uuid = #{uuid}
+	</update>
+	
+	<!-- 회원 활성화 처리 -->
+	<update id="mtdUsingStatusTrue">
+		UPDATE user SET is_using = true WHERE uuid = #{uuid}
+	</update>
+	
+	<!-- 회원 활성화 상태 -->
+	<select id="mtdIsUsingUser" resultType="java.lang.Boolean">
+		SELECT is_using FROM user WHERE uuid = #{uuid}
+	</select>
+	
 	<!-- uuid로 tag_id 가져오기 -->
 	<select id="mtdSelectTagId" resultType="java.lang.String">
 		select tag_id from user where uuid = #{uuid}
@@ -79,4 +100,8 @@
 		ORDER BY create_at DESC
 	</select>
 
+	<!-- 관리자 목록 확인 -->
+	<select id="mtdSelectAllAdmin" resultType="com.sns.dto.UserDto">
+		SELECT * FROM user WHERE is_admin = true
+	</select>
 </mapper>

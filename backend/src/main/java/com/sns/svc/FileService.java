@@ -28,12 +28,18 @@ public class FileService {
 	private String profileUploadDir;
 	
 	// 로컬 파일 저장
-	public String saveFile(MultipartFile file) throws IOException {
+	public String saveFile(MultipartFile file, String fileType) throws IOException {
 		// 파일 이름과 저장 경로
 		String oriFileName = file.getOriginalFilename();
 		String upFileName = System.currentTimeMillis() + "_" + oriFileName;
 		
-		Path path = Paths.get(contentUploadDir + File.separator + upFileName);
+		Path path = null;
+		if(fileType.equals("profile")) {
+			path = Paths.get(profileUploadDir + File.separator + upFileName);
+		} else {
+			path = Paths.get(contentUploadDir + File.separator + upFileName);
+		}
+		
 		
 		File folder = new File(path.toString());
 		if(folder.isDirectory() == false) {

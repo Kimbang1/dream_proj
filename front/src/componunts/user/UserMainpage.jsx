@@ -35,13 +35,13 @@ function UserMainpage() {
 
           <div className="ProfileArea">
             <div className="PrImgArea">
-              <img src="/images/cat.jpg" alt="고양이 이미지" />
+              <img
+                src={`/profileImage/${user.profile_path}`} alt="고양이 이미지"/>
             </div>
 
             <div className="InfoArea">
               <div className="useDetails">
                 <div className="FirstLayer">
-
                   <div className="userName">@{user.tag_id}</div>
 
                   <button className="editProfileBtn" onClick={UserEditHandle}>

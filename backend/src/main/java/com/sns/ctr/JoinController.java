@@ -55,6 +55,7 @@ public class JoinController {
 			
 			// 계정 활성화 설정
 			userDto.setIs_using(true);
+			userDto.setProfile_path("defaultProfile.png");
 			
 			try {
 				userDao.mtdInsert(userDto);
@@ -130,6 +131,7 @@ public class JoinController {
 				userDto.setSocial_key(passwordEncoder.encode(id));
 				userDto.setProvider(provider);
 				userDto.setIs_using(false);
+				userDto.setProfile_path("defaultProfile.png");
 				
 				// 사용자 데이터 저장
 				userDao.mtdInsert(userDto);
