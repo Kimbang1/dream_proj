@@ -75,7 +75,7 @@ button.twins {
 div.AdminfunctionArea {
   border: 1px solid #31538f;
   border-radius: 20px;
-  height: 65vh;
+  height: 70vh;
   margin-top: 10px;
   padding: 10px;
 }
@@ -103,6 +103,17 @@ div.spanArea {
 
 /*관리자 명 영역 작업  */
 
+div.RealName {
+  /* border: 1px solid #000; */
+  gap: 10px;
+}
+input.RealWriterName {
+  margin-left: 10px;
+  width: 80%;
+  height: 30px;
+  border: 1px solid #000;
+  border-radius: 7px;
+}
 /* 정지/삭제 사유 */
 div.stopreason {
   margin: 10px auto;
@@ -119,26 +130,26 @@ div.stopListArea {
   border-radius: 10px;
   padding: 10px;
 }
-div.stopLsit{
-    /* border: 1px solid #000; */
-    display: flex;
-    margin-top: 10px;
+div.stopLsit {
+  /* border: 1px solid #000; */
+  display: flex;
+  margin-top: 10px;
 }
-div.List{
-    margin-left: 10px;
-    border: 1px solid #000;
-    width: 80%;
-    height: 30px;
-    padding: 5px 15px;
+div.List {
+  margin-left: 10px;
+  border: 1px solid #000;
+  width: 80%;
+  height: 30px;
+  padding: 5px 15px;
 
-    border-radius: 7px;
+  border-radius: 7px;
 }
-input#giganArea{
-    margin-left: 10px;
-    width: 80%;
-    height: 30px;
-    border: 1px solid #000;
-    border-radius: 7px;
+input#giganArea {
+  margin-left: 10px;
+  width: 80%;
+  height: 30px;
+  border: 1px solid #000;
+  border-radius: 7px;
 }
 
 /* 실행 버튼 영역 */

@@ -4,7 +4,7 @@ import AxiosApi from "../../servies/AxiosApi"; // axios로 API 호출
 function UserList() {
   // 상태 관리: 유저 데이터
   const [users, setUsers] = useState([]);
-  const [loading,setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   // API 호출 (컴포넌트가 렌더링될 때 한 번 실행)
   useEffect(() => {
     async function fetchUsers() {
@@ -95,9 +95,18 @@ function UserList() {
         <div className="AdminNameArea">
           <h3>관리자 이름</h3>
         </div>
-
+        <div className="RealName">
+          <input
+            className="RealWriterName"
+            type="text"
+            placeholder="작성의 이름을 쓰세요."
+            //  value={manager}
+          />
+        </div>
         <div className="stopreason">
-          <input type="text" maxLength={80} placeholder="사유를 입력하세요" />
+          <input type="text" maxLength={80} placeholder="사유를 입력하세요"
+          // value={Reason}
+          />
         </div>
 
         <div className="stopListArea">
