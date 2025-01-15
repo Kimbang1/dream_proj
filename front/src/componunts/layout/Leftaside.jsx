@@ -51,9 +51,9 @@ function Leftaside() {
     navigate("/UserList");
   };
 
-  const handelPostList = () => {
+  const handelGalleryList = () => {
     console.log("게시물리스트 관리자 전용");
-    navigate("/PostList");
+    navigate("/GalleryList");
   };
 
   return (
@@ -98,7 +98,7 @@ function Leftaside() {
                 <span>회원목록</span>
               </div>
 
-              <div className="menu" onClick={handelPostList}>
+              <div className="menu" onClick={handelGalleryList}>
                 <span>게시글 목록</span>
               </div>
             </div>

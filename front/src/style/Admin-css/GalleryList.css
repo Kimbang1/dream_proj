@@ -1,0 +1,44 @@
+div.GalleryList {
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+}
+
+div.GalleryListView {
+  width: 75%;
+}
+div.AdminfunctionAreaG {
+  border: 1px solid #31538f;
+  border-radius: 20px;
+  height: 55vh;
+  margin-top: 10px;
+  padding: 10px;
+}
+div.AdminNameArea {
+  margin: 10px 20px;
+}
+div.RealNameG{
+  margin: 10px 0;
+}
+
+div.delreason {
+  height: 30vh;
+}
+div.delreason input {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #000;
+  border-radius: 10px;
+}
+
+div.delArea {
+  margin: 10px 20px;
+}
+button.delete {
+  width: 100%;
+  height: 30px;
+  border: 1px solid #000;
+  border-radius: 10px;
+  cursor: pointer;
+}
+

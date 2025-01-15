@@ -1,0 +1,165 @@
+div.UserListframe {
+  border: 1px solid #000;
+  margin: 10px auto;
+  display: flex;
+  padding: 10px;
+  flex-direction: row;
+  height: 80vh;
+}
+
+div.listView {
+  border: 1px solid #31538f;
+  border-radius: 20px;
+  margin: 10px;
+  padding: 10px;
+  width: 70%;
+}
+
+input.AdminUseSearch {
+  border: 2px solid #000;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border-radius: 10px;
+  height: 50px;
+  width: 100%;
+  cursor: pointer;
+  padding-left: 20px;
+}
+div.UserSearchArea {
+  height: 10vh;
+}
+img#dodbogi {
+  cursor: pointer;
+  width: 40px;
+  position: relative;
+  transform: translate(335px, -40px);
+}
+
+/* 버튼 3개 짜리 작업 시작 */
+div.BtnfunctionArea {
+  display: flex;
+  justify-content: space-evenly;
+}
+button.triplets {
+  cursor: pointer;
+  border: 1px solid #000;
+  border-radius: 5px;
+  width: 25%;
+  height: 30px;
+  margin-bottom: 10px;
+}
+
+/* 리스트 박스 작업 */
+div.ListBox {
+  border: 1px solid #000;
+  border-radius: 7px;
+}
+
+/* 관리자 등록 해제 버튼 작업 */
+
+div.AdminCommitClear {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 10px 0;
+}
+button.twins {
+  width: 25%;
+  height: 30px;
+  border: 1px solid #000;
+  border-radius: 7px;
+}
+
+/* 오른쪽 박스 영역 작업 */
+div.AdminfunctionArea {
+  border: 1px solid #31538f;
+  border-radius: 20px;
+  height: 70vh;
+  margin-top: 10px;
+  padding: 10px;
+}
+
+div.checkBoxArea {
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+}
+div.Sb {
+  /* border: 1px solid #000; */
+  display: flex;
+  margin-left: 10px;
+  justify-content: space-between;
+}
+div.Sb input {
+  margin-right: 5px;
+}
+div.spanArea {
+  width: 40px;
+  border: 1px solid #000;
+  padding-left: 4px;
+  border-radius: 5px;
+}
+
+/*관리자 명 영역 작업  */
+
+div.RealName {
+  /* border: 1px solid #000; */
+  gap: 10px;
+}
+input.RealWriterName {
+  margin-left: 10px;
+  width: 80%;
+  height: 30px;
+  border: 1px solid #000;
+  border-radius: 7px;
+}
+/* 정지/삭제 사유 */
+div.stopreason {
+  margin: 10px auto;
+}
+div.stopreason input {
+  width: 100%;
+  height: 60px;
+  border: 1px solid #000;
+  border-radius: 10px;
+}
+/* 정지 사유 리스트 */
+div.stopListArea {
+  border: 1px solid #000;
+  border-radius: 10px;
+  padding: 10px;
+}
+div.stopLsit {
+  /* border: 1px solid #000; */
+  display: flex;
+  margin-top: 10px;
+}
+div.List {
+  margin-left: 10px;
+  border: 1px solid #000;
+  width: 80%;
+  height: 30px;
+  padding: 5px 15px;
+
+  border-radius: 7px;
+}
+input#giganArea {
+  margin-left: 10px;
+  width: 80%;
+  height: 30px;
+  border: 1px solid #000;
+  border-radius: 7px;
+}
+
+/* 실행 버튼 영역 */
+div.executionArea {
+  margin: 10px auto;
+}
+button.execution {
+  margin-left: 15px;
+  width: 80%;
+  height: 30px;
+  border: 1px solid #000;
+  border-radius: 7px;
+}
