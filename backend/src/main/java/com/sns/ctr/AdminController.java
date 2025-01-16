@@ -181,25 +181,33 @@ public class AdminController {
 	
 	// 게시글 삭제 처리
 	@RequestMapping("/contentDelete")
-	public ResponseEntity<?> mtdContentDelete(@RequestBody HashMap<String, String> requestData){
-		Map<String, String> responseBody = new HashMap<>();
-		
-		String managerTagId = requestData.get("managerTagId");
-		String linkId = requestData.get("linkId");
+	public ResponseEntity<?> mtdContentDelete(@RequestBody List<HashMap<String, String>> requestData){
+		log.info("/admin/contentDelete 도착");
 		
 		ContentDelListDto contentDelListDto = new ContentDelListDto();
-		contentDelListDto.setDel_id(UUID.randomUUID().toString());
-		contentDelListDto.setContent_id(linkId);
-		contentDelListDto.setManager(requestData.get("manager"));
-		contentDelListDto.setManager_id(requestData.get("managerUuid"));
-		contentDelListDto.setReason(requestData.get("reason"));
 		
-		contentDelListMapper.mtdContentDel(contentDelListDto);
-		
-		FilePostDto filePostDto = filePostMapper.selectOne(linkId);
-		filePostMapper.mtdUsingStatusFalse(linkId);
-		fileListMapper.mtdUsingStatusFalse(filePostDto.getFile_id());
-		postMapper.mtdUsingStatusFalse(filePostDto.getPost_id());
+		for(HashMap<String, String> data : requestData) {
+			System.out.println(data.get("linkId"));
+			System.out.println(data.get("reason"));
+			System.out.println(data.get("manager"));
+			System.out.println(data.get("managerUuid"));
+			System.out.println(data);			
+			if(data != null) {
+				contentDelListDto.setDel_id(UUID.randomUUID().toString());
+				contentDelListDto.setContent_id(data.get("linkId"));
+				contentDelListDto.setManager(data.get("manager"));
+				contentDelListDto.setManager_id(data.get("managerUuid"));
+				contentDelListDto.setReason(data.get("reason"));
+				
+				contentDelListMapper.mtdContentDel(contentDelListDto);
+				
+				FilePostDto filePostDto = filePostMapper.selectOne(data.get("linkId"));
+				filePostMapper.mtdUsingStatusFalse(data.get("linkId"));
+				fileListMapper.mtdUsingStatusFalse(filePostDto.getFile_id());
+				postMapper.mtdUsingStatusFalse(filePostDto.getPost_id());
+			}
+		}
+		Map<String, String> responseBody = new HashMap<>();
 		
 		responseBody.put("message", "게시글 삭제 처리 완료");
 		

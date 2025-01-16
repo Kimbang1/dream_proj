@@ -51,7 +51,7 @@
 	
 	<!-- 전체 회원 목록 반환 -->
 	<select id="mtdSelectAllUser" resultType="com.sns.dto.UserDto">
-		SELECT * FROM user ORDER BY create_at DESC
+		SELECT * FROM user WHERE is_using = true ORDER BY create_at DESC
 	</select>
 	
 	<!-- uuid로 회원 찾기 -->
