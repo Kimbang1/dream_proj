@@ -7,7 +7,31 @@
 	<insert id="saveFileData" parameterType="com.sns.dto.FileListDto">
 		insert into file_list
 		(file_id, ori_filename, up_filename, file_path, extension, captured_at, latitude, longitude)
-		values (#{file_id}, #{ori_filename}, #{up_filename}, #{file_path}, #{extension}, #{captured_at}, #{latitude}, #{longitude})
+		values (#{file_id}, #{ori_filename}, #{up_filename}, #{file_path}, #{extension},
+		<choose>
+			<when test="captured_at != null">
+				#{captured_at}
+			</when>
+			<otherwise>
+				null
+			</otherwise> 
+		</choose>,
+		<choose>
+			<when test="latitude != null">
+				#{latitude}
+			</when>
+			<otherwise>
+				null
+			</otherwise>
+		</choose>,
+		<choose>
+			<when test="longitude != null">
+				#{longitude}
+			</when>
+			<otherwise>
+				null
+			</otherwise>
+		</choose>)
 	</insert>
 	
 	<!-- 파일 아이디로 업로드 한 파일 정보 가져오기 -->

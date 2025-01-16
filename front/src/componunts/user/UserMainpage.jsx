@@ -5,7 +5,14 @@ import ViewChoice from "../layout/ViewChoice";
 import AlarmPage from "../../Pages/views/AlramPage";
 
 function UserMainpage() {
-  const [user, setUser] = useState([]); //불러올 데이터
+  const [user, setUser] = useState({
+    profile_image: "",
+    user: {
+      tag_id: "",
+      username: "",
+      introduce: "",
+    },
+  }); //불러올 데이터
   const [isAlramOpen, setIsAlramOpen] = useState(false); // 알림 모달 상태
 
   const rightaside = { maxwidth: 300 };
@@ -36,13 +43,13 @@ function UserMainpage() {
           <div className="ProfileArea">
             <div className="PrImgArea">
               <img
-                src={`/profileImage/${user.profile_path}`} alt="고양이 이미지"/>
+                src={`/profileImage/${user.profile_image}`} alt="고양이 이미지"/>
             </div>
 
             <div className="InfoArea">
               <div className="useDetails">
                 <div className="FirstLayer">
-                  <div className="userName">@{user.tag_id}</div>
+                  <div className="userName">@{user.user.tag_id}</div>
 
                   <button className="editProfileBtn" onClick={UserEditHandle}>
                     프로필 수정
@@ -50,7 +57,7 @@ function UserMainpage() {
                 </div>
 
                 <div className="SecondLayer">
-                  <div className="postCount">게시물:{user.postCount}개</div>
+                  <div className="postCount">게시물:{user.user.postCount}개</div>
                   <div className="followerCount">
                     팔로우{user.followerCount}
                   </div>
@@ -60,8 +67,8 @@ function UserMainpage() {
                 </div>
 
                 <div className="ThirdLayer">
-                  <div className="userName">{user.username}</div>
-                  <div className="userContent">{user.introduce}</div>
+                  <div className="userName">{user.user.username}</div>
+                  <div className="userContent">{user.user.introduce}</div>
                 </div>
               </div>
             </div>
