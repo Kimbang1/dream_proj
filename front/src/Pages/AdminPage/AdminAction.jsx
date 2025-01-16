@@ -6,8 +6,7 @@ const AdminActions = ({ selectedUserIds }) => {
   const AdminRegistration = async () => {
     try {
       const response = await AxiosApi.post(
-        "/api/releaseAdmin",
-        { selectedUserIds }, // 선택된 유저 ID 배열 전송
+        "/admin/regAdmin",
         {
           headers: { "Content-Type": "application/json" },
         }

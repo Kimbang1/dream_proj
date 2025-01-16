@@ -29,6 +29,15 @@
 		)
 	</insert>
 	
+	<!-- 회원 상세 정보 반환 -->
+	<select id="mtdUserDetailList" resultType="com.sns.dto.UserDetailDto">
+		SELECT u.uuid AS uuid, u.username, u.tag_id, u.email, u.phone, u.birthday, u.is_admin, u.provider, u.create_at, u.is_using, u.delete_at, u.is_delete, u.suspended_cnt, up.file_id AS file_id, f.up_filename AS up_filename
+		FROM user u
+		LEFT JOIN user_profile up ON u.uuid = up.user_id
+		LEFT JOIN file_list f ON up.file_id = f.file_id
+		WHERE u.is_delete = false AND up.is_using = true
+	</select>
+	
 	<!-- 회원 탈퇴 처리 -->
 	<update id="mtdUserResign">
 		UPDATE user SET is_using = false, is_delete = true, delete_at = now() WHERE uuid = #{uuid}
@@ -92,16 +101,35 @@
 	</select>
 	
 	<!-- username, tag_id, introduce로 회원 찾기 -->
-	<select id="mtdSearchUser" resultType="com.sns.dto.UserDto">
-		SELECT * FROM user
-		WHERE username LIKE CONCAT("%", #{keyword}, "%")
-		OR tag_id LIKE CONCAT("%", #{keyword}, "%")
-		OR introduce LIKE CONCAT("%", #{keyword}, "%")
-		ORDER BY create_at DESC
+	<select id="mtdSearchUser" resultType="com.sns.dto.UserDetailDto">
+		SELECT u.uuid AS uuid, u.username, u.tag_id, u.email, u.phone, u.birthday, u.is_admin, u.provider, u.create_at, u.is_using, u.delete_at, u.is_delete, u.suspended_cnt, up.file_id AS file_id, f.up_filename AS up_filename
+		FROM user u
+		LEFT JOIN user_profile up ON u.uuid = up.user_id
+		LEFT JOIN file_list f ON up.file_id = f.file_id
+		WHERE (u.username LIKE CONCAT("%", #{keyword}, "%"))
+		OR (u.tag_id LIKE CONCAT("%", #{keyword}, "%"))
+		OR (u.introduce LIKE CONCAT("%", #{keyword}, "%"))
+		AND u.is_delete = false AND up.is_using = true AND u.is_admin = true
+		ORDER BY u.create_at DESC
 	</select>
 
 	<!-- 관리자 목록 확인 -->
-	<select id="mtdSelectAllAdmin" resultType="com.sns.dto.UserDto">
-		SELECT * FROM user WHERE is_admin = true
+	<select id="mtdSelectAllAdmin" resultType="com.sns.dto.UserDetailDto">
+		SELECT u.uuid AS uuid, u.username, u.tag_id, u.email, u.phone, u.birthday, u.is_admin, u.provider, u.create_at, u.is_using, u.delete_at, u.is_delete, u.suspended_cnt, up.file_id AS file_id, f.up_filename AS up_filename
+		FROM user u
+		LEFT JOIN user_profile up ON u.uuid = up.user_id
+		LEFT JOIN file_list f ON up.file_id = f.file_id
+		WHERE u.is_delete = false AND up.is_using = true AND u.is_admin = true
+		ORDER BY u.create_at DESC
 	</select>
+	
+	<!-- 관리자 등록 -->
+	<update id="mtdRegAdmin" parameterType="java.lang.String">
+		UPDATE user SET is_admin = true WHERE uuid = #{uuid}
+	</update>
+	
+	<!-- 관리자 등록 해제 -->
+	<update id="mtdClearAdmin" parameterType="java.lang.String">
+		UPDATE user SET is_admin = false WHERE uuid = #{uuid}
+	</update>
 </mapper>

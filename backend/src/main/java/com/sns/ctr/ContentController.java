@@ -31,6 +31,7 @@ import com.sns.dto.JoinFilePostDto;
 import com.sns.dto.PostDto;
 import com.sns.dto.PostLikeDto;
 import com.sns.dto.SearchResponseDto;
+import com.sns.dto.UserDetailDto;
 import com.sns.dto.UserDto;
 import com.sns.dto.ViewListDto;
 import com.sns.jwt.JwtProvider;
@@ -61,7 +62,7 @@ public class ContentController {
    public ResponseEntity<?> mtdSearch(@RequestParam("query") String keyword) {
       log.info("검색어: " + keyword);
       List<JoinFilePostDto> joinFilePostList = filePostMapper.selectSearchList(keyword);
-      List<UserDto> userList = userDao.mtdSearchUser(keyword);
+      List<UserDetailDto> userList = userDao.mtdSearchUser(keyword);
       
       SearchResponseDto responseDto = new SearchResponseDto();
       responseDto.setFilePostList(joinFilePostList);
