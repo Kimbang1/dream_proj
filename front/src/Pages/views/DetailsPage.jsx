@@ -13,26 +13,28 @@ function DetailsPage() {
 
   // 좋아요 클릭 시 서버로 업데이트 요청 및 로컬 상태 반영
   const handleHeartClick = async (linkId) => {
+    // 로컬 상태를 먼저 업데이트 (Optimistic Update)
+    setItems((prevItem) => ({
+      ...prevItem,
+      heartClicked: !prevItem.heartClicked, // 하트 상태 토글
+      likeCount: prevItem.heartClicked
+        ? prevItem.likeCount - 1
+        : prevItem.likeCount + 1, // 좋아요 개수 변경
+    }));
+
     try {
-      // 백엔드로 좋아요 상태 업데이트 요청
-      const response = await AxiosApi.post(
-        `/contents/like?linkId=${linkId}`,
-        {}
-      );
-
-      // 서버에서 반환된 값 (true/false) 및 새로운 likeCount
-      if (response.data) {
-        const updatedLikeCount = response.data.likeCount; // 서버에서 반환된 새로운 좋아요 개수
-
-        // 서버에서 true/false 반환 시에 하트 상태와 likeCount를 로컬 상태에 즉시 반영
-        setItems((prevItem) => ({
-          ...prevItem,
-          heartClicked: !prevItem.heartClicked, // 하트 상태 변경
-          likeCount: updatedLikeCount, // 새로운 좋아요 개수 업데이트
-        }));
-      }
+      // 서버로 좋아요 상태 업데이트 요청
+      await AxiosApi.post(`/contents/like?linkId=${linkId}`, {});
     } catch (error) {
       console.error("좋아요 상태 업데이트 실패:", error);
+      // 서버 요청 실패 시, 상태를 다시 되돌리기
+      setItems((prevItem) => ({
+        ...prevItem,
+        heartClicked: !prevItem.heartClicked, // 하트 상태 복구
+        likeCount: prevItem.heartClicked
+          ? prevItem.likeCount + 1
+          : prevItem.likeCount - 1, // 좋아요 개수 복구
+      }));
     }
   };
 

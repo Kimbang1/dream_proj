@@ -3,13 +3,37 @@ import AxiosApi from "../../servies/AxiosApi";
 import { useMediaQuery } from "react-responsive";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import Managerbutton  from "../../Pages/AdminPage/Managerbutton";
+import Managerbutton from "../../Pages/AdminPage/Managerbutton";
 function Leftaside() {
+  const [openAdmin, setOpenAdmin] = useState(false);
+
   const hiddenAside = useMediaQuery({ maxWidth: 750 });
   const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
   const [user, setUser] = useState({
     profile_image: "", // 초기 상태
   });
+
+  //관리자 구분값이 왔으때 관리자 버튼 나오게
+  useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        const response = await AxiosApi.get("/user/info");
+     
+        // 관리자인지 확인하는 조건
+        if (response.data.user.is_admin) {
+          console.log("관리자인지:", response.data.user.is_admin);
+          setOpenAdmin(true);
+        } else {
+          setOpenAdmin(false);
+        }
+      } catch (error) {
+        console.error("관리자 여부 확인 실패:", error);
+        setOpenAdmin(false); // 에러 발생 시 기본값으로 관리자 버튼 숨김 처리
+      }
+    };
+
+    checkAdmin();
+  }, []);
 
   // 이미지 불러오는 데이터 로드 함수
   useEffect(() => {
@@ -96,8 +120,8 @@ function Leftaside() {
               <button onClick={handleLogout}>로그아웃</button>
             </div>
 
-                <Managerbutton/>
-           
+            {/* 관리자 일시에만 보이기 */}
+            {openAdmin && <Managerbutton />}
           </div>
         </div>
       )}
