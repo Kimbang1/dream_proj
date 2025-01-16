@@ -7,13 +7,9 @@ const AdminActions = ({ selectedUserIds }) => {
     try {
       const response = await AxiosApi.post(
         "/api/releaseAdmin",
+        { selectedUserIds }, // 선택된 유저 ID 배열 전송
         {
-          selectedUserIds, // Send selected user IDs as part of the request
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       );
 

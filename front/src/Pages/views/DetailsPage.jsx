@@ -20,25 +20,16 @@ function DetailsPage() {
         {}
       );
 
-      // 서버에서 반환된 값 (참/거짓)
+      // 서버에서 반환된 값 (true/false) 및 새로운 likeCount
       if (response.data) {
-        // 서버에서 true 반환 시, 하트를 빨간색으로 설정
-        setItems((prevItems) =>
-          prevItems.map((item) =>
-            item.linkId === linkId
-              ? { ...item, heartClicked: !item.heartClicked }
-              : item
-          )
-        );
-      } else {
-        // 서버에서 false 반환 시, 하트를 기본 하트로 설정
-        setItems((prevItems) =>
-          prevItems.map((item) =>
-            item.linkId === linkId
-              ? { ...item, heartClicked: !item.heartClicked }
-              : item
-          )
-        );
+        const updatedLikeCount = response.data.likeCount; // 서버에서 반환된 새로운 좋아요 개수
+
+        // 서버에서 true/false 반환 시에 하트 상태와 likeCount를 로컬 상태에 즉시 반영
+        setItems((prevItem) => ({
+          ...prevItem,
+          heartClicked: !prevItem.heartClicked, // 하트 상태 변경
+          likeCount: updatedLikeCount, // 새로운 좋아요 개수 업데이트
+        }));
       }
     } catch (error) {
       console.error("좋아요 상태 업데이트 실패:", error);
@@ -192,8 +183,7 @@ function DetailsPage() {
             <div
               className="content"
               dangerouslySetInnerHTML={{ __html: item.content || "" }}
-            >
-            </div>
+            ></div>
           </div>
 
           {/* 댓글 입력 영역 */}

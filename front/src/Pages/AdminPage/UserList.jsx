@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useUserList } from "../../hook/useUserList";
 import { useViewmodeChange } from "../../hook/useViewmodeChange";
-import  useSearchSubmit  from "../../hook/useSearchSubmit";
+import useSearchSubmit from "../../hook/useSearchSubmit";
 import { useFilterMonitors } from "../../hook/useFilterMonitors";
 import UserSearch from "./UserSearch";
 import AdminActions from "./AdminAction";
@@ -14,12 +14,25 @@ function UserList() {
   const { handleSearchSubmit } = useSearchSubmit();
   const { filteredMonitors } = useFilterMonitors(users, searchMonitor);
 
+  // 선택된 유저 ID 상태 관리
+  const [selectedUserIds, setSelectedUserIds] = useState([]);
+
   const filteredUsers = filteredMonitors.filter((user) => {
     if (viewMode === "admin") {
       return user.role === "admin";
     }
     return true;
   });
+
+  // 유저 선택 토글 함수
+  const toggleUserSelection = (userId) => {
+    setSelectedUserIds(
+      (prevSelected) =>
+        prevSelected.includes(userId)
+          ? prevSelected.filter((id) => id !== userId) // 선택 해제
+          : [...prevSelected, userId] // 선택 추가
+    );
+  };
 
   return (
     <div className="UserListframe">
@@ -54,7 +67,12 @@ function UserList() {
           ) : filteredUsers.length > 0 ? (
             filteredUsers.map((user) => (
               <div key={user.id} className="userItem">
-                <input type="checkbox" value={user.id} />
+                <input
+                  type="checkbox"
+                  value={user.id}
+                  checked={selectedUserIds.includes(user.id)}
+                  onChange={() => toggleUserSelection(user.id)}
+                />
                 <img
                   src={user.image}
                   alt={`${user.name} 이미지`}
@@ -70,7 +88,8 @@ function UserList() {
           )}
         </div>
 
-        <AdminActions />
+        {/* 선택된 유저 ID를 AdminActions로 전달 */}
+        <AdminActions selectedUserIds={selectedUserIds} />
       </div>
 
       <AdminFunction />
