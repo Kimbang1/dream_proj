@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import AlarmComponent from "../modal/AlramModal"; // 알람 컴포넌트 임포트
 import useAccordion from "../../hook/useAccordion"; // 아코디언 훅
 import useSearchSubmit from "../../hook/useSearchSubmit"; // 검색어 제출 훅
-import useFilterMonitors from "../../hook/useFilterMonitors"; // 연관 검색어 필터링 훅
+import { useFilterMonitors } from "../../hook/useFilterMonitors";// 연관 검색어 필터링 훅
 import useClickOutside from "../../hook/useClickOutside"; // 외부 클릭 훅
 import useAlarmModal from "../../hook/useAlarmModal"; // 알람 모달 훅
 
@@ -21,9 +21,9 @@ function Header() {
   } = useSearchSubmit();
 
   const { filteredMonitors } = useFilterMonitors(monitorsData, searchMonitor);
-  
+
   useClickOutside(inputRef, closeAccordion); // 외부 클릭 처리
-  
+
   const { isAlramOpen, toggleAlarmModal } = useAlarmModal();
 
   const navigate = useNavigate();

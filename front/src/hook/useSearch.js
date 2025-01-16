@@ -2,15 +2,15 @@ import { useState, useEffect, useRef } from "react";
 import AxiosApi from "../servies/AxiosApi";
 
 export const useSearch = () => {
-  const [searchMonitor, setSearchMonitor] = useState("");
-  const [recentSearch, setRecentSearch] = useState([]);
+  const [searchMonitor, setSearchMonitor] = useState(""); // 검색어 상태
+  const [recentSearch, setRecentSearch] = useState([]); // 최근 검색어
   const [isAccordionOpen, setIsAccordionOpen] = useState(false); // 아코디언 열림 상태
   const [monitorsData, setMonitorsData] = useState([]); // 연관 검색어 데이터
   const inputRef = useRef(null); // 검색창 참조
 
   // 검색어 입력 핸들러
   const onChange = (e) => {
-    setSearchMonitor(e.target.value);
+    setSearchMonitor(e.target.value); // 검색어 상태 업데이트
     if (!isAccordionOpen) setIsAccordionOpen(true); // 검색 시 아코디언 열림
   };
 
@@ -25,23 +25,18 @@ export const useSearch = () => {
       setSearchMonitor("");
       setIsAccordionOpen(false); // 검색 후 아코디언 닫기
 
-      
       // 백엔드로 검색어 전송
       try {
         const response = await AxiosApi.get("/contents/search", {
           params: { query: searchMonitor },
         });
         console.log("검색 결과: ", response.data);
+        setMonitorsData(response.data); // 검색 결과 저장
         return response.data; // 검색 결과 반환
       } catch (error) {
         console.error("검색 요청 실패: ", error);
       }
     }
-  };
-
-  // 최근 검색어 삭제 핸들러
-  const handleDeleteSearch = (index) => {
-    setRecentSearch((prev) => prev.filter((_, i) => i !== index));
   };
 
   // 연관 검색어 필터링
@@ -66,14 +61,13 @@ export const useSearch = () => {
 
   return {
     searchMonitor,
-    setSearchMonitor,
+    setSearchMonitor, // 여기에서 setSearchMonitor을 반환하여 외부 컴포넌트에서 사용할 수 있게 함
     recentSearch,
     setRecentSearch,
     isAccordionOpen,
     setIsAccordionOpen,
     onChange,
     handleSearchSubmit,
-    handleDeleteSearch,
     filteredMonitors,
     monitorsData,
     setMonitorsData,

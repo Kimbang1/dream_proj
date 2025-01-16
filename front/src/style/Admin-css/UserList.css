@@ -1,10 +1,10 @@
 div.UserListframe {
-  border: 1px solid #000;
+  /* border: 1px solid #000; */
   margin: 10px auto;
   display: flex;
-  padding: 10px;
+  /* padding: 10px; */
   flex-direction: row;
-  height: 80vh;
+  height: 100vh;
 }
 
 div.listView {
@@ -28,12 +28,13 @@ input.AdminUseSearch {
 }
 div.UserSearchArea {
   height: 10vh;
+  margin: 10px;
 }
 img#dodbogi {
   cursor: pointer;
   width: 40px;
   position: relative;
-  transform: translate(335px, -40px);
+  transform: translate(310px, -40px);
 }
 
 /* 버튼 3개 짜리 작업 시작 */
@@ -69,13 +70,14 @@ button.twins {
   height: 30px;
   border: 1px solid #000;
   border-radius: 7px;
+  cursor: pointer;
 }
 
 /* 오른쪽 박스 영역 작업 */
 div.AdminfunctionArea {
   border: 1px solid #31538f;
   border-radius: 20px;
-  height: 70vh;
+  height: 100vh;
   margin-top: 10px;
   padding: 10px;
 }
