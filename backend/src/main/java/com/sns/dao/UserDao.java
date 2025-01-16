@@ -5,12 +5,16 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.sns.dto.UserDetailDto;
 import com.sns.dto.UserDto;
 
 @Mapper
 public interface UserDao {
 	// 회원가입 처리
 	public int mtdInsert(UserDto userDto);
+	
+	// 회원 상세 정보 반환
+	public List<UserDetailDto> mtdUserDetailList();
 	
 	// 회원탈퇴 처리
 	public int mtdUserResign(@Param("uuid")String uuid);
@@ -49,8 +53,14 @@ public interface UserDao {
 	public String mtdSelectTagId(@Param("uuid") String uuid);
 	
 	// username, tag_id, introduce로 회원 찾기
-	public List<UserDto> mtdSearchUser(@Param("keyword") String keyword);
+	public List<UserDetailDto> mtdSearchUser(@Param("keyword") String keyword);
 	
 	// 관리자 목록 확인
-	public List<UserDto> mtdSelectAllAdmin();
+	public List<UserDetailDto> mtdSelectAllAdmin();
+	
+	// 관리자 등록
+	public int mtdRegAdmin(@Param("uuid")String uuid);
+	
+	// 관리자 등록 해제
+	public int mtdClearAdmin(@Param("uuid")String uuid);
 }

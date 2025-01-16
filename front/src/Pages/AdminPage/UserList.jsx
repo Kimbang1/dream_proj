@@ -66,15 +66,15 @@ function UserList() {
           ) : filteredUsers.length > 0 ? (
             filteredUsers.map((user) => (
               <div key={user.uuid} className="userItem">
-                <input type="checkbox" value={user.tag_id} />
+                <input type="checkbox" value={user.uuid} />
                 <img
-                  src={""}
+                  src={`/profileImage/${user.up_filename}`}
                   alt={`${user?.username} 이미지`}
                   style={{ width: "50px", height: "50px", objectFit: "cover" }}
                 />
                 <span>{user?.tag_id}</span>
                 <span>
-                  {user?.username} / {user.is_admin}
+                  {user?.username} / {user.is_admin?"admin":"user"}
                 </span>
               </div>
             ))

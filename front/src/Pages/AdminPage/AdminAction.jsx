@@ -6,7 +6,7 @@ const AdminActions = ({ selectedUserIds }) => {
   const AdminRegistration = async () => {
     try {
       const response = await AxiosApi.post(
-        "/api/releaseAdmin",
+        "/admin/regAdmin",
         {
           selectedUserIds, // Send selected user IDs as part of the request
         },

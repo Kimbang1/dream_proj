@@ -6,6 +6,6 @@ import lombok.Data;
 
 @Data
 public class SearchResponseDto {
-	private List<UserDto> userList;
+	private List<UserDetailDto> userList;
 	private List<JoinFilePostDto> filePostList;
 }

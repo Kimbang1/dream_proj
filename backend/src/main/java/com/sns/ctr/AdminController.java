@@ -26,6 +26,7 @@ import com.sns.dto.FilePostDto;
 import com.sns.dto.JoinFilePostDto;
 import com.sns.dto.UserBlockListDto;
 import com.sns.dto.UserDelListDto;
+import com.sns.dto.UserDetailDto;
 import com.sns.dto.UserDto;
 import com.sns.jwt.JwtProvider;
 import com.sns.svc.TakeOutATokenService;
@@ -51,17 +52,45 @@ public class AdminController {
 	private final TakeOutATokenService takeOutATokenService;
 	private final ContentDelListMapper contentDelListMapper;
 	
+	// 관리자 등록
+	@RequestMapping("/regAdmin")
+	public ResponseEntity<?> mtdRegAdmin() {
+		HashMap<String, String> responseBody = new HashMap<>();
+		String uuid = "";
+		if(userDao.mtdRegAdmin(uuid) == 1) {
+			responseBody.put("message", "관리자 등록이 완료되었습니다.");
+			return ResponseEntity.ok(responseBody);
+		} else {
+			responseBody.put("message", "관리자 등록이 실패했습니다.");
+			return new ResponseEntity(responseBody, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	// 관리자 등록 해제
+	@RequestMapping("/clearAdmin")
+	public ResponseEntity<?> mtdClearAdmin() {
+		HashMap<String, String> responseBody = new HashMap<>();
+		String uuid = "";
+		if(userDao.mtdClearAdmin(uuid) == 1) {
+			responseBody.put("message", "관리자 해제가 완료되었습니다.");
+			return ResponseEntity.ok(responseBody);
+		} else {
+			responseBody.put("message", "관리자 해제에 실패했습니다.");
+			return new ResponseEntity(responseBody, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
 	// 관리자용 회원 검색
 	@RequestMapping("/userSearch")
 	public ResponseEntity<?> mtdUserSearch(@RequestParam("query") String keyword) {
-		List<UserDto> userList = userDao.mtdSearchUser(keyword);
+		List<UserDetailDto> userList = userDao.mtdSearchUser(keyword);
 		return ResponseEntity.ok(userList);
 	}
 	
 	// 관리자용 관리자 목록
 	@RequestMapping("/adminList")
 	public ResponseEntity<?> mtdAdminList() {
-		List<UserDto> adminList = userDao.mtdSelectAllAdmin();
+		List<UserDetailDto> adminList = userDao.mtdSelectAllAdmin();
 		return ResponseEntity.ok(adminList);
 	}
 	
@@ -69,7 +98,8 @@ public class AdminController {
 	@RequestMapping("/userList")
 	public ResponseEntity<?> mtdUserList(HttpServletRequest request) {
 		log.info("/admin/userList 도착");
-		List<UserDto> userList = userDao.mtdSelectAllUser();
+		List<UserDetailDto> userList = userDao.mtdUserDetailList();
+		HashMap<String, String> userData = new HashMap<>();
 		
 		HashMap<String, Object> responseBody = takeOutATokenService.takeOutAToken(request);
 		UserDto user = (UserDto)responseBody.get("data");
