@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AxiosApi from "../../servies/AxiosApi";
 import { useMediaQuery } from "react-responsive";
 import { useCookies } from "react-cookie";
@@ -7,6 +7,24 @@ import { useNavigate } from "react-router-dom";
 function Leftaside() {
   const hiddenAside = useMediaQuery({ maxWidth: 750 });
   const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
+
+  const [user, setUser] = useState({
+    profile_img: "",
+  }); //불러올 프로필 이미지
+  console.log("프로필 이미지:", user);
+
+  //이미지 불러오는 데이터 로드 함수
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await AxiosApi.get("/user/info"); //프로필 사진을 가져오는 api 포인트
+        setUser(response.data);
+      } catch (error) {
+        console.log("프로필사진을 가져오지 못했습니다.", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleLogout = async () => {
     //로그아웃시 쿠키 삭제
@@ -84,7 +102,7 @@ function Leftaside() {
             <div className="menu">
               <img
                 onClick={handleUseMainClick}
-                src="/images/cat.jpg"
+                src={`/profileImage/${user.profile_img}`}
                 alt="프로필"
               />
             </div>

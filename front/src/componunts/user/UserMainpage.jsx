@@ -43,7 +43,7 @@ function UserMainpage() {
           <div className="ProfileArea">
             <div className="PrImgArea">
               <img
-                src={`/profileImage/${user.profile_image}`} alt="고양이 이미지"/>
+                src={`/profileImage/${user.profile_image}`} alt="프로필 이미지"/>
             </div>
 
             <div className="InfoArea">

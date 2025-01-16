@@ -11,6 +11,7 @@ const AlarmComponent = ({ isOpen, closeAlarmModal }) => {
       const response = await fetch("/api/getAlarms"); // 서버 API 엔드포인트
       const data = await response.json();
       setAlarms(data); // 알람 데이터 상태 업데이트
+      console.log("데이터:",data);
     } catch (error) {
       console.error("알림 데이터를 가져올 수 없습니다:", error);
     }
