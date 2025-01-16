@@ -68,6 +68,7 @@ public class AdminController {
 	// 관리자용 회원 목록
 	@RequestMapping("/userList")
 	public ResponseEntity<?> mtdUserList(HttpServletRequest request) {
+		log.info("/admin/userList 도착");
 		List<UserDto> userList = userDao.mtdSelectAllUser();
 		
 		HashMap<String, Object> responseBody = takeOutATokenService.takeOutAToken(request);
@@ -81,7 +82,7 @@ public class AdminController {
 		responseBody.put("managerUuid", user.getUuid());
 		responseBody.put("userList", userList);
 		
-		return ResponseEntity.ok(userList);
+		return ResponseEntity.ok(responseBody);
 	}
 	
 	// 관리자용 게시글 목록

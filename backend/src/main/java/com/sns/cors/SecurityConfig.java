@@ -61,8 +61,8 @@ public class SecurityConfig {
 		.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) 	// Stateless 세션 관리
 		.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(this.getPermitAllResources()).permitAll()
-				.requestMatchers(new AntPathRequestMatcher("/admin/**")).hasAuthority("ADMIN")
-				.requestMatchers(new AntPathRequestMatcher("/api/v1/**")).hasAnyAuthority("USER", "ADMIN")
+				.requestMatchers(new AntPathRequestMatcher("/admin/**")).hasAuthority("ROLE_ADMIN")
+				.requestMatchers(new AntPathRequestMatcher("/api/v1/**")).hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
 				.anyRequest().authenticated())		// 위에 작성한 것 외의 요청은 인증 필요
 		.exceptionHandling(exception -> exception
 				.accessDeniedHandler(new JwtAccessDeniedHandler())	// 권한 오류 처리
