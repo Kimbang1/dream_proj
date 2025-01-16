@@ -25,7 +25,7 @@ const AdminActions = ({ selectedUserIds }) => {
     }
   };
 
-  // Admin release logic
+  // Admin  해제 로직
   const AdminRelease = async () => {
     try {
       const response = await AxiosApi.post(
