@@ -15,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.sns.dao.UserDao;
+import com.sns.dao.UserMapper;
 import com.sns.jwt.CustomAuthenticationProvider;
 import com.sns.jwt.CustomUserDetailsService;
 import com.sns.jwt.JwtAccessDeniedHandler;
@@ -35,7 +35,7 @@ public class SecurityConfig {
 	
 	private final JwtProvider jwtProvider;
 	private final CustomUserDetailsService customUserDetailsService;
-	private final UserDao userDao;
+	private final UserMapper userDao;
 	
 	@Bean
 	public PasswordEncoder passwordEncoder() {

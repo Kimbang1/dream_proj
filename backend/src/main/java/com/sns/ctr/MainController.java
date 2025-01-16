@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sns.dao.SNSDao;
-import com.sns.dao.UserDao;
+import com.sns.dao.UserMapper;
 import com.sns.dto.SNSDto;
 import com.sns.dto.UserDto;
 import com.sns.social.KakaoApi;
@@ -33,7 +33,7 @@ public class MainController {
 	private SNSDao snsDao;
 	
 	@Autowired
-	private UserDao userDao;
+	private UserMapper userDao;
 	
 	private final KakaoApi kakaoApi;
 	

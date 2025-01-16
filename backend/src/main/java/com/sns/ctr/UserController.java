@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sns.dao.FileListMapper;
-import com.sns.dao.UserDao;
+import com.sns.dao.UserMapper;
 import com.sns.dao.UserProfileMapper;
 import com.sns.dto.FileListDto;
 import com.sns.dto.UserDto;
@@ -36,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserController {
 	
-	private final UserDao userDao;
+	private final UserMapper userMapper;
 	private final JwtProvider jwtProvider;
 	private final FileService fileService;
 	private final FileListMapper fileListMapper;
@@ -69,7 +69,7 @@ public class UserController {
 		// AccessToken에서 사용자 정보 추출
 		String email = jwtProvider.getEmailFromToken(accessToken);
 		String provider = jwtProvider.getProviderFromToken(accessToken);
-		UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
+		UserDto user = userMapper.mtdFindByEmailAndProvider(email, provider);
 		
 		FileListDto fileListDto = fileListMapper.selectFileData(userProfileMapper.mtdSelectFileId(user.getUuid()));
 		
@@ -105,9 +105,9 @@ public class UserController {
 		// AccessToken에서 사용자 정보 추출
 		String email = jwtProvider.getEmailFromToken(accessToken);
 		String provider = jwtProvider.getProviderFromToken(accessToken);
-		UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
+		UserDto user = userMapper.mtdFindByEmailAndProvider(email, provider);
 		
-		userDao.mtdUserResign(user.getUuid());
+		userMapper.mtdUserResign(user.getUuid());
 		
 		log.info("탈퇴가 완료되었습니다.");
 		responseBody.put("message", "탈퇴가 완료되었습니다.");
@@ -182,7 +182,7 @@ public class UserController {
 		
 		// tag_id 중복 검사
 		if(tagId != null && !(user.getTag_id().equals(tagId))) {
-			boolean tagIdChk = userDao.mtdTagIdCheck(tagId);
+			boolean tagIdChk = userMapper.mtdTagIdCheck(tagId);
 			if(tagIdChk) {
 				log.info("이미 존재하는 tagid입니다.");
 				responseBody.put("message", "이미 존재하는 tagid입니다.");
@@ -202,7 +202,7 @@ public class UserController {
 				.build();
 		
 		// DB 업데이트 처리
-		int userRes = userDao.mtdUpdateUser(updatedUserDto);
+		int userRes = userMapper.mtdUpdateUser(updatedUserDto);
 		if(requestBody.get("link_id") != null) {
 			userProfileMapper.mtdUsingStatusFalse(user.getUuid());
 			userProfileMapper.mtdUsingStatusTrue(requestBody.get("link_id"));
