@@ -15,7 +15,7 @@ import com.sns.dao.CommentMapper;
 import com.sns.dao.FileListMapper;
 import com.sns.dao.FilePostMapper;
 import com.sns.dao.PostMapper;
-import com.sns.dao.UserDao;
+import com.sns.dao.UserMapper;
 import com.sns.dto.CommentDto;
 import com.sns.dto.FilePostDto;
 import com.sns.dto.JoinFilePostDto;
@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CommentController {
 	
 	private final JwtProvider jwtProvider;
-	private final UserDao userDao;
+	private final UserMapper userDao;
 	private final CommentMapper commentMapper;
 	private final FilePostMapper filePostMapper;
 	

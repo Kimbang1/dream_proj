@@ -10,7 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.sns.dao.UserDao;
+import com.sns.dao.UserMapper;
 import com.sns.dto.UserDto;
 
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class CustomAuthenticationProvider implements AuthenticationProvider {
-	private final UserDao userDao;
+	private final UserMapper userDao;
 	private final PasswordEncoder passwordEncoder;
 	
 	@Override
