@@ -35,7 +35,7 @@ function UserMainpage() {
 
           <div className="ProfileArea">
             <div className="PrImgArea">
-              <img src="/images/cat.jpg" alt="고양이 이미지" />
+              <img src="/" alt="고양이 이미지" />
             </div>
 
             <div className="InfoArea">

@@ -1,14 +1,22 @@
 import React, { useState, useCallback, useEffect } from "react";
 import AxiosApi from "../../servies/AxiosApi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Post() {
   const [items, setItems] = useState([]); // 불러온 데이터
   const [loading, setLoading] = useState(false); // 로딩 상태
   const [hasMore, setHasMore] = useState(true); // 더 이상 로드할 데이터가 있는지 확인
+  const [linkId, setLinkId] = useState(null); // linkId 상태
 
   // 상세페이지로 이동
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state && location.state.linkId) {
+      setLinkId(location.state.linkId); // 링크 아이디 설정
+    }
+  }, [location]);
 
   const handleDetails = (event, linkId) => {
     event.preventDefault();
@@ -82,6 +90,31 @@ function Post() {
       console.error("좋아요 상태 업데이트 실패:", error);
     }
   };
+
+  useEffect(() => {
+    if (!linkId) return; // linkId가 없으면 실행하지 않음
+
+    const fetchData = async () => {
+      try {
+        const response = await AxiosApi.get(
+          `/contents/viewDetails?linkId=${linkId}`
+        );
+        const data = response.data || {};
+        setItems({
+          upFileName: data.postDeatils.up_filename || "",
+          create_at: data.postDetails.create_at || "",
+          tag_id: data.postDetails.tag_id || "",
+          content: data.postDetails.content || "",
+          heartClicked: data.likeCheck || false, // 좋아요 클릭 상태 추가
+          likeCount: data.likeCount || 0, // 좋아요 개수
+        });
+      } catch (error) {
+        console.error("데이터 로드 실패:", error);
+      }
+    };
+
+    fetchData(); // fetchData 호출
+  }, [linkId]); // linkId가 변경될 때마다 실행
 
   // 스크롤 이벤트 처리
   const handleScroll = useCallback(() => {

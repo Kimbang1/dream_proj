@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AxiosApi from "../../servies/AxiosApi";
-import { useLocation } from "react-router-dom"; // 라우터를 사용하여 파라미터를 받을 수 있음
+import { useLocation } from "react-router-dom";
 
 function DetailsPage() {
   const location = useLocation();
@@ -10,6 +10,7 @@ function DetailsPage() {
   const [newComment, setNewComment] = useState(""); // 새 댓글 입력 상태
 
   console.log("linkId: ", linkId); // itemId 값이 제대로 전달되었는지 확인
+
   // 좋아요 클릭 시 서버로 업데이트 요청 및 로컬 상태 반영
   const handleHeartClick = async (linkId) => {
     try {
@@ -22,16 +23,22 @@ function DetailsPage() {
       // 서버에서 반환된 값 (참/거짓)
       if (response.data) {
         // 서버에서 true 반환 시, 하트를 빨간색으로 설정
-        setItems((prevItem) => ({
-          ...prevItem,
-          heartClicked: !prevItem.heartClicked, // 상태 반전
-        }));
+        setItems((prevItems) =>
+          prevItems.map((item) =>
+            item.linkId === linkId
+              ? { ...item, heartClicked: !item.heartClicked }
+              : item
+          )
+        );
       } else {
         // 서버에서 false 반환 시, 하트를 기본 하트로 설정
-        setItems((prevItem) => ({
-          ...prevItem,
-          heartClicked: !prevItem.heartClicked, // 상태 반전
-        }));
+        setItems((prevItems) =>
+          prevItems.map((item) =>
+            item.linkId === linkId
+              ? { ...item, heartClicked: !item.heartClicked }
+              : item
+          )
+        );
       }
     } catch (error) {
       console.error("좋아요 상태 업데이트 실패:", error);
@@ -46,16 +53,15 @@ function DetailsPage() {
         const response = await AxiosApi.get(
           `/contents/viewDetails?linkId=${linkId}`
         );
-        // 기존 정보는 data.postDetails.변수명 으로 가져옵니다.
-        // 좋아요 눌렀는지는 true/false는 data.likeCheck 으로 가져옵니다.
-        // 게시글에 대한 좋아요 개수는 data.likeCount 으로 가져옵니다.
         const data = response.data || {};
         setItems({
           up_filename: data.postDetails.up_filename || "",
           create_at: data.postDetails.create_at || "",
           tag_id: data.postDetails.tag_id || "",
           content: data.postDetails.content || "",
-        }); // 데이터 로드 성공 시 상태 설정
+          heartClicked: data.likeCheck || false, // 좋아요 클릭 상태 추가
+          likeCount: data.likeCount || 0, // 좋아요 개수
+        });
       } catch (error) {
         console.error("데이터 로드 실패:", error);
       }
@@ -66,7 +72,6 @@ function DetailsPage() {
         const response = await AxiosApi.get(`/comment/list?linkId=${linkId}`);
         const commentData = response.data || [];
 
-        // .map()을 사용하여 상태 업데이트트
         setComments(
           commentData.map((comment) => ({
             commentId: comment.comment_id,
@@ -95,10 +100,8 @@ function DetailsPage() {
         content: newComment, // 댓글 내용용
       });
 
-      // 백엔드에서 저장된 댓글 정보 응답 받음
       const saveComment = response.data.comment;
 
-      // 프론트엔드의 상태 업데이트트
       setComments((prev) => [
         ...prev,
         {
@@ -110,7 +113,7 @@ function DetailsPage() {
         },
       ]);
 
-      setNewComment(""); //댓글 입력 초기화
+      setNewComment(""); // 댓글 입력 초기화
     } catch (error) {
       console.log("댓글 저장 실패: ", error);
       alert("댓글 저장에 실패했습니다. 다시 시도해주세요.");
@@ -181,9 +184,9 @@ function DetailsPage() {
                     e.stopPropagation();
                     handleHeartClick(linkId);
                   }}
-                  style={{ cusror: "pointer" }}
+                  style={{ cursor: "pointer" }} // 수정된 오타 (cusror -> cursor)
                 />
-                좋아요{linkId.likeCount}개
+                좋아요 {item.likeCount}개 {/* 좋아요 개수 출력 */}
               </div>
             </div>
             <div className="content">{item?.content || ""}</div>
