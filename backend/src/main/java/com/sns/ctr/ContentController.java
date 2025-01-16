@@ -105,14 +105,16 @@ public class ContentController {
 	   
 	   int isLike = postLikeMapper.mtdIsLike(user.getUuid(), filePostDto.getPost_id());
 	   
+	   System.out.println("isLike: " + isLike);
+	   
 	   if (isLike > 0) {
 		   postLikeMapper.mtdDelete(user.getUuid(), filePostDto.getPost_id());
-		   responseBody.put("heartClicked", true);
-		   responseBody.put("message", "좋아요가 등록되었습니다.");
-	   } else {
-		   postLikeMapper.mtdInsert(user.getUuid(), filePostDto.getPost_id());
 		   responseBody.put("heartClicked", false);
 		   responseBody.put("message", "좋아요가 삭제되었습니다.");
+	   } else {
+		   postLikeMapper.mtdInsert(user.getUuid(), filePostDto.getPost_id());
+		   responseBody.put("heartClicked", true);
+		   responseBody.put("message", "좋아요가 등록되었습니다.");
 	   }
 	   
 	   return new ResponseEntity<>(responseBody, HttpStatus.OK);
