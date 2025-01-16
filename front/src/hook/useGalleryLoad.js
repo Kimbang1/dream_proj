@@ -4,6 +4,7 @@ import AxiosApi from "../servies/AxiosApi";
 
 export const useGalleryLoad = () => {
   const [items, setItems] = useState([]); // 아이템 목록 상태
+  const [managerInfo, setManagerInfo] = useState({ tagId: "", uuid: ""}); // 매니저 정보
   const [page, setPage] = useState(1); // 페이지 번호 상태
   const [loading, setLoading] = useState(false); // 로딩 상태
   const loader = useRef(null); // Intersection Observer를 위한 ref
@@ -14,14 +15,22 @@ export const useGalleryLoad = () => {
     setLoading(true);
 
     try {
-      const response = await AxiosApi.get(`/contents/galleryView?page=${page}`);
-      const newItems = response.data;
+      const response = await AxiosApi.get(`/admin/contentList?page=${page}`);
+      console.log("reponse.data: ", response.data);
+
+      const {managerTagId, managerUuid, contentList} = response.data;
+
+      // 매니저 정보 업데이트
+      setManagerInfo({
+        tagId: managerTagId,
+        uuid: managerUuid,
+      });
 
       // 중복된 아이템을 제거하여 상태 업데이트
       setItems((prevItems) => {
-        const existingLinkIds = prevItems.map((item) => item.linkId);
-        const filteredNewItems = newItems.filter(
-          (item) => !existingLinkIds.includes(item.linkId)
+        const existingLinkIds = prevItems.map((item) => item.link_id);
+        const filteredNewItems = contentList.filter(
+          (item) => !existingLinkIds.includes(item.link_id)
         );
         return [...prevItems, ...filteredNewItems];
       });
@@ -61,5 +70,5 @@ export const useGalleryLoad = () => {
     };
   }, [loader]);
 
-  return { items, fetchGalleryItems, loader };
+  return { items, managerInfo, fetchGalleryItems, loader };
 };

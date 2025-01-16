@@ -488,6 +488,9 @@ public class ContentController {
       postDto.setContent(content);
       postMapper.savePost(postDto);
       
+      FilePostDto filePostDto = filePostMapper.selectOne(linkId);
+      
+      fileListMapper.mtdUsingStatusTrue(filePostDto.getFile_id());
       filePostMapper.addPostId(linkId, post_id);
       
       responseBody.put("message", "게시글 작성이 완료되었습니다.");
