@@ -126,7 +126,7 @@ function Post() {
             <div className="contentsArea">
               <div className="leftContents">
                 <div className="author">{item.tagId}</div>
-                <div className="content">{item.content}</div>
+                <div className="content" dangerouslySetInnerHTML={{__html: item.content}}></div>
               </div>
               <div className="rightContents">
                 <div className="rightUP">

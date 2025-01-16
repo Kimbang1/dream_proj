@@ -6,20 +6,36 @@ import UserResign from "./UserResign";
 
 function Useredit() {
   const [isOnresign, setIsOnresign] = useState(false);
-  const {
-    imagePreviews,
-    fileInputRef,
-    profilehandle,
-    handleImageClick,
-    openFileDialog,
-  } = useImagePreview();
+  const { imagePreview, fileInputRef, profilehandle, openFileDialog, linkId } =
+    useImagePreview();
   const { userInfo, handleChange } = useUserInfo();
   const { isLoading, updateUserInfo } = useUpdateUserInfo();
 
   const resignClick = () => setIsOnresign(true);
 
   const handleSave = async () => {
-    updateUserInfo(userInfo);
+    // 이미지가 없으면 저장을 진행할 수 없음
+    const fileLinkId = linkId ? linkId : null;
+
+    const formData = {
+      tag_id: userInfo.tag_id,
+      username: userInfo.username,
+      introduce: userInfo.introduce,
+      phone: userInfo.phone,
+      link_id: linkId,
+    };
+
+    try {
+      const response = await updateUserInfo(formData);
+
+      if (response.status === 200) {
+        console.log("사용자 정보 수정 성공: ", response.data);
+      } else {
+        console.error("사용자 정보 수정 실패: ", response.statusText);
+      }
+    } catch (error) {
+      console.error("사용자 정보 수정 중 오류 발생: ", error);
+    }
   };
 
   return (
@@ -29,22 +45,15 @@ function Useredit() {
         <>
           <div className="ProfileimgArea">
             <div className="miribogi" onClick={openFileDialog}>
-              {imagePreviews.length > 0 ? (
-                imagePreviews.map((preview, index) => (
-                  <img
-                    key={index}
-                    src={preview}
-                    alt={`프로필 미리보기 ${index + 1}`}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                ))
+              {imagePreview ? (
+                <img
+                  src={imagePreview}
+                  alt="프로필 미리보기"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
               ) : (
                 <img
-                  src="/profileImage/defaultProfile.png"
+                  src={`/profileImage/${userInfo.profile_image}`}
                   alt="프로필 미리보기"
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />

@@ -56,6 +56,7 @@ public class ContentController {
    private final ViewListMapper viewListMapper;
    private final PostLikeMapper postLikeMapper;
    
+   // 검색 결과 반환
    @RequestMapping("/search")
    public ResponseEntity<?> mtdSearch(@RequestParam("query") String keyword) {
       log.info("검색어: " + keyword);
@@ -69,6 +70,7 @@ public class ContentController {
       return ResponseEntity.ok(responseDto);
    }
    
+   // 게시글 좋아요 클릭 시 반영
    @RequestMapping("/like")
    public ResponseEntity<?> mtdLikeCheck(@RequestParam("linkId")String linkId, HttpServletRequest request) {
 	   HashMap<String, Object> responseBody = new HashMap<>();
@@ -115,6 +117,7 @@ public class ContentController {
 	   return new ResponseEntity<>(responseBody, HttpStatus.OK);
    }
    
+   // 게시글 상세 보기
    @RequestMapping("/viewDetails")
    public ResponseEntity<?> mtdViewDetails(@RequestParam("linkId") String linkId, HttpServletRequest request) {
 	   log.info("/viewDetails 도착");
@@ -188,6 +191,7 @@ public class ContentController {
 	   return ResponseEntity.ok(responseBody);
    }
    
+   // 회원페이지에서 게시물 목록 보기
    @RequestMapping("/userView")
    public ResponseEntity<?> mtdUserGalleryView(HttpServletRequest request) {
 	   log.info("/userView까지 왔어");
@@ -240,6 +244,7 @@ public class ContentController {
 	   return ResponseEntity.ok(responseList);
    }
    
+   // MainView에서 갤러리 식으로 게시물 보기
    @RequestMapping("/galleryView")
    public ResponseEntity<List<Map<String, String>>> mtdGalleryView() {
       log.info("/galleryView까지는 왔어");
@@ -266,34 +271,35 @@ public class ContentController {
       return ResponseEntity.ok(responseList);
    }
    
+   // MainView에서 post 식으로 게시물 보기
    @RequestMapping("/postView")
    public ResponseEntity<?> mtdPostView(HttpServletRequest request) {
       log.info("/postView까지는 왔어");
       
       HashMap<String, String> responseBody = new HashMap<>();
-	   String accessToken = null;
+	  String accessToken = null;
 		
-	   // AccessToken 추출
-	   Cookie[] cookies = request.getCookies();
-	   if (cookies != null) {
-		   for (Cookie cookie : cookies) {
-			   if ("accessToken".equals(cookie.getName())) {
-				   accessToken = cookie.getValue();
-				   break;
-			   }
-		   }
-	   }
+	  // AccessToken 추출
+	  Cookie[] cookies = request.getCookies();
+	  if (cookies != null) {
+		  for (Cookie cookie : cookies) {
+			  if ("accessToken".equals(cookie.getName())) {
+				  accessToken = cookie.getValue();
+				  break;
+			  }
+		  }
+	  }
 		
-	   if (accessToken == null) {
-		   log.error("Access token이 존재하지 않습니다.");
-		   responseBody.put("message", "로그인이 필요합니다.");
-		   return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
-	   }
+	  if (accessToken == null) {
+		  log.error("Access token이 존재하지 않습니다.");
+		  responseBody.put("message", "로그인이 필요합니다.");
+		  return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+	  }
 		
-	   // AccessToken에서 사용자 정보 추출
-	   String email = jwtProvider.getEmailFromToken(accessToken);
-	   String provider = jwtProvider.getProviderFromToken(accessToken);
-	   UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
+	  // AccessToken에서 사용자 정보 추출
+	  String email = jwtProvider.getEmailFromToken(accessToken);
+	  String provider = jwtProvider.getProviderFromToken(accessToken);
+	  UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
       
       // 1. filePost 목록 가져오기
       List<FilePostDto> filePostList = filePostMapper.selectAllList();
@@ -323,6 +329,7 @@ public class ContentController {
       return ResponseEntity.ok(responseList);
    }
    
+   // 파일 업로드
    @PostMapping("/fileUpload")
    public ResponseEntity<HashMap<String, String>> mtdFileUpload(
          @RequestParam("file") MultipartFile file,
@@ -391,7 +398,7 @@ public class ContentController {
         try {
            // 1. 파일 로컬에 저장
            
-            String filePath = fileService.saveFile(file);
+            String filePath = fileService.saveFile(file, "content");
             
             // 2. DB에 파일 정보 저장
             FileListDto fileListDto = new FileListDto();
@@ -437,11 +444,12 @@ public class ContentController {
         }
    }
    
+   // 게시글 업로드
    @PostMapping("/postUpload")
    public ResponseEntity<HashMap<String, String>> mtdPostUpload(@RequestBody HashMap<String, String> requestData, HttpServletRequest request) {
       HashMap<String, String> responseBody = new HashMap<>();
       String linkId = requestData.get("link_id");
-      String content = requestData.get("content");
+      String content = requestData.get("content").replace("\n", "<br>");
       
       System.out.println("link_id: " + linkId);
       System.out.println("content: " + content);

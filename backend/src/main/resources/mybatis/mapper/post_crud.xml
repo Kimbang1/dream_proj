@@ -3,16 +3,29 @@
 	"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.sns.dao.PostMapper">
+	<!-- 게시글 저장 -->
 	<insert id="savePost">
 		insert into post (post_id, write_user, content)
 		values (#{post_id}, #{write_user}, #{content})
 	</insert>
 	
+	<!-- 특정 게시글 불러오기 -->
 	<select id="selectPost" resultType="com.sns.dto.PostDto">
 		select * from post where post_id = #{post_id} order by create_at desc
 	</select>
 	
+	<!-- 게시글 조회 수 올리기 -->
 	<update id="addViewCnt">
 		UPDATE post SET view_cnt = post.view_cnt + 1 WHERE post_id = #{post_id}
+	</update>
+	
+	<!-- 게시글 비활성화 -->
+	<update id="mtdUsingStatusFalse">
+		UPDATE post SET is_using = false WHERE post_id = #{post_id}
+	</update>
+	
+	<!-- 게시글 활성화 -->
+	<update id="mtdUsingStatusTrue">
+		UPDATE post SET is_using = true WHERE post_id = #{post_id}
 	</update>
 </mapper>

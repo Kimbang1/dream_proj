@@ -2,63 +2,58 @@ import { useState, useRef, useEffect } from "react";
 import AxiosApi from "../servies/AxiosApi"; // Axios 인스턴스
 
 export const useImagePreview = () => {
-  const [imagePreviews, setImagePreviews] = useState([]); // 여러 개의 미리보기 이미지
-  const [base64Images, setBase64Images] = useState([]); // 여러 개의 Base64 이미지 데이터
+  const [imagePreview, setImagePreview] = useState(null); // 여러 개의 미리보기 이미지
+  const [linkId, setLinkId] = useState(null);
   const fileInputRef = useRef(null); // 파일 input ref
 
   useEffect(() => {
+    // 컴포넌트가 언마운트될 때 미리보기 URL을 해제
     return () => {
-      imagePreviews.forEach((preview) => {
-        if (preview) {
-          URL.revokeObjectURL(preview); // 미리보기 URL 해제
-        }
-      });
+      if(imagePreview) {
+        URL.revokeObjectURL(imagePreview); // 미리보기 URL 해제
+      }
     };
-  }, [imagePreviews]);
-
-  const profilehandle = (e) => {
-    const files = e.target.files;
-
-    if (files.length === 0) {
-      setImagePreviews([]);
-      return;
-    }
-
-    const validTypes = [
-      "image/jpg",
-      "image/jpeg",
-      "image/png",
-      "image/heic",
-      "image/webp",
-    ];
-    const maxSize = 30 * 1024 * 1024; // 30MB
-    const previews = [];
-    const base64Arr = [];
-
-    for (let i = 0; i < files.length; i++) {
-      const selectFile = files[i];
-
-      if (selectFile.size > maxSize || !validTypes.includes(selectFile.type)) {
+  }, [imagePreview]);
+  
+  const profilehandle = async (e) => {
+    const file = e.target.files[0];
+    
+    if(file) {
+      const validTypes = [
+        "image/jpg",
+        "image/jpeg",
+        "image/png",
+        "image/heic",
+        "image/webp",
+      ];
+      const maxSize = 30 * 1024 * 1024; // 30MB
+    
+      if (file.size > maxSize || !validTypes.includes(file.type)) {
         alert("파일이 너무 크거나 지원하지 않는 형식입니다.");
-        continue;
+        return;
       }
 
-      // 이미지 미리보기 URL 생성
-      const previewURL = URL.createObjectURL(selectFile);
-      previews.push(previewURL);
+      const formData = new FormData();
+      formData.append("profile_image", file);
 
-      // 이미지 파일을 Base64로 변환
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        base64Arr.push(reader.result.split(",")[1]); // Base64 데이터 추출
-        if (base64Arr.length === files.length) {
-          setBase64Images(base64Arr); // 모든 이미지의 Base64 데이터 설정
+      try {
+        const response = await AxiosApi.post("/user/profileUpdate", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          }
+        });
+
+        if (response.status === 201) {
+          setLinkId(response.data.linkId);
+          const previewURL = URL.createObjectURL(file);
+          setImagePreview(previewURL);
+        } else {
+          console.error("이미지 저장 실패: ", response.statusText);
         }
-      };
-      reader.readAsDataURL(selectFile);
+      } catch (error) {
+        console.error("파일 업로드 중 오류 발생: ", error);
+      }
     }
-
-    setImagePreviews(previews); // 미리보기 이미지 설정
   };
 
   // 파일 선택 창을 강제로 열기
@@ -66,36 +61,11 @@ export const useImagePreview = () => {
     fileInputRef.current.click(); // input 요소 클릭
   };
 
-  const handleImageClick = async () => {
-    try {
-      if (base64Images.length > 0) {
-        // JSON 데이터로 전송
-        const requestData = {
-          images: base64Images,
-        };
-
-        const response = await AxiosApi.post(
-          "/upload/updateProfileImages",
-          requestData
-        );
-        if (response.status === 200) {
-          console.log("프로필 이미지 업데이트 성공:", response.data);
-        } else {
-          console.error("프로필 이미지 업데이트 실패:", response.statusText);
-        }
-      } else {
-        alert("이미지가 선택되지 않았습니다.");
-      }
-    } catch (error) {
-      console.error("이미지 전송 중 오류 발생:", error);
-    }
-  };
-
   return {
-    imagePreviews,
+    imagePreview,
     fileInputRef,
     profilehandle,
-    handleImageClick,
     openFileDialog, // 파일 다이얼로그 열기 위한 함수 추가
+    linkId,
   };
 };

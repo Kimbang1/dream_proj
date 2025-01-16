@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.sns.dao.UserProfileMapper">
+	<!-- 파일 id, user id 저장 -->
+	<insert id="mtdInsert" parameterType="com.sns.dto.UserProfileDto">
+		INSERT INTO user_profile
+		(link_id, user_id, file_id)
+		VALUES
+		(#{link_id}, #{user_id}, #{file_id})
+	</insert>
+	
+	<!-- 프로필 사용 활성화 하기 -->
+	<update id="mtdUsingStatusTrue">
+		UPDATE user_profile SET is_using = true WHERE link_id = #{link_id}
+	</update>
+
+	<!-- 프로필 사용 비활성화 하기 -->
+	<update id="mtdUsingStatusFalse">
+		UPDATE user_profile SET is_using = false WHERE user_id = #{user_id} AND is_using = true
+	</update>
+	
+	<!--  -->
+	<select id="mtdSelectFileId" resultType="java.lang.String">
+		SELECT file_id FROM user_profile WHERE user_id = #{user_id} AND is_using = true
+	</select>
+</mapper>
