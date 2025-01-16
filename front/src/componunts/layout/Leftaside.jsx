@@ -3,7 +3,7 @@ import AxiosApi from "../../servies/AxiosApi";
 import { useMediaQuery } from "react-responsive";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-
+import Managerbutton  from "../../Pages/AdminPage/Managerbutton";
 function Leftaside() {
   const hiddenAside = useMediaQuery({ maxWidth: 750 });
   const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
@@ -95,6 +95,9 @@ function Leftaside() {
             <div className="menu">
               <button onClick={handleLogout}>로그아웃</button>
             </div>
+
+                <Managerbutton/>
+           
           </div>
         </div>
       )}
