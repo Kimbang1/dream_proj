@@ -1,10 +1,14 @@
 package com.sns.jwt;
 
 import java.io.IOException;
+import java.security.Key;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import javax.crypto.spec.SecretKeySpec;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +24,10 @@ import com.sns.dao.RefreshTokenMapper;
 import com.sns.dto.RefreshTokenListDto;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -36,6 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	
 	@Autowired
 	private RefreshTokenMapper refreshTokenMapper;
+	
 	
 	public JwtAuthenticationFilter (JwtProvider jwtProvider, CustomUserDetailsService customUserDetailsService, String ... permitAllResources) {
 		this.jwtProvider = jwtProvider;
@@ -72,6 +81,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	            }
 	        }
 	    }
+		
 	    log.info("Access Token from cookie: {}", accessToken);
 	    // Access Token이 없으면 요청 차단
 	    if (!StringUtils.hasText(accessToken)) {

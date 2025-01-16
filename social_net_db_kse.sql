@@ -45,7 +45,7 @@ drop table user;
 desc user;
 select * from user order by create_at desc;
 delete from user where email="admin@admin.com";
-update user set username="" where uuid="";
+update user set is_admin = true where email="arto135@naver.com" and provider="local";
 
 # refresh_token 관리 테이블
 create table refresh_token_list (
@@ -82,7 +82,7 @@ drop table file_list;
 desc file_list;
 select * from file_list order by insert_at desc;
 insert into file_list (file_id, ori_filename, up_filename, file_path, insert_at, is_using, extension)
-values ("43da2b78-73d6-4c06-8ec6-abfbfbd510ba", "defaultProfile.png", "1736934015251_defaultProfile.png", "D:\git_workSpace\guroAi\sb_sts4\dream_proj\front\public\profileImage\1736934015251_defaultProfile.png", now(), true, .png);
+values ("43da2b78-73d6-4c06-8ec6-abfbfbd510ba", "defaultProfile.png", "1736934015251_defaultProfile.png", "D:\git_workSpace\guroAi\sb_sts4\dream_proj\front\public\profileImage\1736934015251_defaultProfile.png", now(), true, ".png");
 
 # post 게시글 테이블
 create table post (
