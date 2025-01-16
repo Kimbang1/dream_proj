@@ -45,7 +45,7 @@ drop table user;
 desc user;
 select * from user order by create_at desc;
 delete from user where email="admin@admin.com";
-update user set is_admin = true where email="admin@admin.com" and provider="local";
+update user set is_admin = true where email="arto135@naver.com" and provider="local";
 
 # refresh_token 관리 테이블
 create table refresh_token_list (
