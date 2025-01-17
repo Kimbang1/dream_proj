@@ -65,7 +65,6 @@ const Map = () => {
       </div>
       <div>
         <h1>지도와 사진 위치</h1>
-        <Map latitude={photoData.latitude} longitude={photoData.longtitude} />
       </div>
     </div>
   );
