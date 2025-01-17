@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AxiosApi from "../../servies/AxiosApi";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function DetailsPage() {
   const location = useLocation();
@@ -8,6 +8,7 @@ function DetailsPage() {
   const [item, setItems] = useState({}); // 불러온 데이터
   const [comments, setComments] = useState([]); // 댓글 상태
   const [newComment, setNewComment] = useState(""); // 새 댓글 입력 상태
+  const navigate = useNavigate(); // useNavigate 훅을 사용하여 페이지 네비게이션 처리
 
   console.log("linkId: ", linkId); // itemId 값이 제대로 전달되었는지 확인
 
@@ -155,6 +156,7 @@ function DetailsPage() {
             src={`/contentImage/${item?.up_filename || ""}`}
             alt="게시물 이미지"
             className="PostImage"
+            // onClick={() => navigate(-1)} 클릭하면 확대하는 걸로
           />
           <div className="date">{formatDate(item?.create_at)}</div>
         </div>
@@ -239,6 +241,9 @@ function DetailsPage() {
           </div>
         </div>
       </div>
+
+      {/* 이전 페이지로 돌아가기 버튼 */}
+      <button onClick={() => navigate(-1)}>이전 페이지로 돌아가기</button>
     </div>
   );
 }
