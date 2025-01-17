@@ -15,6 +15,12 @@ const useImageMetadata = () => {
         const gpsLatitudeRef = EXIF.getTag(this, "GPSLatitudeRef");
         const gpsLongitudeRef = EXIF.getTag(this, "GPSLongitudeRef");
 
+        // EXIF 태그 값 확인을 위한 로그 추가
+        console.log("GPSLatitude:", gpsLatitude);
+        console.log("GPSLongitude:", gpsLongitude);
+        console.log("GPSLatitudeRef:", gpsLatitudeRef);
+        console.log("GPSLongitudeRef:", gpsLongitudeRef);
+
         let latitude = null;
         let longitude = null;
         if (gpsLatitude && gpsLongitude) {
@@ -55,9 +61,14 @@ const useImageMetadata = () => {
       const captured_at = metadata.dateTimeOriginal || new Date().toISOString();
       const formData = new FormData();
       formData.append("file", metadata.imageFile);
-      formData.append("latitude", metadata.latitude || "");
-      formData.append("longitude", metadata.longitude || "");
+      formData.append("latitude", metadata.latitude || ""); // 위도 추가
+      formData.append("longitude", metadata.longitude || ""); // 경도 추가
       formData.append("captured_at", captured_at);
+
+      // 로그로 FormData 내용 확인
+      formData.forEach((value, key) => {
+        console.log("폼데이터 키: 값 =", key, value);
+      });
 
       const response = await AxiosApi.post("/contents/fileUpload", formData, {
         headers: { "Content-Type": "multipart/form-data" },

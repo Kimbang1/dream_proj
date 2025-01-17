@@ -18,7 +18,7 @@ function Leftaside() {
     const checkAdmin = async () => {
       try {
         const response = await AxiosApi.get("/user/info");
-     
+
         // 관리자인지 확인하는 조건
         if (response.data.user.is_admin) {
           console.log("관리자인지:", response.data.user.is_admin);
@@ -94,7 +94,10 @@ function Leftaside() {
             </div>
             <div className="menu">
               <img
-                onClick={() => navigate("/Map")}
+                onClick={() => {
+                  console.log("지도 아이콘 클릭됨");
+                  navigate("/Map");
+                }}
                 src="/images/map.png"
                 alt="지도"
               />
