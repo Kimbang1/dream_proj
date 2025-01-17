@@ -1,7 +1,25 @@
 import React, { useEffect, useState } from "react";
+import AxiosApi from "../../servies/AxiosApi";
 
 const Map = () => {
   const [mapPoint, setMapPoint] = useState({ x: 0, y: 0 });
+  const [photoData, setPhotoData] = useState({ latitude: 0, longtitude: 0 });
+
+  //사진 가져오기
+  useEffect(() => {
+    const fetchPhotoData = async () => {
+      try {
+        const response = await AxiosApi.get(`/contents/postView`); //DB에서 사진 데이터 가져오기
+        const { latitude, longtitude } = response.data;
+        console.log("가져오는 데이터들:", response.data);
+        setPhotoData({ latitude, longtitude });
+      } catch (error) {
+        console.error("사진 데이터를 가져오지 못했습니다.", error);
+        return;
+      }
+    };
+    fetchPhotoData();
+  }, []);
 
   useEffect(() => {
     // 네이버 지도 스크립트가 로드되었는지 확인
@@ -44,6 +62,10 @@ const Map = () => {
         <p>현재 선택된 좌표:</p>
         <p>X: {mapPoint.x}</p>
         <p>Y: {mapPoint.y}</p>
+      </div>
+      <div>
+        <h1>지도와 사진 위치</h1>
+        <Map latitude={photoData.latitude} longitude={photoData.longtitude} />
       </div>
     </div>
   );

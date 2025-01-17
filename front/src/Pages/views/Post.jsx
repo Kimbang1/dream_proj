@@ -97,7 +97,7 @@ function Post() {
     const fetchData = async () => {
       try {
         const response = await AxiosApi.get(
-          `/contents/postView?linkId=${linkId}`
+          `/contents/viewDetails?linkId=${linkId}`
         );
         const data = response.data || {};
         setItems({
