@@ -1,8 +1,19 @@
 import React, { useState } from "react";
 import AxiosApi from "../servies/AxiosApi";
 
-function FollowFC({ uuId, currentFollowStatus }) {
+function FollowFC({ uuId, currentFollowStatus, userid }) {
   const [isFollowing, setIsFollowing] = useState(currentFollowStatus); //팔로우 여부 상태
+
+  //내 게시물인 아닌지
+  const isMyPost = String(uuId) === String(userid); 
+
+  console.log("uuId:", uuId); // uuId 값 출력
+  console.log("userid:", userid); // userid 값 출력
+
+  console.log("::::::::::::::::");
+  console.log(isMyPost);
+  console.log("::::::::::::::::");
+  //왜 내 게시물이 아닌데 true로 뜨는거야? 그야 지금 데이터를 못가져와서 안뜨니까 그렇지
 
   //팔로우 상태를 서버로 업데이트 하는 함수
   const toggleFollowStatus = async () => {
@@ -23,6 +34,10 @@ function FollowFC({ uuId, currentFollowStatus }) {
       console.log("팔로우가 되질 못했습니다", error);
     }
   };
+
+  if (isMyPost) {
+    return null;
+  }
 
   return (
     <>
