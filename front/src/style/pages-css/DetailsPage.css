@@ -56,6 +56,11 @@
   margin-bottom: 20px;
 }
 
+.heartAuthorArea {
+  display: flex;
+  justify-content: space-between;
+}
+
 .detailContentArea .up {
   display: flex;
   justify-content: space-between;
@@ -63,14 +68,26 @@
   margin-bottom: 10px;
 }
 
-.detailContentArea .author {
-  font-size: 18px;
-  font-weight: bold;
+.heartfollowBox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#followBtn{
+  border-radius: 5px;
+  border: 1px solid #000;
+  cursor: pointer;
 }
 
 .detailContentArea .likes {
   font-size: 14px;
   color: #888;
+}
+
+.followLikeArea {
+  display: flex;
+  flex-direction: column;
 }
 
 .detailContentArea .content {
@@ -106,7 +123,6 @@ button.comentPush {
   cursor: pointer;
   font-size: 14px;
 }
-
 
 .CommentsList {
   margin-top: 20px;

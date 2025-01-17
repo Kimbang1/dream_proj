@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AxiosApi from "../../servies/AxiosApi";
 import { useLocation, useNavigate } from "react-router-dom";
+import FollowFC from "../../config/FollowFC";
 
 function DetailsPage() {
   const location = useLocation();
@@ -166,22 +167,29 @@ function DetailsPage() {
           <div className="detailContentArea">
             <div className="up">
               <div className="author">@{item?.tag_id || ""}</div>
-              <div className="likes">
-                <img
-                  className="heart"
-                  src={
-                    item.heartClicked
-                      ? "/images/redheart.png"
-                      : "/images/heart.png"
-                  }
-                  alt="하트 아이콘"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleHeartClick(linkId);
-                  }}
-                  style={{ cursor: "pointer" }} // 수정된 오타 (cusror -> cursor)
-                />
-                좋아요 {item.likeCount}개 {/* 좋아요 개수 출력 */}
+
+              <div className="heartfollowBox">
+                <div className="likes">
+                  <img
+                    className="heart"
+                    src={
+                      item.heartClicked
+                        ? "/images/redheart.png"
+                        : "/images/heart.png"
+                    }
+                    alt="하트 아이콘"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleHeartClick(linkId);
+                    }}
+                    style={{ cursor: "pointer" }} // 수정된 오타 (cusror -> cursor)
+                  />
+                </div>
+
+                <div className="followLikeArea">
+                  <FollowFC />
+                  좋아요 {item.likeCount}개 {/* 좋아요 개수 출력 */}
+                </div>
               </div>
             </div>
             <div

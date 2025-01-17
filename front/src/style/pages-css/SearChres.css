@@ -1,0 +1,68 @@
+div.searChview {
+  border: 1px solid #31538f;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px 10px;
+  height: 100vh;
+  width: 75%;
+  position: fixed;
+}
+/* 유저 검색 영역 */
+div.userSearChArea {
+  border: 1px solid #000;
+  border-radius: 10px;
+  padding: 10px;
+}
+div.User {
+  display: flex;
+  justify-content: space-around;
+  height: 100px;
+  min-width: 140px;
+  text-align: center;
+  border: 1px solid #31538f;
+  border-radius: 10px;
+  padding-top: 10px;
+}
+
+img.userProfilePhoto {
+  width: 60px;
+  height: 80px;
+  border: 1px solid #000;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+div.userNickArea {
+  padding-top: 15px;
+  text-align: left;
+  margin-left: 10px;
+}
+p.userNick {
+  margin-top: 5px;
+  font-size: 12px;
+}
+/* 게시글 검색 영역 */
+div.postSearChArea {
+  margin-top: 20px;
+  border: 1px solid #000;
+  padding: 10px;
+}
+
+div.GridArea {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(150px, 1fr)
+  ); 
+  padding-left: 20px;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+img.postViewArea {
+  border: 1px solid #000;
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 5px;
+}

@@ -54,7 +54,7 @@
 @import url(pages-css/AlramPage.css);
 
 /*검색페이지 css*/
-
+@import url(pages-css/SearChres.css);
 /* 게시글 작성 페이지 css */
 @import url(pages-css/ContentWrite.css);
 

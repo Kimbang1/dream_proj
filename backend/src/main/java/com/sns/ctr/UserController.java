@@ -70,7 +70,7 @@ public class UserController {
 		String email = jwtProvider.getEmailFromToken(accessToken);
 		String provider = jwtProvider.getProviderFromToken(accessToken);
 		UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
-		
+		System.out.printf("test :: %s", user);
 		FileListDto fileListDto = fileListMapper.selectFileData(userProfileMapper.mtdSelectFileId(user.getUuid()));
 		
 		responseBody.put("user", user);
