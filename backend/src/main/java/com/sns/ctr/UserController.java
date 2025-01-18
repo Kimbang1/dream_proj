@@ -42,8 +42,8 @@ public class UserController {
 	private final TakeOutATokenService takeOutATokenService;
 	private final UserProfileMapper userProfileMapper;
 	
-	@GetMapping("/info")
-	public ResponseEntity<?> mtdUserInfo(HttpServletRequest request) {
+	@GetMapping("/leftBar")
+	public ResponseEntity<?> mtdLeftBar(HttpServletRequest request) {
 		
 		HashMap<String, Object> responseBody = new HashMap<>();
 		String accessToken = null;
@@ -70,7 +70,21 @@ public class UserController {
 		String provider = jwtProvider.getProviderFromToken(accessToken);
 
 		UserDto user = userMapper.mtdFindByEmailAndProvider(email, provider);
-		System.out.printf("test :: %s", user);
+		
+		FileListDto fileListDto = fileListMapper.selectFileData(userProfileMapper.mtdSelectFileId(user.getUuid()));
+		
+		responseBody.put("user", user);
+		responseBody.put("profile_image", fileListDto.getUp_filename());
+		
+		return ResponseEntity.ok(responseBody);
+	}
+	
+	@GetMapping("/info")
+	public ResponseEntity<?> mtdUserInfo(HttpServletRequest request, @RequestParam("uuid") String uuid) {
+				
+		HashMap<String, Object> responseBody = new HashMap<>();
+
+		UserDto user = userMapper.mtdFindByUuid(uuid);
 		
 		FileListDto fileListDto = fileListMapper.selectFileData(userProfileMapper.mtdSelectFileId(user.getUuid()));
 		

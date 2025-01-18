@@ -2,6 +2,7 @@ import React from "react";
 import AxiosApi from "../../servies/AxiosApi";
 
 const AdminActions = ({ selectedUserIds }) => {
+  console.log("selectedUserIds: ", selectedUserIds);
   // Admin registration logic
   const AdminRegistration = async () => {
     try {
@@ -9,6 +10,7 @@ const AdminActions = ({ selectedUserIds }) => {
         "/admin/regAdmin",
         {
           headers: { "Content-Type": "application/json" },
+          selectedUserIds,
         }
       );
 
@@ -28,15 +30,13 @@ const AdminActions = ({ selectedUserIds }) => {
   const AdminRelease = async () => {
     try {
       const response = await AxiosApi.post(
-        "/api/releaseAdmin",
-        {
-          selectedUserIds, // Send selected user IDs as part of the request
-        },
+        "/admin/clearAdmin",
         {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+          selectedUserIds, // Send selected user IDs as part of the request
+        },
       );
 
       // Check if the response is successful

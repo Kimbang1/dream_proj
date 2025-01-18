@@ -60,7 +60,7 @@ public class ContentController {
    // 검색 결과 반환
    @RequestMapping("/search")
    public ResponseEntity<?> mtdSearch(@RequestParam("query") String keyword) {
-      log.info("검색어: " + keyword);
+      log.info("/contents/search 도착");
       List<JoinFilePostDto> joinFilePostList = filePostMapper.selectSearchList(keyword);
       List<UserDetailDto> userList = userDao.mtdSearchUser(keyword);
       
@@ -196,33 +196,12 @@ public class ContentController {
    
    // 회원페이지에서 게시물 목록 보기
    @RequestMapping("/userView")
-   public ResponseEntity<?> mtdUserGalleryView(HttpServletRequest request) {
+   public ResponseEntity<?> mtdUserGalleryView(HttpServletRequest request, @RequestParam("uuid") String uuid) {
 	   log.info("/userView까지 왔어");
 	   
 	   HashMap<String, String> responseBody = new HashMap<>();
-	   String accessToken = null;
-		
-	   // AccessToken 추출
-	   Cookie[] cookies = request.getCookies();
-	   if (cookies != null) {
-		   for (Cookie cookie : cookies) {
-			   if ("accessToken".equals(cookie.getName())) {
-				   accessToken = cookie.getValue();
-				   break;
-			   }
-		   }
-	   }
-		
-	   if (accessToken == null) {
-		   log.error("Access token이 존재하지 않습니다.");
-		   responseBody.put("message", "로그인이 필요합니다.");
-		   return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
-	   }
-		
-	   // AccessToken에서 사용자 정보 추출
-	   String email = jwtProvider.getEmailFromToken(accessToken);
-	   String provider = jwtProvider.getProviderFromToken(accessToken);
-	   UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
+	  
+	   UserDto user = userDao.mtdFindByUuid(uuid);
 	   
 	   List<JoinFilePostDto> filePostList = filePostMapper.selectChoiceList(user.getUuid());
 	   

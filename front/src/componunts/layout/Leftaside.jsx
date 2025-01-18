@@ -11,13 +11,16 @@ function Leftaside() {
   const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
   const [user, setUser] = useState({
     profile_image: "", // 초기 상태
+    user: {
+      uuid: "",
+    },
   });
 
   //관리자 구분값이 왔으때 관리자 버튼 나오게
   useEffect(() => {
     const checkAdmin = async () => {
       try {
-        const response = await AxiosApi.get("/user/info");
+        const response = await AxiosApi.get("/user/leftBar");
 
         // 관리자인지 확인하는 조건
         if (response.data.user.is_admin) {
@@ -39,7 +42,7 @@ function Leftaside() {
   useEffect(() => {
     const userProfile = async () => {
       try {
-        const response = await AxiosApi.get("/user/info"); // API 요청
+        const response = await AxiosApi.get("/user/leftBar"); // API 요청
         console.log("API 응답 데이터:", response.data); // 응답 데이터 확인
 
         // profile_image 값 확인
@@ -72,6 +75,13 @@ function Leftaside() {
   };
 
   const navigate = useNavigate();
+
+  const handleUserDetails = (event, uuid) => {
+    event.preventDefault();
+    console.log("UUID 전달 확인:", uuid, "Type:", typeof uuid);
+    console.log("uuid: ", uuid);
+    navigate("/user/UserMainpage", { state: { uuid } }); // linkId를 state로 전달
+  };
 
   return (
     <div className="wrap">
@@ -110,11 +120,18 @@ function Leftaside() {
             </div>
             <div className="menu">
               <img
-                onClick={() => navigate("/user/UserMainpage")}
+                onClick={(event) => {
+                  if (user && user.user.uuid) {
+                    handleUserDetails(event, user.user.uuid);
+                  } else {
+                    console.warn("유효한 사용자 정보가 없습니다.");
+                  }
+                }}
+                key={user?.user.uuid} // user가 undefined일 경우를 대비한 옵셔널 체이닝
                 src={
                   user.profile_image
                     ? `/profileImage/${user.profile_image}`
-                    : "/profileImage/defaultProfile.png"
+                    : {/*"/profileImage/defaultProfile.png"*/}
                 }
                 alt="프로필"
               />

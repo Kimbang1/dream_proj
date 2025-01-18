@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import AxiosApi from "../../servies/AxiosApi";
 import { useLocation, useNavigate } from "react-router-dom";
 
-function UserPost() {
+function UserPost({uuid}) {
   const location = useLocation();
   const { linkId } = location.state || {};
   const [items, setItems] = useState([]); // 불러온 데이터
@@ -30,8 +30,9 @@ function UserPost() {
     if (!linkId) return;
     const fetchData = async () => {
       try {
+        const encodedUuid = encodeURIComponent(uuid);
         const response = await AxiosApi.get(
-          `/contents/userView?linkId=${linkId}`
+          `/contents/userView?uuid=${encodedUuid}`
         );
         const data = response.data || {};
         // items는 배열로 설정
@@ -50,7 +51,7 @@ function UserPost() {
       }
     };
     fetchData();
-  }, [linkId]);
+  }, [linkId, uuid]);
 
   // 데이터 로드 함수
   const loadMoreItems = useCallback(async () => {
@@ -59,7 +60,8 @@ function UserPost() {
 
     try {
       // 실제 데이터 API 호출 예시
-      const response = await AxiosApi.get("/contents/userView");
+      const encodedUuid = encodeURIComponent(uuid);
+      const response = await AxiosApi.get(`/contents/userView?uuid=${encodedUuid}`);
       const newData = response.data;
 
       if (newData.length === 0) {
@@ -79,7 +81,7 @@ function UserPost() {
       console.error("데이터 로드 실패:", error);
     }
     setLoading(false);
-  }, [loading, hasMore]);
+  }, [loading, hasMore, uuid]);
 
   // 좋아요 클릭 시 서버로 업데이트
 

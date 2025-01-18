@@ -21,17 +21,17 @@ function SearchRes() {
     if (loading) return; // 로딩 중이면 종료
 
     setLoading(true); // 로딩 상태 시작
-    try {
-      // 백엔드 API에서 JSON 데이터 가져오기
-      const response = await AxiosApi.get("/user/info", {
-        params: { query }, // 검색어를 API에 전달
-      });
-      const newItems = Array.isArray(response.data) ? response.data : []; // 배열 확인
+    // try {
+    //   // 백엔드 API에서 JSON 데이터 가져오기
+    //   const response = await AxiosApi.get("/user/info", {
+    //     params: { query }, // 검색어를 API에 전달
+    //   });
+    //   const newItems = Array.isArray(response.data) ? response.data : []; // 배열 확인
 
-      setItems((prevItems) => [...prevItems, ...newItems]); // 기존 아이템에 새로운 아이템 추가
-    } catch (error) {
-      console.error("데이터 로드 실패:", error);
-    }
+    //   setItems((prevItems) => [...prevItems, ...newItems]); // 기존 아이템에 새로운 아이템 추가
+    // } catch (error) {
+    //   console.error("데이터 로드 실패:", error);
+    // }
 
     setLoading(false); // 로딩 상태 종료
   };
@@ -68,6 +68,11 @@ function SearchRes() {
     navigate("/DetailsPage", { state: { linkId } }); // linkId를 state로 전달
   };
 
+  const handleUserDetails = (event, uuid) => {
+    event.preventDefault();
+    navigate("/user/UserMainpage", { state: { uuid } }); // linkId를 state로 전달
+  };
+
   return (
     <div className="searChview">
       <div>
@@ -90,27 +95,19 @@ function SearchRes() {
                   onClick={
                     (event) => {
                       console.log("::::::::::::::::::::::");
-                      console.log(user);
+                      console.log(user.uuid);
                       console.log("::::::::::::::::::::::");
-                      handleDetails(event, user.linkId);
-                    } // linkId를 전달
+                      handleUserDetails(event, user.uuid);
+                    } // uuid를 전달
                   }
-                  key={user.username}
+                  key={user.uuid}
                 >
                   {/* 프로필 사진 */}
-                  {user.profileImageUrl ? (
-                    <img
-                      src={`/profileImage/${user.up_filename}`}
-                      alt={`${user?.username} 이미지`}
-                      className="userProfilePhoto"
-                    />
-                  ) : (
-                    <img
-                      src="/profileImage/default-profile.png"
-                      alt="기본 프로필"
-                      className="userProfilePhoto"
-                    />
-                  )}
+                  <img
+                    src={`/profileImage/${user.up_filename}`}
+                    alt={`${user?.username} 이미지`}
+                    className="userProfilePhoto"
+                  />
                   <div className="userNickArea">
                     <p className="userNick">{user.username}</p>
                     <p className="userNick">{user.tag_id}</p>
@@ -127,14 +124,14 @@ function SearchRes() {
             {filePostList.length === 0 ? (
               <p>검색된 게시글이 없습니다.</p>
             ) : (
-              filePostList.map((user) => (
+              filePostList.map((data) => (
                 <div
-                  key={user.id}
-                  onClick={(event) => handleDetails(event, user.linkId)} //게시물의 ID를 linkId로 전달
+                  key={data.link_id}
+                  onClick={(event) => handleDetails(event, data.link_id)} //게시물의 ID를 linkId로 전달
                 >
                   <img
                     className="postViewArea"
-                    src={`/contentImage/${user.up_fileName}`}
+                    src={`/contentImage/${data.up_filename}`}
                     alt="게시글 이미지"
                   />
                 </div>

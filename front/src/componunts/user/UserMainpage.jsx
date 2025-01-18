@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AxiosApi from "../../servies/AxiosApi";
 import ViewChoice from "../layout/ViewChoice";
 import AlarmPage from "../../Pages/views/AlramPage";
 
 function UserMainpage() {
+  const location = useLocation();
+  const { uuid } = location.state || {};
+  console.log("Received UUID:", uuid, "Type:", typeof uuid);
   const [user, setUser] = useState({
     profile_image: "",
     user: {
@@ -25,14 +28,16 @@ function UserMainpage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await AxiosApi.get("/user/info"); //실제 API엔트포인트로 바꿔야함.
+        const response = await AxiosApi.get(`/user/info?uuid=${uuid}`); //실제 API엔트포인트로 바꿔야함.
         setUser(response.data);
       } catch (error) {
         console.error("데이터 가져오기 실패:", error);
       }
     };
-    fetchData();
-  }, []);
+    if(uuid) {
+      fetchData();
+    }
+  }, [uuid]);
 
   return (
     <div className="UserFrame">
@@ -75,7 +80,7 @@ function UserMainpage() {
           </div>
         </div>
         <div className="ViewChoiceArea">
-          <ViewChoice />
+          <ViewChoice uuid={uuid} />
         </div>
       </div>
     </div>

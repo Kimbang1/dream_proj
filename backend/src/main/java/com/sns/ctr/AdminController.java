@@ -55,30 +55,42 @@ public class AdminController {
 	
 	// 관리자 등록
 	@RequestMapping("/regAdmin")
-	public ResponseEntity<?> mtdRegAdmin() {
-		HashMap<String, String> responseBody = new HashMap<>();
-		String uuid = "";
-		if(userMapper.mtdRegAdmin(uuid) == 1) {
-			responseBody.put("message", "관리자 등록이 완료되었습니다.");
-			return ResponseEntity.ok(responseBody);
-		} else {
-			responseBody.put("message", "관리자 등록이 실패했습니다.");
-			return new ResponseEntity(responseBody, HttpStatus.BAD_REQUEST);
+	public ResponseEntity<?> mtdRegAdmin(HttpServletRequest requeset, @RequestBody HashMap<String, Object> requestData) {
+		HashMap<String, Object> responseBody = takeOutATokenService.takeOutAToken(requeset);
+		UserDto userDto = (UserDto) responseBody.get("data");
+		List<String> userList = (List<String>) requestData.get("selectedUserIds");
+		for(String uuid : userList) {
+			if (uuid != null) {
+				if(!uuid.equals(userDto.getUuid())) {
+					userMapper.mtdRegAdmin(uuid);
+				} else {
+					responseBody.put("warn", "자신에 대한 처리는 할 수 없습니다.");
+				}
+			}
 		}
+		responseBody.remove("data");
+		responseBody.put("message", "관리자 등록이 완료되었습니다.");
+		return ResponseEntity.ok(responseBody);
 	}
 	
 	// 관리자 등록 해제
 	@RequestMapping("/clearAdmin")
-	public ResponseEntity<?> mtdClearAdmin() {
-		HashMap<String, String> responseBody = new HashMap<>();
-		String uuid = "";
-		if(userMapper.mtdClearAdmin(uuid) == 1) {
-			responseBody.put("message", "관리자 해제가 완료되었습니다.");
-			return ResponseEntity.ok(responseBody);
-		} else {
-			responseBody.put("message", "관리자 해제에 실패했습니다.");
-			return new ResponseEntity(responseBody, HttpStatus.BAD_REQUEST);
+	public ResponseEntity<?> mtdClearAdmin(HttpServletRequest requeset, @RequestBody HashMap<String, Object> requestData) {
+		HashMap<String, Object> responseBody = takeOutATokenService.takeOutAToken(requeset);
+		UserDto userDto = (UserDto) responseBody.get("data");
+		List<String> userList = (List<String>) requestData.get("selectedUserIds");
+		for(String uuid : userList) {
+			if (uuid != null) {
+				if(!uuid.equals(userDto.getUuid())) {
+					userMapper.mtdClearAdmin(uuid);
+				} else {
+					responseBody.put("warn", "자신에 대한 처리는 할 수 없습니다.");
+				}
+			}
 		}
+		responseBody.remove("data");
+		responseBody.put("message", "관리자 해제가 완료되었습니다.");
+		return ResponseEntity.ok(responseBody);
 	}
 	
 	// 관리자용 회원 검색
@@ -142,7 +154,7 @@ public class AdminController {
 		Map<String, String> responseBody = new HashMap<>();
 		
 		String id = UUID.randomUUID().toString();
-		String procType = requestData.get("procType");
+		String procType = requestData.get("action");
 		String managerTagId = requestData.get("managerTagId");
 		String userId = requestData.get("userId");
 		String reason = requestData.get("reason");
