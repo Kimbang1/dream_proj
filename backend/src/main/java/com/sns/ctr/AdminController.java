@@ -19,7 +19,7 @@ import com.sns.dao.FilePostMapper;
 import com.sns.dao.PostMapper;
 import com.sns.dao.RefreshTokenMapper;
 import com.sns.dao.UserBlockListMapper;
-import com.sns.dao.UserDao;
+import com.sns.dao.UserMapper;
 import com.sns.dao.UserDelListMapper;
 import com.sns.dto.ContentDelListDto;
 import com.sns.dto.FilePostDto;
@@ -42,7 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AdminController {
 	
-	private final UserDao userDao;
+	private final UserMapper userMapper;
 	private final FilePostMapper filePostMapper;
 	private final FileListMapper fileListMapper;
 	private final PostMapper postMapper;
@@ -52,12 +52,13 @@ public class AdminController {
 	private final TakeOutATokenService takeOutATokenService;
 	private final ContentDelListMapper contentDelListMapper;
 	
+	
 	// 관리자 등록
 	@RequestMapping("/regAdmin")
 	public ResponseEntity<?> mtdRegAdmin() {
 		HashMap<String, String> responseBody = new HashMap<>();
 		String uuid = "";
-		if(userDao.mtdRegAdmin(uuid) == 1) {
+		if(userMapper.mtdRegAdmin(uuid) == 1) {
 			responseBody.put("message", "관리자 등록이 완료되었습니다.");
 			return ResponseEntity.ok(responseBody);
 		} else {
@@ -71,7 +72,7 @@ public class AdminController {
 	public ResponseEntity<?> mtdClearAdmin() {
 		HashMap<String, String> responseBody = new HashMap<>();
 		String uuid = "";
-		if(userDao.mtdClearAdmin(uuid) == 1) {
+		if(userMapper.mtdClearAdmin(uuid) == 1) {
 			responseBody.put("message", "관리자 해제가 완료되었습니다.");
 			return ResponseEntity.ok(responseBody);
 		} else {
@@ -83,14 +84,14 @@ public class AdminController {
 	// 관리자용 회원 검색
 	@RequestMapping("/userSearch")
 	public ResponseEntity<?> mtdUserSearch(@RequestParam("query") String keyword) {
-		List<UserDetailDto> userList = userDao.mtdSearchUser(keyword);
+		List<UserDetailDto> userList = userMapper.mtdSearchUser(keyword);
 		return ResponseEntity.ok(userList);
 	}
 	
 	// 관리자용 관리자 목록
 	@RequestMapping("/adminList")
 	public ResponseEntity<?> mtdAdminList() {
-		List<UserDetailDto> adminList = userDao.mtdSelectAllAdmin();
+		List<UserDetailDto> adminList = userMapper.mtdSelectAllAdmin();
 		return ResponseEntity.ok(adminList);
 	}
 	
@@ -98,7 +99,7 @@ public class AdminController {
 	@RequestMapping("/userList")
 	public ResponseEntity<?> mtdUserList(HttpServletRequest request) {
 		log.info("/admin/userList 도착");
-		List<UserDetailDto> userList = userDao.mtdUserDetailList();
+		List<UserDetailDto> userList = userMapper.mtdUserDetailList();
 		HashMap<String, String> userData = new HashMap<>();
 		
 		HashMap<String, Object> responseBody = takeOutATokenService.takeOutAToken(request);
@@ -156,7 +157,7 @@ public class AdminController {
 			userBlockListDto.setManager_id(managerId);
 			userBlockListDto.setReason(reason);
 			
-			userDao.mtdUsingStatusFalse(userId);
+			userMapper.mtdUsingStatusFalse(userId);
 			userBlockListMapper.mtdUserBlock(userBlockListDto);
 			responseBody.put("message", "회원 정지 처리 완료");
 		} else if(procType.equals("resign")) {
@@ -167,7 +168,7 @@ public class AdminController {
 			userDelListDto.setManager_id(managerId);
 			userDelListDto.setReason(reason);
 			
-			userDao.mtdUserResign(userId);
+			userMapper.mtdUserResign(userId);
 			userDelListMapper.mtdUserResign(userDelListDto);
 			responseBody.put("message", "회원 탈퇴 처리 완료");
 		} else {
@@ -180,25 +181,33 @@ public class AdminController {
 	
 	// 게시글 삭제 처리
 	@RequestMapping("/contentDelete")
-	public ResponseEntity<?> mtdContentDelete(@RequestBody HashMap<String, String> requestData){
-		Map<String, String> responseBody = new HashMap<>();
-		
-		String managerTagId = requestData.get("managerTagId");
-		String linkId = requestData.get("linkId");
+	public ResponseEntity<?> mtdContentDelete(@RequestBody List<HashMap<String, String>> requestData){
+		log.info("/admin/contentDelete 도착");
 		
 		ContentDelListDto contentDelListDto = new ContentDelListDto();
-		contentDelListDto.setDel_id(UUID.randomUUID().toString());
-		contentDelListDto.setContent_id(linkId);
-		contentDelListDto.setManager(requestData.get("manager"));
-		contentDelListDto.setManager_id(requestData.get("managerUuid"));
-		contentDelListDto.setReason(requestData.get("reason"));
 		
-		contentDelListMapper.mtdContentDel(contentDelListDto);
-		
-		FilePostDto filePostDto = filePostMapper.selectOne(linkId);
-		filePostMapper.mtdUsingStatusFalse(linkId);
-		fileListMapper.mtdUsingStatusFalse(filePostDto.getFile_id());
-		postMapper.mtdUsingStatusFalse(filePostDto.getPost_id());
+		for(HashMap<String, String> data : requestData) {
+			System.out.println(data.get("linkId"));
+			System.out.println(data.get("reason"));
+			System.out.println(data.get("manager"));
+			System.out.println(data.get("managerUuid"));
+			System.out.println(data);			
+			if(data != null) {
+				contentDelListDto.setDel_id(UUID.randomUUID().toString());
+				contentDelListDto.setContent_id(data.get("linkId"));
+				contentDelListDto.setManager(data.get("manager"));
+				contentDelListDto.setManager_id(data.get("managerUuid"));
+				contentDelListDto.setReason(data.get("reason"));
+				
+				contentDelListMapper.mtdContentDel(contentDelListDto);
+				
+				FilePostDto filePostDto = filePostMapper.selectOne(data.get("linkId"));
+				filePostMapper.mtdUsingStatusFalse(data.get("linkId"));
+				fileListMapper.mtdUsingStatusFalse(filePostDto.getFile_id());
+				postMapper.mtdUsingStatusFalse(filePostDto.getPost_id());
+			}
+		}
+		Map<String, String> responseBody = new HashMap<>();
 		
 		responseBody.put("message", "게시글 삭제 처리 완료");
 		

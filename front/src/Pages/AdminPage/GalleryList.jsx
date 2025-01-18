@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 function GalleryList() {
   const { deleteGalleryItems } = useGalleryDelete();
-  const { items, loader } = useGalleryLoad();
+  const { items, managerInfo, loader } = useGalleryLoad();
   const navigate = useNavigate();
 
   // 상태 관리
@@ -20,13 +20,14 @@ function GalleryList() {
   const getRandomHeight = () => Math.floor(Math.random() * 10) + 1;
 
   // 체크박스 상태 관리 함수
-  const handleCheckboxChange = (linkId, isChecked) => {
+  const handleCheckboxChange = (link_id, isChecked) => {
     console.log("선택 된거야?", selectedIds);
+    console.log("link_id: ", link_id);
     setSelectedIds((prevSelectedIds) => {
       if (isChecked) {
-        return [...prevSelectedIds, linkId];
+        return [...prevSelectedIds, link_id];
       } else {
-        return prevSelectedIds.filter((id) => id !== linkId);
+        return prevSelectedIds.filter((id) => id !== link_id);
       }
     });
   };
@@ -43,7 +44,7 @@ function GalleryList() {
     console.log("작성자", manager);
     console.log("내용", deleteReason);
 
-    if (deleteGalleryItems(selectedIds, deleteReason, manager)) {
+    if (deleteGalleryItems(selectedIds, deleteReason, manager, managerInfo.uuid)) {
       setDeleteReason(""); // 삭제 사유 초기화
       setManager(""); // 작성자 이름 초기화
       setSelectedIds([]); // 선택된 ID 초기화
@@ -63,21 +64,21 @@ function GalleryList() {
             {items.map((item) => (
               <div
                 className="item"
-                key={item.linkId}
+                key={item.link_id}
                 style={{ gridRowEnd: `span ${getRandomHeight()}` }}
               >
                 <div className="checkArea">
                   <input
                     type="checkbox"
                     onChange={(e) =>
-                      handleCheckboxChange(item.linkId, e.target.checked)
+                      handleCheckboxChange(item.link_id, e.target.checked)
                     }
                   />
                 </div>
                 <img
-                  onClick={(e) => handleDetails(e, item.linkId)}
-                  src={`/contentImage/${item.fileName}`}
-                  alt={item.fileName}
+                  onClick={(e) => handleDetails(e, item.link_id)}
+                  src={`/contentImage/${item.up_filename}`}
+                  alt={item.up_filename}
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               </div>
@@ -92,7 +93,7 @@ function GalleryList() {
 
       <div className="AdminfunctionAreaG">
         <div className="AdminNameArea">
-          <h3>관리자 이름</h3>
+          <h3>관리자: @{managerInfo.tagId}</h3>
         </div>
 
         <div className="RealNameG">

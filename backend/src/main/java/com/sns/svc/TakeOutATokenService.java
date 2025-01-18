@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.sns.dao.UserDao;
+import com.sns.dao.UserMapper;
 import com.sns.dto.UserDto;
 import com.sns.jwt.JwtProvider;
 
@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TakeOutATokenService {
 	
 	private final JwtProvider jwtProvider;
-	private final UserDao userDao;
+	private final UserMapper userDao;
 	
 	public HashMap<String, Object> takeOutAToken(HttpServletRequest request) {
 		HashMap<String, Object> responseBody = new HashMap<>();

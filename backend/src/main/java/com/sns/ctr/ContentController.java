@@ -23,7 +23,7 @@ import com.sns.dao.FileListMapper;
 import com.sns.dao.FilePostMapper;
 import com.sns.dao.PostLikeMapper;
 import com.sns.dao.PostMapper;
-import com.sns.dao.UserDao;
+import com.sns.dao.UserMapper;
 import com.sns.dao.ViewListMapper;
 import com.sns.dto.FileListDto;
 import com.sns.dto.FilePostDto;
@@ -51,7 +51,7 @@ public class ContentController {
    private final FileService fileService;
    private final FileListMapper fileListMapper;
    private final JwtProvider jwtProvider;
-   private final UserDao userDao;
+   private final UserMapper userDao;
    private final FilePostMapper filePostMapper;
    private final PostMapper postMapper;
    private final ViewListMapper viewListMapper;
@@ -488,6 +488,9 @@ public class ContentController {
       postDto.setContent(content);
       postMapper.savePost(postDto);
       
+      FilePostDto filePostDto = filePostMapper.selectOne(linkId);
+      
+      fileListMapper.mtdUsingStatusTrue(filePostDto.getFile_id());
       filePostMapper.addPostId(linkId, post_id);
       
       responseBody.put("message", "게시글 작성이 완료되었습니다.");

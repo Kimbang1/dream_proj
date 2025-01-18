@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.sns.dao.RefreshTokenMapper;
-import com.sns.dao.UserDao;
+import com.sns.dao.UserMapper;
 import com.sns.dto.RefreshTokenListDto;
 import com.sns.dto.UserDto;
 
@@ -57,7 +57,7 @@ public class JwtProvider {
 	private RefreshTokenMapper refreshTokenMapper;
 	
 	@Autowired
-	private UserDao userDao;
+	private UserMapper userDao;
 	
 	@PostConstruct
 	public void init() {

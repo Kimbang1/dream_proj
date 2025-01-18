@@ -59,6 +59,9 @@ const Map = () => {
         <p>X: {mapPoint.x}</p>
         <p>Y: {mapPoint.y}</p>
       </div>
+      <div>
+        <h1>지도와 사진 위치</h1>
+      </div>
     </div>
   );
 };
