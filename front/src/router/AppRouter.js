@@ -5,6 +5,7 @@ import pageRoutes from "./routes/PageRoutes";
 import userRoutes from "./routes/UserRoutes";
 import Layout from "../componunts/layout/LayoutCP";
 import LandingRoutes from "../router/routes/LandingRoutes";
+import AdminRoutes from "../router/routes/AdminRoutes";
 
 function AppRouter() {
   // 모든 라우트를 병합
@@ -27,6 +28,11 @@ function AppRouter() {
           {userRoutes.map((route, index) => (
             <Route key={index} path={route.path} element={route.element} />
           ))}
+
+          {/* AdminRoutes */}
+          {AdminRoutes.map((route, index) => {
+            return<Route key={index} path={route.path} element={route.element} />;
+          })}
         </Route>
       </Routes>
     </Router>

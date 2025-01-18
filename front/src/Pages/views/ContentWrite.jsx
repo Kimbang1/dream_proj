@@ -9,10 +9,10 @@ function ContentWrite({ uuid }) {
   const [content, setContent] = useState(""); // 입력란 텍스트 상태
   const [link_id, setLinkId] = useState(null);
   const [posts, setPosts] = useState([]); // 게시물 리스트 상태
-  
+
   const { validateImageTime, errorMessage: timeErrorMessage } =
     useImageTimeCheck(); // 시간 체크 훅 사용
-  const { handleMetadataAndSend, errorMSG } = useImageMetadata(); // 메타데이터 전송 훅 사용
+  const { handleMetadataAndSend, errorMSG, previewURL } = useImageMetadata(); // 메타데이터 전송 훅 사용
   const [imagePreview, setImagePreview] = useState(null);
 
   // 컴포넌트 언마운트 시 imagePreview 삭제
@@ -37,7 +37,7 @@ function ContentWrite({ uuid }) {
       URL.revokeObjectURL(imagePreview);
     }
 
-    // 새 미리보기 URL 생성성
+    // 새 미리보기 URL 생성
     const previewUrlTest = URL.createObjectURL(selectedFile);
     setImagePreview(previewUrlTest);
 
@@ -59,17 +59,14 @@ function ContentWrite({ uuid }) {
       return;
     }
 
-    const isMetadataSent = await handleMetadataAndSend(selectedFile);
-    if (isMetadataSent) {
+    // 메타데이터 처리 및 전송
+    const metadata = await handleMetadataAndSend(selectedFile, content);
+    console.log("메타데이터 확인:", metadata);
+    if (metadata) {
       setFile(selectedFile);
-      // 파일 업로드 성공 후 link_id 저장
-      setLinkId(isMetadataSent.link_id);
-      console.log("link_id: ", link_id);
-      console.log("파일이 성공적으로 처리되었습니다.");
+      setLinkId(metadata.link_id); // 서버에서 반환된 link_id
     } else {
       alert("파일 처리에 실패했습니다.");
-      // console.log("previewURL", previewURL); // 미리보기 URL 로그 출력
-      console.log("imagePreview: ", imagePreview);
     }
   };
 
@@ -90,12 +87,14 @@ function ContentWrite({ uuid }) {
       const response = await AxiosApi.post("/contents/postUpload", {
         content,
         link_id,
+        latitude: previewURL.latitude || "", // 위도
+        longitude: previewURL.longitude || "", // 경도
       });
+
       setPosts([...posts, response.data]);
       setContent("");
       setFile(null);
       setLinkId(null);
-
       URL.revokeObjectURL(imagePreview);
       alert("게시물이 저장되었습니다.");
     } catch (error) {
@@ -107,7 +106,6 @@ function ContentWrite({ uuid }) {
   return (
     <div className="box">
       {/* 사진 업로드 영역 */}
-
       <div className="uploadArea">
         {/* 업로드된 이미지 영역 */}
         {file && (

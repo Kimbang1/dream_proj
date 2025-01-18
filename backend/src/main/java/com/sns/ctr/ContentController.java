@@ -23,13 +23,15 @@ import com.sns.dao.FileListMapper;
 import com.sns.dao.FilePostMapper;
 import com.sns.dao.PostLikeMapper;
 import com.sns.dao.PostMapper;
-import com.sns.dao.UserDao;
+import com.sns.dao.UserMapper;
 import com.sns.dao.ViewListMapper;
 import com.sns.dto.FileListDto;
 import com.sns.dto.FilePostDto;
 import com.sns.dto.JoinFilePostDto;
 import com.sns.dto.PostDto;
+import com.sns.dto.PostLikeDto;
 import com.sns.dto.SearchResponseDto;
+import com.sns.dto.UserDetailDto;
 import com.sns.dto.UserDto;
 import com.sns.dto.ViewListDto;
 import com.sns.jwt.JwtProvider;
@@ -49,17 +51,18 @@ public class ContentController {
    private final FileService fileService;
    private final FileListMapper fileListMapper;
    private final JwtProvider jwtProvider;
-   private final UserDao userDao;
+   private final UserMapper userDao;
    private final FilePostMapper filePostMapper;
    private final PostMapper postMapper;
    private final ViewListMapper viewListMapper;
    private final PostLikeMapper postLikeMapper;
    
+   // 검색 결과 반환
    @RequestMapping("/search")
    public ResponseEntity<?> mtdSearch(@RequestParam("query") String keyword) {
       log.info("검색어: " + keyword);
       List<JoinFilePostDto> joinFilePostList = filePostMapper.selectSearchList(keyword);
-      List<UserDto> userList = userDao.mtdSearchUser(keyword);
+      List<UserDetailDto> userList = userDao.mtdSearchUser(keyword);
       
       SearchResponseDto responseDto = new SearchResponseDto();
       responseDto.setFilePostList(joinFilePostList);
@@ -68,6 +71,7 @@ public class ContentController {
       return ResponseEntity.ok(responseDto);
    }
    
+   // 게시글 좋아요 클릭 시 반영
    @RequestMapping("/like")
    public ResponseEntity<?> mtdLikeCheck(@RequestParam("linkId")String linkId, HttpServletRequest request) {
 	   HashMap<String, Object> responseBody = new HashMap<>();
@@ -95,23 +99,28 @@ public class ContentController {
 	   String provider = jwtProvider.getProviderFromToken(accessToken);
 	   UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
 	   
+	   System.out.println("linkId: " + linkId);
+	   
 	   FilePostDto filePostDto = filePostMapper.selectOne(linkId);
 	   
 	   int isLike = postLikeMapper.mtdIsLike(user.getUuid(), filePostDto.getPost_id());
 	   
+	   System.out.println("isLike: " + isLike);
+	   
 	   if (isLike > 0) {
 		   postLikeMapper.mtdDelete(user.getUuid(), filePostDto.getPost_id());
-		   responseBody.put("heartClicked", true);
-		   responseBody.put("message", "좋아요가 등록되었습니다.");
-	   } else {
-		   postLikeMapper.mtdInsert(user.getUuid(), filePostDto.getPost_id());
 		   responseBody.put("heartClicked", false);
 		   responseBody.put("message", "좋아요가 삭제되었습니다.");
+	   } else {
+		   postLikeMapper.mtdInsert(user.getUuid(), filePostDto.getPost_id());
+		   responseBody.put("heartClicked", true);
+		   responseBody.put("message", "좋아요가 등록되었습니다.");
 	   }
 	   
 	   return new ResponseEntity<>(responseBody, HttpStatus.OK);
    }
    
+   // 게시글 상세 보기
    @RequestMapping("/viewDetails")
    public ResponseEntity<?> mtdViewDetails(@RequestParam("linkId") String linkId, HttpServletRequest request) {
 	   log.info("/viewDetails 도착");
@@ -142,13 +151,14 @@ public class ContentController {
 	   String provider = jwtProvider.getProviderFromToken(accessToken);
 	   UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
 	   
+	   // 조회수 로직 처리
 	   List<ViewListDto> viewList = viewListMapper.mtdSelectSearch(user.getUuid(), joinFilePostDto.getPost_id());
 	   ViewListDto viewListDto = new ViewListDto();
 	   
 	   // 현재 날짜의 월 가져오기
        int currentMonth = LocalDate.now().getMonthValue();
 
-       // 월을 기준으로 분기 계산 (1~3: 1, 4~6: 2, 7~9: 3, 10~12: 4)
+       // 월요일 기준으로 분기 계산 (1~3: 1, 4~6: 2, 7~9: 3, 10~12: 4)
        int quarter = (currentMonth - 1) / 3 + 1;
        
 	   if(viewList == null || viewList.isEmpty()) {
@@ -171,9 +181,20 @@ public class ContentController {
 		   }
 	   }
 	   
-	   return ResponseEntity.ok(joinFilePostDto);
+	   // 좋아요 상태(likeCheck) 확인
+	   Boolean likeCheck = (postLikeMapper.mtdIsLike(user.getUuid(), joinFilePostDto.getPost_id()) != 0);
+	   
+	   // 좋아요 개수 확인
+	   List<PostLikeDto> likeList = postLikeMapper.mtdUserLikeList(joinFilePostDto.getPost_id());
+	   
+	   responseBody.put("postDetails", joinFilePostDto);
+	   responseBody.put("likeCheck", likeCheck);
+	   responseBody.put("likeCount", likeList.size());
+	   
+	   return ResponseEntity.ok(responseBody);
    }
    
+   // 회원페이지에서 게시물 목록 보기
    @RequestMapping("/userView")
    public ResponseEntity<?> mtdUserGalleryView(HttpServletRequest request) {
 	   log.info("/userView까지 왔어");
@@ -209,6 +230,7 @@ public class ContentController {
 	   
 	   for (JoinFilePostDto joinFilePostDto : filePostList) {
 		   Map<String, String> responseItem = new HashMap<>();
+		   int likeCheck = postLikeMapper.mtdIsLike(user.getUuid(), joinFilePostDto.getPost_id());
 		   responseItem.put("linkId", joinFilePostDto.getLink_id());
 		   responseItem.put("postId", joinFilePostDto.getPost_id());
 		   responseItem.put("content", joinFilePostDto.getContent());
@@ -217,6 +239,7 @@ public class ContentController {
 		   responseItem.put("upFileName", joinFilePostDto.getUp_filename());
 		   responseItem.put("filePath", joinFilePostDto.getFile_path());
 		   responseItem.put("tagId", joinFilePostDto.getTag_id());
+           responseItem.put("likeCheck", likeCheck == 1 ? "true" : "false");
 		   
 		   responseList.add(responseItem);
 	   }
@@ -224,6 +247,7 @@ public class ContentController {
 	   return ResponseEntity.ok(responseList);
    }
    
+   // MainView에서 갤러리 식으로 게시물 보기
    @RequestMapping("/galleryView")
    public ResponseEntity<List<Map<String, String>>> mtdGalleryView() {
       log.info("/galleryView까지는 왔어");
@@ -250,14 +274,41 @@ public class ContentController {
       return ResponseEntity.ok(responseList);
    }
    
-   @RequestMapping("postView")
-   public ResponseEntity<?> mtdPostView() {
+   // MainView에서 post 식으로 게시물 보기
+   @RequestMapping("/postView")
+   public ResponseEntity<?> mtdPostView(HttpServletRequest request) {
       log.info("/postView까지는 왔어");
+      
+      HashMap<String, String> responseBody = new HashMap<>();
+	  String accessToken = null;
+		
+	  // AccessToken 추출
+	  Cookie[] cookies = request.getCookies();
+	  if (cookies != null) {
+		  for (Cookie cookie : cookies) {
+			  if ("accessToken".equals(cookie.getName())) {
+				  accessToken = cookie.getValue();
+				  break;
+			  }
+		  }
+	  }
+		
+	  if (accessToken == null) {
+		  log.error("Access token이 존재하지 않습니다.");
+		  responseBody.put("message", "로그인이 필요합니다.");
+		  return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+	  }
+		
+	  // AccessToken에서 사용자 정보 추출
+	  String email = jwtProvider.getEmailFromToken(accessToken);
+	  String provider = jwtProvider.getProviderFromToken(accessToken);
+	  UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
+      
       // 1. filePost 목록 가져오기
       List<FilePostDto> filePostList = filePostMapper.selectAllList();
       
       // 2. 반환할 데이터 생성
-      List<Map<String, String>> responseList = new ArrayList<>();
+      List<Map<String, Object>> responseList = new ArrayList<>();
       
       for (FilePostDto filePost : filePostList) {
          // post와 file 정보 가져오기
@@ -265,7 +316,7 @@ public class ContentController {
          PostDto postData = postMapper.selectPost(filePost.getPost_id());
          
          if(fileData != null && postData != null) {
-            Map<String, String> responseItem = new HashMap<>();
+            Map<String, Object> responseItem = new HashMap<>();
             responseItem.put("linkId", filePost.getLink_id());
             responseItem.put("uuid", postData.getWrite_user());
             responseItem.put("tagId", userDao.mtdSelectTagId(postData.getWrite_user()));
@@ -273,7 +324,7 @@ public class ContentController {
             responseItem.put("upFileName", fileData.getUp_filename());
             responseItem.put("content", postData.getContent());
             responseItem.put("createAt", postData.getCreate_at().toString());
-            
+            responseItem.put("likeCheck", postLikeMapper.mtdIsLike(user.getUuid(), postData.getPost_id()) != 0);
             
             responseList.add(responseItem);
          }
@@ -281,6 +332,7 @@ public class ContentController {
       return ResponseEntity.ok(responseList);
    }
    
+   // 파일 업로드
    @PostMapping("/fileUpload")
    public ResponseEntity<HashMap<String, String>> mtdFileUpload(
          @RequestParam("file") MultipartFile file,
@@ -349,7 +401,7 @@ public class ContentController {
         try {
            // 1. 파일 로컬에 저장
            
-            String filePath = fileService.saveFile(file);
+            String filePath = fileService.saveFile(file, "content");
             
             // 2. DB에 파일 정보 저장
             FileListDto fileListDto = new FileListDto();
@@ -395,11 +447,12 @@ public class ContentController {
         }
    }
    
+   // 게시글 업로드
    @PostMapping("/postUpload")
    public ResponseEntity<HashMap<String, String>> mtdPostUpload(@RequestBody HashMap<String, String> requestData, HttpServletRequest request) {
       HashMap<String, String> responseBody = new HashMap<>();
       String linkId = requestData.get("link_id");
-      String content = requestData.get("content");
+      String content = requestData.get("content").replace("\n", "<br>");
       
       System.out.println("link_id: " + linkId);
       System.out.println("content: " + content);
@@ -435,6 +488,9 @@ public class ContentController {
       postDto.setContent(content);
       postMapper.savePost(postDto);
       
+      FilePostDto filePostDto = filePostMapper.selectOne(linkId);
+      
+      fileListMapper.mtdUsingStatusTrue(filePostDto.getFile_id());
       filePostMapper.addPostId(linkId, post_id);
       
       responseBody.put("message", "게시글 작성이 완료되었습니다.");

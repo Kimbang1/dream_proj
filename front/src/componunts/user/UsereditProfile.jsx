@@ -1,81 +1,79 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useImagePreview } from "../../hook/useImagePreview";
+import { useUserInfo } from "../../hook/useUserInfo";
+import { useUpdateUserInfo } from "../../hook/useUpdateUserInfo";
 import UserResign from "./UserResign";
 
 function Useredit() {
-  const [isOnresign, setIsOnresign] = useState(false); // 초기값 false 설정
+  const [isOnresign, setIsOnresign] = useState(false);
+  const { imagePreview, fileInputRef, profilehandle, openFileDialog, linkId } =
+    useImagePreview();
+  const { userInfo, handleChange } = useUserInfo();
+  const { isLoading, updateUserInfo } = useUpdateUserInfo();
 
-  // 탈퇴 버튼 클릭 시 화면 전환
-  const resignClick = () => {
-    setIsOnresign(true); // 탈퇴 화면으로 전환
-  };
+  const resignClick = () => setIsOnresign(true);
 
-  // 유저 정보 상태 관리
-  const [userInfo, setUserInfo] = useState({
-    tag_id: "",
-    username: "",
-    introduce: "",
-    phone: "",
-    profileImage: "",
-  });
-
-  // 입력값 변경 핸들러
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUserInfo((prevInfo) => ({
-      ...prevInfo,
-      [name]: value,
-    }));
-  };
-
-  // 수정 완료 버튼 클릭 시 처리
   const handleSave = async () => {
+    // 이미지가 없으면 저장을 진행할 수 없음
+    const fileLinkId = linkId ? linkId : null;
+
+    const formData = {
+      tag_id: userInfo.tag_id,
+      username: userInfo.username,
+      introduce: userInfo.introduce,
+      phone: userInfo.phone,
+      link_id: linkId,
+    };
+
     try {
-      await axios.put("/user/update", userInfo) // 실제 API 엔드포인트로 변경
-      .then((response) => console.log(response))
-      .catch((error) => console.error("Error:", error));
-      alert("수정 완료!");
+      const response = await updateUserInfo(formData);
+
+      if (response.status === 200) {
+        console.log("사용자 정보 수정 성공: ", response.data);
+      } else {
+        console.error("사용자 정보 수정 실패: ", response.statusText);
+      }
     } catch (error) {
-      console.error("수정 실패:", error);
-      alert("수정 실패!");
+      console.error("사용자 정보 수정 중 오류 발생: ", error);
     }
   };
 
-  // API를 통해 유저 정보 가져오기
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get("/user/info"); // 실제 API 엔드포인트로 변경
-        const data = response.data;
-        setUserInfo({
-          tag_id: data.tag_id || "",
-          username: data.username || "",
-          introduce: data.introduce || "",
-          phone: data.phone || "",
-          profileImage: data.profileImage || "",
-        });
-      } catch (error) {
-        console.error("유저 정보를 가져오지 못했습니다.:", error);
-      }
-    };
-    fetchUserData();
-  }, []);
-
   return (
     <div className="editProfile">
-      {/* 탈퇴 화면 */}
       {isOnresign && <UserResign />}
-
-      {/* 유저 프로필 화면 (isOnresign이 false일 때만 렌더링) */}
       {!isOnresign && (
         <>
-          <div className="imgArea">
+          <div className="ProfileimgArea">
+            <div className="miribogi" onClick={openFileDialog}>
+              {imagePreview ? (
+                <img
+                  src={imagePreview}
+                  alt="프로필 미리보기"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              ) : (
+                <img
+                  src={`/profileImage/${userInfo.profile_image}`}
+                  alt="프로필 미리보기"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              )}
+            </div>
             <img
-              src={userInfo.profileImage || "/default-profile.png"}
-              alt="프로필사진"
+              src="/images/profiletrade.png"
+              alt="교체아이콘"
+              className="trade"
+              onClick={openFileDialog}
+            />
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              accept="image/jpg,image/png,image/heic,image/jpeg"
+              multiple
+              onChange={profilehandle}
             />
           </div>
-
           <div className="tagIdArea label">
             <input
               type="text"
@@ -97,7 +95,7 @@ function Useredit() {
           <div className="introDuceArea label">
             <textarea
               name="introduce"
-              maxLength={300} // 글자수 제한
+              maxLength={300}
               value={userInfo.introduce}
               onChange={handleChange}
               placeholder="자기소개를 입력하세요"
@@ -115,11 +113,13 @@ function Useredit() {
           </div>
         </>
       )}
-
-      {/* 버튼 영역 */}
       <div className="BtnArea">
         {!isOnresign && <button onClick={resignClick}>탈퇴</button>}
-        {!isOnresign && <button onClick={handleSave}>수정 완료</button>}
+        {!isOnresign && (
+          <button onClick={handleSave} disabled={isLoading}>
+            수정 완료
+          </button>
+        )}
       </div>
     </div>
   );

@@ -1,20 +1,43 @@
 import React, { useEffect, useState } from "react";
 import AxiosApi from "../../servies/AxiosApi";
-import { useLocation, useParams } from "react-router-dom"; // 라우터를 사용하여 파라미터를 받을 수 있음
+import { useLocation, useNavigate } from "react-router-dom";
 
 function DetailsPage() {
   const location = useLocation();
   const { linkId } = location.state || {};
-  const [item, setItem] = useState({
-    up_filename: "",
-    create_at: "",
-    tag_id: "",
-    content: "",
-  }); // 불러온 데이터
+  const [item, setItems] = useState({}); // 불러온 데이터
   const [comments, setComments] = useState([]); // 댓글 상태
   const [newComment, setNewComment] = useState(""); // 새 댓글 입력 상태
+  const navigate = useNavigate(); // useNavigate 훅을 사용하여 페이지 네비게이션 처리
 
-  console.log(linkId); // itemId 값이 제대로 전달되었는지 확인
+  console.log("linkId: ", linkId); // itemId 값이 제대로 전달되었는지 확인
+
+  // 좋아요 클릭 시 서버로 업데이트 요청 및 로컬 상태 반영
+  const handleHeartClick = async (linkId) => {
+    // 로컬 상태를 먼저 업데이트 (Optimistic Update)
+    setItems((prevItem) => ({
+      ...prevItem,
+      heartClicked: !prevItem.heartClicked, // 하트 상태 토글
+      likeCount: prevItem.heartClicked
+        ? prevItem.likeCount - 1
+        : prevItem.likeCount + 1, // 좋아요 개수 변경
+    }));
+
+    try {
+      // 서버로 좋아요 상태 업데이트 요청
+      await AxiosApi.post(`/contents/like?linkId=${linkId}`, {});
+    } catch (error) {
+      console.error("좋아요 상태 업데이트 실패:", error);
+      // 서버 요청 실패 시, 상태를 다시 되돌리기
+      setItems((prevItem) => ({
+        ...prevItem,
+        heartClicked: !prevItem.heartClicked, // 하트 상태 복구
+        likeCount: prevItem.heartClicked
+          ? prevItem.likeCount + 1
+          : prevItem.likeCount - 1, // 좋아요 개수 복구
+      }));
+    }
+  };
 
   useEffect(() => {
     if (!linkId) return;
@@ -25,12 +48,14 @@ function DetailsPage() {
           `/contents/viewDetails?linkId=${linkId}`
         );
         const data = response.data || {};
-        setItem({
-          up_filename: data.up_filename || "",
-          create_at: data.create_at || "",
-          tag_id: data.tag_id || "",
-          content: data.content || "",
-        }); // 데이터 로드 성공 시 상태 설정
+        setItems({
+          up_filename: data.postDetails.up_filename || "",
+          create_at: data.postDetails.create_at || "",
+          tag_id: data.postDetails.tag_id || "",
+          content: data.postDetails.content || "",
+          heartClicked: data.likeCheck || false, // 좋아요 클릭 상태 추가
+          likeCount: data.likeCount || 0, // 좋아요 개수
+        });
       } catch (error) {
         console.error("데이터 로드 실패:", error);
       }
@@ -41,7 +66,6 @@ function DetailsPage() {
         const response = await AxiosApi.get(`/comment/list?linkId=${linkId}`);
         const commentData = response.data || [];
 
-        // .map()을 사용하여 상태 업데이트트
         setComments(
           commentData.map((comment) => ({
             commentId: comment.comment_id,
@@ -70,10 +94,8 @@ function DetailsPage() {
         content: newComment, // 댓글 내용용
       });
 
-      // 백엔드에서 저장된 댓글 정보 응답 받음
       const saveComment = response.data.comment;
 
-      // 프론트엔드의 상태 업데이트트
       setComments((prev) => [
         ...prev,
         {
@@ -85,7 +107,7 @@ function DetailsPage() {
         },
       ]);
 
-      setNewComment(""); //댓글 입력 초기화
+      setNewComment(""); // 댓글 입력 초기화
     } catch (error) {
       console.log("댓글 저장 실패: ", error);
       alert("댓글 저장에 실패했습니다. 다시 시도해주세요.");
@@ -134,6 +156,7 @@ function DetailsPage() {
             src={`/contentImage/${item?.up_filename || ""}`}
             alt="게시물 이미지"
             className="PostImage"
+            // onClick={() => navigate(-1)} 클릭하면 확대하는 걸로
           />
           <div className="date">{formatDate(item?.create_at)}</div>
         </div>
@@ -143,9 +166,28 @@ function DetailsPage() {
           <div className="detailContentArea">
             <div className="up">
               <div className="author">@{item?.tag_id || ""}</div>
-              <div className="likes">좋아요{linkId.likeCount}개</div>
+              <div className="likes">
+                <img
+                  className="heart"
+                  src={
+                    item.heartClicked
+                      ? "/images/redheart.png"
+                      : "/images/heart.png"
+                  }
+                  alt="하트 아이콘"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleHeartClick(linkId);
+                  }}
+                  style={{ cursor: "pointer" }} // 수정된 오타 (cusror -> cursor)
+                />
+                좋아요 {item.likeCount}개 {/* 좋아요 개수 출력 */}
+              </div>
             </div>
-            <div className="content">{item?.content || ""}</div>
+            <div
+              className="content"
+              dangerouslySetInnerHTML={{ __html: item.content || "" }}
+            ></div>
           </div>
 
           {/* 댓글 입력 영역 */}
@@ -199,6 +241,9 @@ function DetailsPage() {
           </div>
         </div>
       </div>
+
+      {/* 이전 페이지로 돌아가기 버튼 */}
+      <button onClick={() => navigate(-1)}>이전 페이지로 돌아가기</button>
     </div>
   );
 }

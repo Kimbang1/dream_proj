@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sns.dao.RefreshTokenMapper;
-import com.sns.dao.UserDao;
+import com.sns.dao.UserMapper;
 import com.sns.dto.RefreshTokenListDto;
 import com.sns.dto.UserDto;
 import com.sns.jwt.CustomAuthenticationToken;
@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthController {
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final JwtProvider jwtProvider;
-	private final UserDao userDao;
+	private final UserMapper userMapper;
 	private final RefreshTokenMapper refreshTokenMapper;
 	
 	@PostMapping("/login")
@@ -44,6 +44,22 @@ public class AuthController {
 		String email = requestBody.get("email");
 		String provider = requestBody.get("provider");
 		String key = provider.equals("local") ? requestBody.get("pwd") : requestBody.get("social_key");
+		HashMap<String, String> responseBody = new HashMap<>();
+		String falseType = "no_users";
+		
+		UserDto userDto = userMapper.mtdFindByEmailAndProvider(email, provider);
+		if (userDto == null) {
+			responseBody.put("message", "가입 정보가 없습니다.");
+			responseBody.put("falseType", falseType);
+			return new ResponseEntity<>(responseBody, HttpStatus.FORBIDDEN);	// 403			
+		} else {
+			if (userDto.getIs_using() == false) {
+				falseType = (userDto.getIs_delete() == false) ? "block" : "resign";
+				responseBody.put("message", "계정 정지/탈퇴한 회원입니다.");
+				responseBody.put("falseType", falseType);
+				return new ResponseEntity<>(responseBody, HttpStatus.FORBIDDEN);	// 403
+			}			
+		}
 		
 		// 인증 토큰 생성
 		CustomAuthenticationToken authenticationToken =
@@ -163,7 +179,7 @@ public class AuthController {
 		}
 		
 		RefreshTokenListDto refreshTokenListDto = refreshTokenMapper.findByRefreshToken(inputRefreshToken);
-		UserDto userDto = userDao.mtdFindByUuid(refreshTokenListDto.getUuid());
+		UserDto userDto = userMapper.mtdFindByUuid(refreshTokenListDto.getUuid());
 		
 		String email = userDto.getEmail();
 		String provider = userDto.getProvider();

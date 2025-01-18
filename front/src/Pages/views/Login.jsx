@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AxiosApi from "../../servies/AxiosApi";
+import useEnter from "../../hook/useEnterky";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -27,10 +28,14 @@ function Login() {
       alert("로그인 성공");
       navigate("/Mainview");
     } catch (error) {
-      console.error("로그인 실패: ", error.response);
+      const errorResponse = error.response;
+      console.error("로그인 실패: ", errorResponse);
+      console.error("로그인 실패 타입: ", errorResponse.data.falseType);
       alert("로그인에 실패했습니다. 다시 시도해주세요.");
     }
   };
+
+  useEnter(handleLoginClick);
 
   return (
     <div id="Back">

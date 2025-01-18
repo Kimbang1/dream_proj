@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.sns.dao.RefreshTokenMapper;
-import com.sns.dao.UserDao;
+import com.sns.dao.UserMapper;
 import com.sns.dto.RefreshTokenListDto;
 import com.sns.dto.UserDto;
 
@@ -57,7 +57,7 @@ public class JwtProvider {
 	private RefreshTokenMapper refreshTokenMapper;
 	
 	@Autowired
-	private UserDao userDao;
+	private UserMapper userDao;
 	
 	@PostConstruct
 	public void init() {
@@ -70,6 +70,8 @@ public class JwtProvider {
 		// 인증된 사용자의 권한 목록 조회
 		PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 		String authority = principalDetails.getUserDto().getIs_admin() ? "ROLE_ADMIN" : "ROLE_USER";	// is_admin 값에 따라 권한 설정
+		System.out.println("당신의 권한 정보: " + authority);
+		System.out.println("secret: " + secret);
 
 		
 		// 토큰의 expire 시간을 설정
