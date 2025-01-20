@@ -1,0 +1,23 @@
+div.chatingList{
+    border: 2px solid #f80;
+    border-radius: 10px;
+    margin: 10px;
+    width: 90%;
+    height: 90vh;
+}
+
+div.chatingBoxes{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border: 1px solid #000;
+    border-radius: 10px;
+    margin: 10%;
+    height: 10%;
+    padding-top: 10px;
+}
+
+img.CameraArea{
+    width: 30%;
+    
+}

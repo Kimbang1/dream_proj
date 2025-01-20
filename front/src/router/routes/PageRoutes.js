@@ -9,6 +9,8 @@ import SearchRes from "../../Pages/views/SearchRes";
 import Map from "../../componunts/NaverMap/Map";
 import AlramPage from "../../Pages/views/AlramPage";
 import DetailsPage from "../../Pages/views/DetailsPage";
+import ChatingList from "../../Pages/chatingPage/ChatingList";
+
 
 const pageRoutes = [
   {
@@ -42,6 +44,10 @@ const pageRoutes = [
   {
     path: "/DetailsPage",
     element: <DetailsPage />,
+  },
+  {
+    path: "/ChatingList",
+    element: <ChatingList />,
   },
 ];
 

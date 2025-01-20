@@ -46,6 +46,8 @@
 
 /* 게시글 상세 페이지 css */
 @import url(pages-css/DetailsPage.css);
+/* 게시글 상세의 확장 모달css */
+@import url(modal-css/WideViewModal.css);
 
 /*검색모달*/
 /*알람모달*/
@@ -57,6 +59,12 @@
 @import url(pages-css/SearChres.css);
 /* 게시글 작성 페이지 css */
 @import url(pages-css/ContentWrite.css);
+
+/* **************************************************************************** */
+/* 채팅 리스트CSS */
+@import url(chating-css/ChatingList.css);
+/* 채팅창 CSS */
+@import url(chating-css/ChatRoom.css);
 
 /* 지도 css */
 @import url(pages-css/Map.css);

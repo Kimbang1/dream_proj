@@ -42,7 +42,7 @@ function FollowFC({ uuId, currentFollowStatus, userid }) {
   return (
     <>
       <button id="followBtn" onClick={toggleFollowStatus}>
-        {isFollowing ? "팔로우 취소" : "팔로우"} {/* 버튼 텍스트 수정 */}
+        {isFollowing ? "팔로우 워" : "팔로우"} {/* 버튼 텍스트 수정 */}
       </button>
     </>
   );

@@ -2,7 +2,7 @@ import Landing from "../../Pages/landingpage/Landing";
 import Join from "../../Pages/views/Join";
 import Login from "../../Pages/views/Login";
 import Jopinchoice from "../../Pages/views/Joinchoice";
-import Agree from "../../Pages/views/Agree";
+import Agree from "../../Pages/landingpage/Agree";
 import Social from "../../Pages/views/Social";
 
 const LandingRoutes = [

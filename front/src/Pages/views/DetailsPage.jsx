@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AxiosApi from "../../servies/AxiosApi";
 import { useLocation, useNavigate } from "react-router-dom";
 import FollowFC from "../../config/FollowFC";
+import WideView from "./WideView";
 
 function DetailsPage() {
   const location = useLocation();
@@ -12,6 +13,17 @@ function DetailsPage() {
   const navigate = useNavigate(); // useNavigate 훅을 사용하여 페이지 네비게이션 처리
 
   console.log("linkId: ", linkId); // itemId 값이 제대로 전달되었는지 확인
+
+  // 이미지 확대
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   // 좋아요 클릭 시 서버로 업데이트 요청 및 로컬 상태 반영
   const handleHeartClick = async (linkId) => {
@@ -145,6 +157,8 @@ function DetailsPage() {
     )}-${String(date.getDate()).padStart(2, "0")}`;
   };
 
+  const wideView = () => {};
+
   if (!linkId || !item) return <div>Loading...</div>; // 게시물이 로딩 중일 때
 
   return (
@@ -157,9 +171,17 @@ function DetailsPage() {
             src={`/contentImage/${item?.up_filename || ""}`}
             alt="게시물 이미지"
             className="PostImage"
-            // onClick={() => navigate(-1)} 클릭하면 확대하는 걸로
+            onClick={openModal}
           />
           <div className="date">{formatDate(item?.create_at)}</div>
+
+          {/* Wide뷰 컴포넌트 모달 상태 전달하는 곳 */}
+          <WideView
+          item={item}
+          isModalOpen={isModalOpen}
+          closeModal={closeModal}
+          onClick={()=> navigate(-1)}
+          />
         </div>
 
         {/* 콘텐츠 영역 */}

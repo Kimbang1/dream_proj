@@ -4,6 +4,7 @@ import { useMediaQuery } from "react-responsive";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Managerbutton from "../../Pages/AdminPage/Managerbutton";
+
 function Leftaside() {
   const [openAdmin, setOpenAdmin] = useState(false);
 
@@ -103,7 +104,12 @@ function Leftaside() {
               />
             </div>
             <div className="menu">
-              <img src="/images/chating.png" alt="채팅" />
+              <img src="/images/chating.png" alt="채팅"
+              onClick={()=>{
+                console.log("채팅방 이동");
+                navigate("/ChatingList");
+              }}
+              />
             </div>
             <div className="menu">
               <img src="/images/whale.png" alt="챗봇" />
