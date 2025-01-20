@@ -67,7 +67,6 @@ function UserMainpage() {
               <div className="useDetails">
                 <div className="FirstLayer">
                   <div className="userName">@{user.user.tag_id}</div>
-
                   {/* 내 프로필이 아니면 팔로우 버튼이 뜨게 */}
                   {!isSameUser && <FollowFC setIsSameUser={setIsSameUser} />}
                   {/* 내 계정이라면 수정 버튼만 표시 */}

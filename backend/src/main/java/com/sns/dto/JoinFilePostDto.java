@@ -14,4 +14,7 @@ public class JoinFilePostDto {
     private String up_filename;
     private String file_path;
 	private String tag_id;
+	private String write_user;
+	private double latitude;
+	private double longitude;
 }

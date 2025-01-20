@@ -21,7 +21,7 @@ const MapWithPhotos = () => {
 
     const fetchPhotoData = async () => {
       try {
-        const response = await AxiosApi.get(`/contents/`); // API 호출하여 사진 데이터 가져오기
+        const response = await AxiosApi.get(`/contents/mapLongLati`); // API 호출하여 사진 데이터 가져오기
         setPhotoData(response.data);
         console.log("사진 데이터:", response.data);
 
@@ -33,15 +33,20 @@ const MapWithPhotos = () => {
 
         // 사진 데이터를 기반으로 마커 추가
         response.data.forEach((photo) => {
-          const { latitude, longitude, imageUrl } = photo;
+          const { latitude, longitude, up_filename } = photo;
+
+          if (!up_filename) {
+            console.warn("up_filename이 없습니다:", photo); // up_filename이 없으면 경고
+            return; // 이미지가 없으면 마커를 추가하지 않음
+          }
 
           // 마커 아이콘 설정
           const marker = new window.naver.maps.Marker({
             position: new window.naver.maps.LatLng(latitude, longitude),
             map: map,
             icon: {
-              url: imageUrl, // 마커에 이미지 URL을 설정
-              size: new window.naver.maps.Size(50, 50),
+              content: `<img class="marker-image" src="/contentImage/${up_filename}" alt="사진" />`,
+              size: new window.naver.maps.Size(80, 80),
               scaledSize: new window.naver.maps.Size(50, 50),
               origin: new window.naver.maps.Point(0, 0),
               anchor: new window.naver.maps.Point(25, 25), // 마커 앵커 설정
@@ -54,39 +59,17 @@ const MapWithPhotos = () => {
           });
         });
       } catch (error) {
-        console.error("사진 데이터를 가져오지 못했습니다.", error);
+        console.error(
+          "사진 데이터를 가져오지 못했습니다.",
+          error.response || error.message || error
+        );
       }
     };
 
     loadMapScript();
   }, []); // 빈 배열로 설정해 한 번만 실행
 
-  return (
-    <div>
-      <div id="map" style={{ width: "100%", height: "500px" }}></div>
-      <div>
-        <h1>지도에 표시된 사진들</h1>
-        {photoData.length === 0 ? (
-          <p>사진 데이터가 없습니다.</p>
-        ) : (
-          <ul>
-            {photoData.map((photo, index) => (
-              <li key={index}>
-                <img
-                  src={photo.imageUrl}
-                  alt={`photo-${index}`}
-                  style={{ width: "100px" }}
-                />
-                <p>
-                  위도: {photo.latitude}, 경도: {photo.longitude}
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </div>
-  );
+  return <div id="map" style={{ width: "100%", height: "500px" }}></div>;
 };
 
 export default MapWithPhotos;

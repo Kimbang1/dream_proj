@@ -71,6 +71,15 @@ public class ContentController {
       return ResponseEntity.ok(responseDto);
    }
    
+   // 위도, 경도 게시글 정보 반환
+   @RequestMapping("/mapLongLati")
+   public ResponseEntity<?> mtdMapLongLati() {
+	   
+	   List<JoinFilePostDto> joinFilePostList = filePostMapper.selectAllPost();
+	   
+	   return ResponseEntity.ok(joinFilePostList);
+   }
+   
    // 게시글 좋아요 클릭 시 반영
    @RequestMapping("/like")
    public ResponseEntity<?> mtdLikeCheck(@RequestParam("linkId")String linkId, HttpServletRequest request) {
