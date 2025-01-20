@@ -38,7 +38,7 @@ function AdminFunction() {
     console.log("전송할 데이터:", requestData);
 
     try {
-      const response = await AxiosApi.post("/api/block", requestData, {
+      const response = await AxiosApi.post("/admin/userProc", requestData, {
         headers: {
           "Content-Type": "application/json",
         },

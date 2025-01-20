@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.sns.dao.UserDao;
+import com.sns.dao.UserMapper;
 import com.sns.dto.UserDto;
 
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
-	private final UserDao userDao;
+	private final UserMapper userDao;
 	
 	public UserDetails loadUserByEmailAndProvider(String email, String provider) throws UsernameNotFoundException {
 		log.info("CustomUserDetailsService loadUserByUsernameAndProvider : email={}, provider={} ", email, provider);

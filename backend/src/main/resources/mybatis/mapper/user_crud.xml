@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.sns.dao.UserDao">
+<mapper namespace="com.sns.dao.UserMapper">
 	
 	<!-- 회원 가입 sql provider가 local이면 pwd는 받아온 값 저장, local이 아니면 null로 저장-->
 	<insert id="mtdInsert" parameterType="com.sns.dto.UserDto">
@@ -51,7 +51,7 @@
 	
 	<!-- 전체 회원 목록 반환 -->
 	<select id="mtdSelectAllUser" resultType="com.sns.dto.UserDto">
-		SELECT * FROM user ORDER BY create_at DESC
+		SELECT * FROM user WHERE is_using = true ORDER BY create_at DESC
 	</select>
 	
 	<!-- uuid로 회원 찾기 -->

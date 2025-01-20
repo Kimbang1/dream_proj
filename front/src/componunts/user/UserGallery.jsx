@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import AxiosApi from "../../servies/AxiosApi";
 import { useNavigate } from "react-router-dom";
 
-function UserGallery() {
+function UserGallery({uuid}) {
   const [items, setItems] = useState([]); // 초기 데이터는 빈 배열로 설정
   const loader = useRef(null); // Intersection Observer를 위한 ref
   const [page, setPage] = useState(1); // 페이지 번호 상태
@@ -22,7 +22,8 @@ function UserGallery() {
     setLoading(true);
     try {
       // 백엔드 API 호출 (페이지 기반 데이터를 가져온다고 가정)
-      const response = await AxiosApi.get(`/contents/userView?page=${page}`);
+      const encodedUuid = encodeURIComponent(uuid);
+      const response = await AxiosApi.get(`/contents/userView?page=${page}&uuid=${encodedUuid}`);
       const newItems = response.data; // 서버에서 반환된 데이터
 
       // 중복 제거 로직: `linkId`가 중복되지 않는 새로운 데이터만 추가

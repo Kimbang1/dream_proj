@@ -9,7 +9,7 @@ import com.sns.dto.UserDetailDto;
 import com.sns.dto.UserDto;
 
 @Mapper
-public interface UserDao {
+public interface UserMapper {
 	// 회원가입 처리
 	public int mtdInsert(UserDto userDto);
 	

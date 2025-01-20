@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sns.dao.UserDao;
+import com.sns.dao.UserMapper;
 import com.sns.dao.UserProfileMapper;
 import com.sns.dto.UserDto;
 import com.sns.dto.UserProfileDto;
@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JoinController {
 	
-	private final UserDao userDao;
+	private final UserMapper userDao;
 	private final KakaoApi kakaoApi;
 	private final GoogleApi googleApi;
 	private final PasswordEncoder passwordEncoder;

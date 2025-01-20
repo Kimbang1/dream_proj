@@ -23,7 +23,7 @@ import com.sns.dao.FileListMapper;
 import com.sns.dao.FilePostMapper;
 import com.sns.dao.PostLikeMapper;
 import com.sns.dao.PostMapper;
-import com.sns.dao.UserDao;
+import com.sns.dao.UserMapper;
 import com.sns.dao.ViewListMapper;
 import com.sns.dto.FileListDto;
 import com.sns.dto.FilePostDto;
@@ -51,7 +51,7 @@ public class ContentController {
    private final FileService fileService;
    private final FileListMapper fileListMapper;
    private final JwtProvider jwtProvider;
-   private final UserDao userDao;
+   private final UserMapper userDao;
    private final FilePostMapper filePostMapper;
    private final PostMapper postMapper;
    private final ViewListMapper viewListMapper;
@@ -60,7 +60,7 @@ public class ContentController {
    // 검색 결과 반환
    @RequestMapping("/search")
    public ResponseEntity<?> mtdSearch(@RequestParam("query") String keyword) {
-      log.info("검색어: " + keyword);
+      log.info("/contents/search 도착");
       List<JoinFilePostDto> joinFilePostList = filePostMapper.selectSearchList(keyword);
       List<UserDetailDto> userList = userDao.mtdSearchUser(keyword);
       
@@ -196,33 +196,12 @@ public class ContentController {
    
    // 회원페이지에서 게시물 목록 보기
    @RequestMapping("/userView")
-   public ResponseEntity<?> mtdUserGalleryView(HttpServletRequest request) {
+   public ResponseEntity<?> mtdUserGalleryView(HttpServletRequest request, @RequestParam("uuid") String uuid) {
 	   log.info("/userView까지 왔어");
 	   
 	   HashMap<String, String> responseBody = new HashMap<>();
-	   String accessToken = null;
-		
-	   // AccessToken 추출
-	   Cookie[] cookies = request.getCookies();
-	   if (cookies != null) {
-		   for (Cookie cookie : cookies) {
-			   if ("accessToken".equals(cookie.getName())) {
-				   accessToken = cookie.getValue();
-				   break;
-			   }
-		   }
-	   }
-		
-	   if (accessToken == null) {
-		   log.error("Access token이 존재하지 않습니다.");
-		   responseBody.put("message", "로그인이 필요합니다.");
-		   return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
-	   }
-		
-	   // AccessToken에서 사용자 정보 추출
-	   String email = jwtProvider.getEmailFromToken(accessToken);
-	   String provider = jwtProvider.getProviderFromToken(accessToken);
-	   UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
+	  
+	   UserDto user = userDao.mtdFindByUuid(uuid);
 	   
 	   List<JoinFilePostDto> filePostList = filePostMapper.selectChoiceList(user.getUuid());
 	   
@@ -488,6 +467,9 @@ public class ContentController {
       postDto.setContent(content);
       postMapper.savePost(postDto);
       
+      FilePostDto filePostDto = filePostMapper.selectOne(linkId);
+      
+      fileListMapper.mtdUsingStatusTrue(filePostDto.getFile_id());
       filePostMapper.addPostId(linkId, post_id);
       
       responseBody.put("message", "게시글 작성이 완료되었습니다.");

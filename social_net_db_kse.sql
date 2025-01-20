@@ -45,6 +45,7 @@ drop table user;
 desc user;
 select * from user order by create_at desc;
 delete from user where email="admin@admin.com";
+
 update user set is_admin = true where email="arto135@naver.com" and provider="local";
 
 # refresh_token 관리 테이블
@@ -134,8 +135,6 @@ LEFT JOIN
     file_post fp ON p.post_id = fp.post_id
 LEFT JOIN 
     file_list f ON fp.file_id = f.file_id
-WHERE 
-    p.write_user = '9a6fdc66-46cc-4445-8d2b-dd8a8ed2705c'
 ORDER BY 
     p.create_at DESC;
     

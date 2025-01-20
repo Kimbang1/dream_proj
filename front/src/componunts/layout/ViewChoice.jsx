@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Gallery from "../../Pages/views/Gallery";
 import Post from "../../Pages/views/Post";
 import UserGallery from "../user/UserGallery";
 import UserPost from "../user/UserPost";
 
-const ViewChoice = ({ setIsMainPage }) => {
+const ViewChoice = ({ setIsMainPage, uuid }) => {
   // 상태 관리
   const [isPosthome, setIsPosthome] = useState(true);
   const [isGalleryhome, setIsGalleryhome] = useState(false);
+  console.log("ViewChoice에서 받은 UUID:", uuid, "Type:", typeof uuid);
 
   // 클릭 이벤트 핸들러
   const onPostClick = () => {
@@ -47,8 +48,8 @@ const ViewChoice = ({ setIsMainPage }) => {
           </>
         ) : (
           <>
-            {isPosthome && <UserPost />} {/* 유저 Post 화면 */}
-            {isGalleryhome && <UserGallery />} {/* 유저 Gallery 화면 */}
+            {isPosthome && <UserPost uuid={uuid} />} {/* 유저 Post 화면 */}
+            {isGalleryhome && <UserGallery uuid={uuid} />} {/* 유저 Gallery 화면 */}
           </>
         )}
       </div>
