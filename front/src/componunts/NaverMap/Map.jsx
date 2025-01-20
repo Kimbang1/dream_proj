@@ -1,9 +1,9 @@
+// Map.jsx
 import React, { useEffect, useState } from "react";
-import AxiosApi from "../../services/AxiosApi"; // 경로 수정 (servies -> services)
-import MapWithPhotos from "./PhothOfCoordinate"; // PhothOfCoordinate -> PhotoOfCoordinate로 수정 필요할 수 있음
+import AxiosApi from "../../servies/AxiosApi"; // 경로 수정 (services)
+import MapWithPhotos from "./PhothOfCoordinate";
 
 const Map = () => {
-  const [mapPoint, setMapPoint] = useState({ x: 0, y: 0 });
   const [photoData, setPhotoData] = useState([]);
 
   useEffect(() => {
@@ -11,70 +11,19 @@ const Map = () => {
       try {
         const response = await AxiosApi.get(`/contents/postView`); // DB에서 사진 데이터 가져오기
         console.log("API 응답 데이터:", response.data);
-        setPhotoData(response.data);
-
-        const mapDiv = document.getElementById("map");
-        const map = new window.naver.maps.Map(mapDiv, {
-          center: new window.naver.maps.LatLng(37.5665, 126.978), // 지도 초기 중심점
-          zoom: 10,
-        });
-
-        // 사진 데이터를 기반으로 마커 추가
-        response.data.forEach((item) => {
-          const { latitude, longitude, imageUrl } = item;
-          new window.naver.maps.Marker({
-            position: new window.naver.maps.LatLng(latitude, longitude),
-            map: map,
-            icon: {
-              url: imageUrl,
-              size: new window.naver.maps.Size(30, 30),
-              scaledSize: new window.naver.maps.Size(30, 30),
-              origin: new window.naver.maps.Point(0, 0),
-              anchor: new window.naver.maps.Point(15, 15),
-            },
-          }).setMap(map);
-        });
-
-        // 지도 클릭 시 좌표 업데이트
-        window.naver.maps.Event.addListener(map, "click", (e) => {
-          const latLng = e.latLng;
-          setMapPoint({
-            x: latLng.lat(),
-            y: latLng.lng(),
-          });
-        });
+        setPhotoData(response.data); // DB에서 가져온 사진 데이터를 상태에 저장
       } catch (error) {
         console.error("사진 데이터를 가져오지 못했습니다.", error);
       }
     };
 
-    const loadMapScript = () => {
-      const script = document.createElement("script");
-      script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.REACT_APP_NAVER_MAP_CLIENT_ID}`;
-      script.async = true;
-
-      script.onload = fetchPhotoData;
-      script.onerror = (e) => {
-        console.error("네이버 지도 API 로드 오류:", e);
-      };
-
-      document.head.appendChild(script);
-    };
-
-    loadMapScript();
+    fetchPhotoData(); // 사진 데이터 가져오기
   }, []);
 
   return (
     <div className="Mapview">
-      <div id="map" style={{ width: "100%", height: "500px" }}></div>
-      <div>
-        <p>현재 선택된 좌표:</p>
-        <p>X: {mapPoint.x}</p>
-        <p>Y: {mapPoint.y}</p>
-      </div>
-      <div>
-        <h1>지도와 사진 위치</h1>
-      </div>
+      {/* MapWithPhotos 컴포넌트를 렌더링하고, photoData를 전달 */}
+      <MapWithPhotos photoData={photoData} />
     </div>
   );
 };
