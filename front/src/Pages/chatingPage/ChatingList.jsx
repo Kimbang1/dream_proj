@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-function ChatingList() {
+function ChatingList({ chatId }) {
 
     const navigator = useNavigate("");
 
@@ -28,7 +28,7 @@ function ChatingList() {
               // src={`/profileImage/${user.up_filename}`}
               // alt={`${user?.username} 이미지`}
             />
-            <span className="chatinNames">채팅방 이름</span>
+            <span className="chatinNames">{chatId}</span>
           </dib>
 
           <div className="CameraArea">

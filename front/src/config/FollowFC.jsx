@@ -5,7 +5,7 @@ function FollowFC({ uuId, currentFollowStatus, userid }) {
   const [isFollowing, setIsFollowing] = useState(currentFollowStatus); //팔로우 여부 상태
 
   //내 게시물인 아닌지
-  const isMyPost = String(uuId) === String(userid); 
+  const isMyPost = Number(uuId) === Number(userid);
 
   console.log("uuId:", uuId); // uuId 값 출력
   console.log("userid:", userid); // userid 값 출력

@@ -105,7 +105,7 @@ function UserList() {
         <AdminActions selectedUserIds={selectedUserIds} />
       </div>
 
-      <AdminFunction />
+      <AdminFunction tag_id={managerTagId} uuid={managerUuid} />
     </div>
   );
 }

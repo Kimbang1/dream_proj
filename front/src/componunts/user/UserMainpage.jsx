@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AxiosApi from "../../servies/AxiosApi";
 import ViewChoice from "../layout/ViewChoice";
-import AlarmPage from "../../Pages/views/AlramPage";
+import FollowFC from "../../config/FollowFC";
 
 function UserMainpage() {
   const location = useLocation();
@@ -34,7 +34,7 @@ function UserMainpage() {
         console.error("데이터 가져오기 실패:", error);
       }
     };
-    if(uuid) {
+    if (uuid) {
       fetchData();
     }
   }, [uuid]);
@@ -48,7 +48,9 @@ function UserMainpage() {
           <div className="ProfileArea">
             <div className="PrImgArea">
               <img
-                src={`/profileImage/${user.profile_image}`} alt="프로필 이미지"/>
+                src={`/profileImage/${user.profile_image}`}
+                alt="프로필 이미지"
+              />
             </div>
 
             <div className="InfoArea">
@@ -56,13 +58,16 @@ function UserMainpage() {
                 <div className="FirstLayer">
                   <div className="userName">@{user.user.tag_id}</div>
 
+                  <FollowFC />
                   <button className="editProfileBtn" onClick={UserEditHandle}>
                     프로필 수정
                   </button>
                 </div>
 
                 <div className="SecondLayer">
-                  <div className="postCount">게시물:{user.user.postCount}개</div>
+                  <div className="postCount">
+                    게시물:{user.user.postCount}개
+                  </div>
                   <div className="followerCount">
                     팔로우{user.followerCount}
                   </div>

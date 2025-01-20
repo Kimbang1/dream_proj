@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import AxiosApi from "../../servies/AxiosApi";
 
-function AdminFunction() {
+function AdminFunction({ tag_id, uuid }) {
+
+  console.log("**********");
+  console.log("태그 ID:", tag_id);
+  console.log("UUID:", uuid);
+  console.log("**********");
+
   const [manager, setManager] = useState(""); // 관리자 이름
   const [selectedOptions, setSelectedOptions] = useState([]); // 체크박스 선택 상태
   const [Reason, setReason] = useState("");
@@ -56,86 +62,89 @@ function AdminFunction() {
   };
 
   return (
-  
-      <div className="AdminfunctionArea">
+    <div className="AdminfunctionArea">
       {/* 오른쪽 관리자 작업 */}
-        <div className="checkBoxArea">
-          <div className="Sb StopArea">
-            <input
-              type="checkbox"
-              value="block"
-              checked={blockAccount}
-              onChange={handleCheckboxChange}
-            />
-            <div className="spanArea">
-              <span>계정 정지</span>
-            </div>
-          </div>
-          <div className="Sb ClearArea">
-            <input
-              type="checkbox"
-              value="delete"
-              checked={deleteAccount}
-              onChange={handleCheckboxChange}
-            />
-            <div className="spanArea">
-              <span>계정 삭제</span>
-            </div>
-          </div>
-        </div>
-        <div className="AdminNameArea">
-          <h3>관리자 이름</h3>
-        </div>
-        <div className="RealName">
+      <div className="checkBoxArea">
+        <div className="Sb StopArea">
           <input
-            className="RealWriterName"
-            type="text"
-            placeholder="작성의 이름을 쓰세요."
-            value={manager}
-            onChange={(e) => setManager(e.target.value)}
+            type="radio"
+            name="action"
+            value="block"
+            checked={blockAccount}
+            onChange={handleCheckboxChange}
           />
+          <div className="spanArea">
+            <span>계정 정지</span>
+          </div>
         </div>
-        <div className="stopreason">
+        <div className="Sb ClearArea">
           <input
-            type="text"
-            maxLength={80}
-            placeholder="사유를 입력하세요"
-            value={Reason}
-            onChange={(e) => setReason(e.target.value)}
+            type="radio"
+            name="action"
+            value="delete"
+            checked={deleteAccount}
+            onChange={handleCheckboxChange}
           />
-        </div>
-
-        <div className="stopListArea">
-          <div className="stopLsit">
-            <input type="checkbox" value={15} onChange={handleCheckboxChange} />
-            <div className="List">정지 15일</div>
+          <div className="spanArea">
+            <span>계정 삭제</span>
           </div>
-          <div className="stopLsit">
-            <input type="checkbox" value={30} onChange={handleCheckboxChange} />
-            <div className="List">정지 30일</div>
-          </div>
-          <div className="stopLsit">
-            <input type="checkbox" value={90} onChange={handleCheckboxChange} />
-            <div className="List">정지 90일</div>
-          </div>
-          <div className="stopLsit">
-            <input type="checkbox" />
-            <input
-              id="giganArea"
-              type="text"
-              placeholder="기간을 입력해주세요"
-              onChange={(e) => setDuration(e.target.value)}
-              value={Duration}
-            />
-          </div>
-        </div>
-        <div className="executionArea">
-          <button className="execution" onClick={handleBlockAction}>
-            실행
-          </button>
         </div>
       </div>
+      <div className="AdminNameArea">
+        <h3>
+         {tag_id?`${tag_id}` : "관리자가 아닙니다."}
+        </h3>
+      </div>
 
+      <div className="RealName">
+        <input
+          className="RealWriterName"
+          type="text"
+          placeholder="작성의 이름을 쓰세요."
+          value={manager}
+          onChange={(e) => setManager(e.target.value)}
+        />
+      </div>
+      <div className="stopreason">
+        <input
+          type="text"
+          maxLength={80}
+          placeholder="사유를 입력하세요"
+          value={Reason}
+          onChange={(e) => setReason(e.target.value)}
+        />
+      </div>
+
+      <div className="stopListArea">
+        <div className="stopLsit">
+          <input type="checkbox" value={15} onChange={handleCheckboxChange} />
+          <div className="List">정지 15일</div>
+        </div>
+        <div className="stopLsit">
+          <input type="checkbox" value={30} onChange={handleCheckboxChange} />
+          <div className="List">정지 30일</div>
+        </div>
+        <div className="stopLsit">
+          <input type="checkbox" value={90} onChange={handleCheckboxChange} />
+          <div className="List">정지 90일</div>
+        </div>
+        <div className="stopLsit">
+          <input type="checkbox" />
+          <input
+            id="giganArea"
+            type="text"
+            placeholder="기간을 입력해주세요"
+            onChange={(e) => setDuration(e.target.value)}
+            value={Duration}
+          />
+        </div>
+      </div>
+      <div className="executionArea">
+        <button className="execution" onClick={handleBlockAction}>
+          실행
+        </button>
+      </div>
+    </div>
   );
 }
 

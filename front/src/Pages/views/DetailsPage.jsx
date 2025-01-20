@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AxiosApi from "../../servies/AxiosApi";
 import { useLocation, useNavigate } from "react-router-dom";
-import FollowFC from "../../config/FollowFC";
+
 import WideView from "./WideView";
 
 function DetailsPage() {
@@ -68,6 +68,7 @@ function DetailsPage() {
           content: data.postDetails.content || "",
           heartClicked: data.likeCheck || false, // 좋아요 클릭 상태 추가
           likeCount: data.likeCount || 0, // 좋아요 개수
+          write_user: data.postDetails.write_user || "",
         });
       } catch (error) {
         console.error("데이터 로드 실패:", error);
@@ -157,8 +158,6 @@ function DetailsPage() {
     )}-${String(date.getDate()).padStart(2, "0")}`;
   };
 
-  const wideView = () => {};
-
   if (!linkId || !item) return <div>Loading...</div>; // 게시물이 로딩 중일 때
 
   return (
@@ -177,10 +176,10 @@ function DetailsPage() {
 
           {/* Wide뷰 컴포넌트 모달 상태 전달하는 곳 */}
           <WideView
-          item={item}
-          isModalOpen={isModalOpen}
-          closeModal={closeModal}
-          onClick={()=> navigate(-1)}
+            item={item}
+            isModalOpen={isModalOpen}
+            closeModal={closeModal}
+            onClick={() => navigate(-1)}
           />
         </div>
 
@@ -188,7 +187,16 @@ function DetailsPage() {
         <div className="DetailRight">
           <div className="detailContentArea">
             <div className="up">
-              <div className="author">@{item?.tag_id || ""}</div>
+              <div
+                className="author"
+                onClick={(event) => {
+                  console.log("포스팅한 유저의 주소?", item?.write_user);
+                  // navigate(`/DetailsPage?item?.tag_id=${item?.tag_id}`);
+                  navigate(`/user?write_user=${item?.write_user}`);
+                }}
+              >
+                @{item?.tag_id || ""}
+              </div>
 
               <div className="heartfollowBox">
                 <div className="likes">
@@ -204,12 +212,11 @@ function DetailsPage() {
                       e.stopPropagation();
                       handleHeartClick(linkId);
                     }}
-                    style={{ cursor: "pointer" }} // 수정된 오타 (cusror -> cursor)
+                    style={{ cursor: "pointer" }}
                   />
                 </div>
 
                 <div className="followLikeArea">
-                  <FollowFC />
                   좋아요 {item.likeCount}개 {/* 좋아요 개수 출력 */}
                 </div>
               </div>

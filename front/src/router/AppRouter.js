@@ -6,6 +6,7 @@ import userRoutes from "./routes/UserRoutes";
 import Layout from "../componunts/layout/LayoutCP";
 import LandingRoutes from "../router/routes/LandingRoutes";
 import AdminRoutes from "../router/routes/AdminRoutes";
+import ChatingRouter from "../router/routes/ChatingRouters";
 
 function AppRouter() {
   // 모든 라우트를 병합
@@ -31,8 +32,15 @@ function AppRouter() {
 
           {/* AdminRoutes */}
           {AdminRoutes.map((route, index) => {
-            return<Route key={index} path={route.path} element={route.element} />;
+            return (
+              <Route key={index} path={route.path} element={route.element} />
+            );
           })}
+
+        {/* 채팅라우터 */}
+        {ChatingRouter.map((route, index) => {
+          return<Route key={index} path={route.path} element={route.element} />
+        })}
         </Route>
       </Routes>
     </Router>
