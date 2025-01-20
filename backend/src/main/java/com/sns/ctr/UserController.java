@@ -81,14 +81,44 @@ public class UserController {
 	
 	@GetMapping("/info")
 	public ResponseEntity<?> mtdUserInfo(HttpServletRequest request, @RequestParam("uuid") String uuid) {
-				
+		
 		HashMap<String, Object> responseBody = new HashMap<>();
-
+		String accessToken = null;
+		
+		// AccessToken 추출
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if ("accessToken".equals(cookie.getName())) {
+					accessToken = cookie.getValue();
+					break;
+				}
+			}
+		}
+		
+		if (accessToken == null) {
+		    log.error("Access token이 존재하지 않습니다.");
+		    responseBody.put("message", "로그인이 필요합니다.");
+		    return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+		}
+		
+		// AccessToken에서 사용자 정보 추출
+		String email = jwtProvider.getEmailFromToken(accessToken);
+		String provider = jwtProvider.getProviderFromToken(accessToken);
+		
+		// 접속 중인 유저
+		UserDto thisUser = userMapper.mtdFindByEmailAndProvider(email, provider);
+		
+		// 회원페이지에 보여줄 유저
 		UserDto user = userMapper.mtdFindByUuid(uuid);
+		
+		// 접속중인 유저와 회원페이지에 보여줄 유저가 같은 사람인가?
+		Boolean isSameUser = thisUser.getUuid().equals(user.getUuid());
 		
 		FileListDto fileListDto = fileListMapper.selectFileData(userProfileMapper.mtdSelectFileId(user.getUuid()));
 		
 		responseBody.put("user", user);
+		responseBody.put("isSameUser", isSameUser);
 		responseBody.put("profile_image", fileListDto.getUp_filename());
 		
 		return ResponseEntity.ok(responseBody);

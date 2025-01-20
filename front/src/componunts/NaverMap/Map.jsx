@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AxiosApi from "../../services/AxiosApi"; // 경로 수정 (servies -> services)
+import AxiosApi from "../../servies/AxiosApi"; // 경로 수정 (servies -> services)
 import MapWithPhotos from "./PhothOfCoordinate"; // PhothOfCoordinate -> PhotoOfCoordinate로 수정 필요할 수 있음
 
 const Map = () => {
@@ -9,8 +9,8 @@ const Map = () => {
   useEffect(() => {
     const fetchPhotoData = async () => {
       try {
-        const response = await AxiosApi.get(`/contents/postView`); // DB에서 사진 데이터 가져오기
-        console.log("API 응답 데이터:", response.data);
+        const response = await AxiosApi.get(`/contents/mapLongLati`); // DB에서 사진 데이터 가져오기
+        console.log("Map.jsx API 응답 데이터:", response.data); // 디버깅용 로그
         setPhotoData(response.data);
 
         const mapDiv = document.getElementById("map");
@@ -21,12 +21,21 @@ const Map = () => {
 
         // 사진 데이터를 기반으로 마커 추가
         response.data.forEach((item) => {
-          const { latitude, longitude, imageUrl } = item;
+          const { latitude, longitude, up_filename } = item;
           new window.naver.maps.Marker({
             position: new window.naver.maps.LatLng(latitude, longitude),
+          
+          // console.log("잘 가져오는 중인가?:", response.data);
+          // new window.naver.maps.CustomOverlay({
+          //   position: new window.naver.maps.LatLng(latitude, longtitude),
+          //   content: `
+          //     <div class="pamplate">
+          //       <img src='/contentImage/${up_filename}' alt="사진" style="width:30px;height:30px;" />
+          //     </div>
+          //   `,
             map: map,
             icon: {
-              url: imageUrl,
+              url: up_filename,
               size: new window.naver.maps.Size(30, 30),
               scaledSize: new window.naver.maps.Size(30, 30),
               origin: new window.naver.maps.Point(0, 0),

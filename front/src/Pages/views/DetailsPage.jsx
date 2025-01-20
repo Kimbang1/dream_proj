@@ -25,6 +25,14 @@ function DetailsPage() {
     setIsModalOpen(false);
   };
 
+  // 회원 페이지로 이동
+  const handleUserDetails = (event, uuid) => {
+    event.preventDefault();
+    console.log("UUID 전달 확인:", uuid, "Type:", typeof uuid);
+    console.log("uuid: ", uuid);
+    navigate("/user/UserMainpage", { state: { uuid } }); // linkId를 state로 전달
+  };
+
   // 좋아요 클릭 시 서버로 업데이트 요청 및 로컬 상태 반영
   const handleHeartClick = async (linkId) => {
     // 로컬 상태를 먼저 업데이트 (Optimistic Update)
@@ -190,9 +198,11 @@ function DetailsPage() {
               <div
                 className="author"
                 onClick={(event) => {
-                  console.log("포스팅한 유저의 주소?", item?.write_user);
-                  // navigate(`/DetailsPage?item?.tag_id=${item?.tag_id}`);
-                  navigate(`/user?write_user=${item?.write_user}`);
+                  if (item && item.write_user) {
+                    handleUserDetails(event, item.write_user);
+                  } else {
+                    console.warn("유효한 사용자 정보가 없습니다.");
+                  }
                 }}
               >
                 @{item?.tag_id || ""}
