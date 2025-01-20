@@ -5,7 +5,7 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Managerbutton from "../../Pages/AdminPage/Managerbutton";
 
-function Leftaside() {
+function Leftaside({ setIsChatting }) {
   const [openAdmin, setOpenAdmin] = useState(false);
 
   const hiddenAside = useMediaQuery({ maxWidth: 750 });
@@ -80,7 +80,7 @@ function Leftaside() {
   const handleUserDetails = (event, uuid) => {
     event.preventDefault();
     console.log("UUID 전달 확인:", uuid, "Type:", typeof uuid);
-    console.log("uuid: ", uuid);
+    console.log("uuid를 확인하기 위한 uuid: ", uuid);
     navigate("/user/UserMainpage", { state: { uuid } }); // linkId를 state로 전달
   };
 
@@ -114,11 +114,13 @@ function Leftaside() {
               />
             </div>
             <div className="menu">
-              <img src="/images/chating.png" alt="채팅"
-              onClick={()=>{
-                console.log("채팅방 이동");
-                navigate("/ChatingList");
-              }}
+              <img
+                src="/images/chating.png"
+                alt="채팅"
+                onClick={() => {
+                  console.log("채팅방 이동");
+                 setIsChatting(true); //채팅 상태로 변경
+                }}
               />
             </div>
             <div className="menu">
@@ -137,7 +139,9 @@ function Leftaside() {
                 src={
                   user.profile_image
                     ? `/profileImage/${user.profile_image}`
-                    : {/*"/profileImage/defaultProfile.png"*/}
+                    : {
+                        /*"/profileImage/defaultProfile.png"*/
+                      }
                 }
                 alt="프로필"
               />

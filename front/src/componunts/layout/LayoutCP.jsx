@@ -1,43 +1,58 @@
-// LayoutCP.jsx
 import React, { useState } from "react";
 import ChangeHeader from "../../Pages/views/ChangeHeader";
 import Leftaside from "../layout/Leftaside";
 import Bottom from "../layout/BottomNav";
 import { useMediaQuery } from "react-responsive";
-import { Outlet } from "react-router-dom";
-
+import { Outlet, useNavigate } from "react-router-dom";
+import Chatting from "../../Pages/chatingPage/ChatingPage";
 import ViewChoice from "./ViewChoice";
 
 const Layout = () => {
   const HiddenAside = useMediaQuery({ maxWidth: 640 });
   const sft = useMediaQuery({ maxWidth: 640 });
 
-  // const [isUserMainPage, setIsUserMainPage] = useState(false); //프로필 페이지 여부 상태
   const [isMainPage, setIsMainPage] = useState(true);
+  const [isChatting, setIsChatting] = useState(false);
+  const navigate = useNavigate();
+
+  const handleChatClick = () => {
+    setIsChatting(true);
+    navigate("/chatting"); // 채팅 페이지로 강제로 이동
+  };
+
   return (
     <div id="wrap">
       <div id="left">
-        {!HiddenAside && <Leftaside setIsMainPage={setIsMainPage} />}{" "}
-        {/* setIsUserMainPage 전달 */}
+        {!HiddenAside && (
+          <Leftaside
+            setIsMainPage={setIsMainPage}
+            setIsChatting={setIsChatting}
+          />
+        )}
       </div>
 
       <div id="right">
-        <div id="head">
-          <ChangeHeader setIsMainPage={setIsMainPage} />
-        </div>
+        {!isChatting ? (
+          // 채팅 상태가 아니면 기존 콘텐츠 렌더링
+          <>
+            <div id="head">
+              <ChangeHeader setIsMainPage={setIsMainPage} />
+            </div>
 
-        <div className="viewArea">
-          {!isMainPage && (
-            <>
-              {/* //프로필 페이지가 아닐때만 렌더링 */}
-              <div className="ChoiceBtn">
-                <ViewChoice />
-              </div>
-            </>
-          )}
-          {isMainPage && <Outlet />} {/*프로필 페이지를 보여줌*/}
-        </div>
+            <div className="viewArea">
+              {!isMainPage && (
+                <div className="ChoiceBtn">
+                  <ViewChoice />
+                </div>
+              )}
+              {isMainPage && <Outlet />} {/* Outlet으로 다른 페이지 표시 */}
+            </div>
+          </>
+        ) : (
+          <Chatting /> // 채팅 상태일 때 채팅 컴포넌트 렌더링
+        )}
       </div>
+
       <div className="footerview">
         {sft && <Bottom setIsMainPage={setIsMainPage} />}
       </div>

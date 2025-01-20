@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
-import AxiosApi from "../../servies/AxiosApi";
+import AxiosApi from "../../services/AxiosApi"; // 경로 수정 (servies -> services)
+import MapWithPhotos from "./PhothOfCoordinate"; // PhothOfCoordinate -> PhotoOfCoordinate로 수정 필요할 수 있음
 
 const Map = () => {
   const [mapPoint, setMapPoint] = useState({ x: 0, y: 0 });
+  const [photoData, setPhotoData] = useState([]);
 
   useEffect(() => {
     const fetchPhotoData = async () => {
       try {
         const response = await AxiosApi.get(`/contents/postView`); // DB에서 사진 데이터 가져오기
-        console.log("API 응답 데이터:", response.data); // 디버깅용 로그
+        console.log("API 응답 데이터:", response.data);
+        setPhotoData(response.data);
 
         const mapDiv = document.getElementById("map");
         const map = new window.naver.maps.Map(mapDiv, {
@@ -16,18 +19,28 @@ const Map = () => {
           zoom: 10,
         });
 
-        // response.data 배열을 순회하여 CustomOverlay 생성
+        // 사진 데이터를 기반으로 마커 추가
         response.data.forEach((item) => {
-          const { latitude, longtitude, imageUrl } = item;
-          console.log("잘 가져오는 중인가?:", response.data);
-          new window.naver.maps.CustomOverlay({
-            position: new window.naver.maps.LatLng(latitude, longtitude),
-            content: `
-              <div class="pamplate">
-                <img src="${imageUrl}" alt="사진" style="width:30px;height:30px;" />
-              </div>
-            `,
+          const { latitude, longitude, imageUrl } = item;
+          new window.naver.maps.Marker({
+            position: new window.naver.maps.LatLng(latitude, longitude),
             map: map,
+            icon: {
+              url: imageUrl,
+              size: new window.naver.maps.Size(30, 30),
+              scaledSize: new window.naver.maps.Size(30, 30),
+              origin: new window.naver.maps.Point(0, 0),
+              anchor: new window.naver.maps.Point(15, 15),
+            },
+          }).setMap(map);
+        });
+
+        // 지도 클릭 시 좌표 업데이트
+        window.naver.maps.Event.addListener(map, "click", (e) => {
+          const latLng = e.latLng;
+          setMapPoint({
+            x: latLng.lat(),
+            y: latLng.lng(),
           });
         });
       } catch (error) {
@@ -40,7 +53,7 @@ const Map = () => {
       script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.REACT_APP_NAVER_MAP_CLIENT_ID}`;
       script.async = true;
 
-      script.onload = fetchPhotoData; // 지도 스크립트 로드 후 데이터 가져오기
+      script.onload = fetchPhotoData;
       script.onerror = (e) => {
         console.error("네이버 지도 API 로드 오류:", e);
       };

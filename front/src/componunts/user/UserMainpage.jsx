@@ -7,6 +7,8 @@ import FollowFC from "../../config/FollowFC";
 function UserMainpage() {
   const location = useLocation();
   const { uuid } = location.state || {};
+  const [isSameUser, setIsSameUser] = useState(true); // 기본적으로 내 계정으로 설정
+
   console.log("Received UUID:", uuid, "Type:", typeof uuid);
   const [user, setUser] = useState({
     profile_image: "",
@@ -15,7 +17,7 @@ function UserMainpage() {
       username: "",
       introduce: "",
     },
-  }); //불러올 데이터
+  }); // 불러올 데이터
   const [isAlramOpen, setIsAlramOpen] = useState(false); // 알림 모달 상태
 
   const rightaside = { maxwidth: 300 };
@@ -24,12 +26,20 @@ function UserMainpage() {
     navigate("/Useredit");
   };
 
-  //데이터 로드 함수
+  // 데이터 로드 함수
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await AxiosApi.get(`/user/info?uuid=${uuid}`); //실제 API엔트포인트로 바꿔야함.
+        const response = await AxiosApi.get(`/user/info?uuid=${uuid}`); // 실제 API 엔드포인트로 바꿔야 함
         setUser(response.data);
+
+        // 받은 데이터로 사용자 정보 비교하여 isSameUser 상태 설정
+        if (response.data.user.uuid === uuid) {
+          console.log("가져오는 값이 무엇이냐", response.data.user.uuid);
+          setIsSameUser(true); // 자신의 계정이면 true
+        } else {
+          setIsSameUser(false); // 상대 계정이면 false
+        }
       } catch (error) {
         console.error("데이터 가져오기 실패:", error);
       }
@@ -43,7 +53,7 @@ function UserMainpage() {
     <div className="UserFrame">
       <div className="userpage">
         <div className="viewChoiceBtn_view">
-          {/* 프로필화면 상단 */}
+          {/* 프로필 화면 상단 */}
 
           <div className="ProfileArea">
             <div className="PrImgArea">
@@ -58,21 +68,25 @@ function UserMainpage() {
                 <div className="FirstLayer">
                   <div className="userName">@{user.user.tag_id}</div>
 
-                  <FollowFC />
-                  <button className="editProfileBtn" onClick={UserEditHandle}>
-                    프로필 수정
-                  </button>
+                  {/* 내 프로필이 아니면 팔로우 버튼이 뜨게 */}
+                  {!isSameUser && <FollowFC setIsSameUser={setIsSameUser} />}
+                  {/* 내 계정이라면 수정 버튼만 표시 */}
+                  {isSameUser && (
+                    <button className="editProfileBtn" onClick={UserEditHandle}>
+                      프로필 수정
+                    </button>
+                  )}
                 </div>
 
                 <div className="SecondLayer">
                   <div className="postCount">
-                    게시물:{user.user.postCount}개
+                    게시물: {user.user.postCount}개
                   </div>
                   <div className="followerCount">
-                    팔로우{user.followerCount}
+                    팔로우 {user.followerCount}
                   </div>
                   <div className="followingCount">
-                    팔로워{user.followingCount}
+                    팔로워 {user.followingCount}
                   </div>
                 </div>
 
