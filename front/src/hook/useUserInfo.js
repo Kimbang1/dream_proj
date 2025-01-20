@@ -14,7 +14,7 @@ export const useUserInfo = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await AxiosApi.get("/user/info");
+        const response = await AxiosApi.get("/user/leftBar");
         const data = response.data;
         setUserInfo({
           tag_id: data?.user?.tag_id || "",

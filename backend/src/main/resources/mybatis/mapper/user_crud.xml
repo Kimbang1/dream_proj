@@ -106,10 +106,10 @@
 		FROM user u
 		LEFT JOIN user_profile up ON u.uuid = up.user_id
 		LEFT JOIN file_list f ON up.file_id = f.file_id
-		WHERE (u.username LIKE CONCAT("%", #{keyword}, "%"))
-		OR (u.tag_id LIKE CONCAT("%", #{keyword}, "%"))
-		OR (u.introduce LIKE CONCAT("%", #{keyword}, "%"))
-		AND u.is_delete = false AND up.is_using = true AND u.is_admin = true
+		WHERE (u.username LIKE CONCAT("%", #{keyword}, "%")
+		OR u.tag_id LIKE CONCAT("%", #{keyword}, "%")
+		OR u.introduce LIKE CONCAT("%", #{keyword}, "%"))
+		AND u.is_delete = false AND up.is_using = true
 		ORDER BY u.create_at DESC
 	</select>
 

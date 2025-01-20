@@ -51,7 +51,7 @@ public class ContentController {
    private final FileService fileService;
    private final FileListMapper fileListMapper;
    private final JwtProvider jwtProvider;
-   private final UserMapper userDao;
+   private final UserMapper userMapper;
    private final FilePostMapper filePostMapper;
    private final PostMapper postMapper;
    private final ViewListMapper viewListMapper;
@@ -62,7 +62,7 @@ public class ContentController {
    public ResponseEntity<?> mtdSearch(@RequestParam("query") String keyword) {
       log.info("/contents/search 도착");
       List<JoinFilePostDto> joinFilePostList = filePostMapper.selectSearchList(keyword);
-      List<UserDetailDto> userList = userDao.mtdSearchUser(keyword);
+      List<UserDetailDto> userList = userMapper.mtdSearchUser(keyword);
       
       SearchResponseDto responseDto = new SearchResponseDto();
       responseDto.setFilePostList(joinFilePostList);
@@ -97,7 +97,7 @@ public class ContentController {
 	   // AccessToken에서 사용자 정보 추출
 	   String email = jwtProvider.getEmailFromToken(accessToken);
 	   String provider = jwtProvider.getProviderFromToken(accessToken);
-	   UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
+	   UserDto user = userMapper.mtdFindByEmailAndProvider(email, provider);
 	   
 	   System.out.println("linkId: " + linkId);
 	   
@@ -149,7 +149,7 @@ public class ContentController {
 	   // AccessToken에서 사용자 정보 추출
 	   String email = jwtProvider.getEmailFromToken(accessToken);
 	   String provider = jwtProvider.getProviderFromToken(accessToken);
-	   UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
+	   UserDto user = userMapper.mtdFindByEmailAndProvider(email, provider);
 	   
 	   // 조회수 로직 처리
 	   List<ViewListDto> viewList = viewListMapper.mtdSelectSearch(user.getUuid(), joinFilePostDto.getPost_id());
@@ -201,7 +201,7 @@ public class ContentController {
 	   
 	   HashMap<String, String> responseBody = new HashMap<>();
 	  
-	   UserDto user = userDao.mtdFindByUuid(uuid);
+	   UserDto user = userMapper.mtdFindByUuid(uuid);
 	   
 	   List<JoinFilePostDto> filePostList = filePostMapper.selectChoiceList(user.getUuid());
 	   
@@ -281,7 +281,7 @@ public class ContentController {
 	  // AccessToken에서 사용자 정보 추출
 	  String email = jwtProvider.getEmailFromToken(accessToken);
 	  String provider = jwtProvider.getProviderFromToken(accessToken);
-	  UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
+	  UserDto user = userMapper.mtdFindByEmailAndProvider(email, provider);
       
       // 1. filePost 목록 가져오기
       List<FilePostDto> filePostList = filePostMapper.selectAllList();
@@ -298,7 +298,7 @@ public class ContentController {
             Map<String, Object> responseItem = new HashMap<>();
             responseItem.put("linkId", filePost.getLink_id());
             responseItem.put("uuid", postData.getWrite_user());
-            responseItem.put("tagId", userDao.mtdSelectTagId(postData.getWrite_user()));
+            responseItem.put("tagId", userMapper.mtdSelectTagId(postData.getWrite_user()));
             responseItem.put("filePath", fileData.getFile_path());
             responseItem.put("upFileName", fileData.getUp_filename());
             responseItem.put("content", postData.getContent());
@@ -354,7 +354,7 @@ public class ContentController {
        // AccessToken에서 사용자 정보 추출
        String email = jwtProvider.getEmailFromToken(accessToken);
        String provider = jwtProvider.getProviderFromToken(accessToken);
-       UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
+       UserDto user = userMapper.mtdFindByEmailAndProvider(email, provider);
 
         // 파일이 정상적으로 업로드되었는지 확인
         if (file.isEmpty()) {
@@ -458,7 +458,7 @@ public class ContentController {
       // AccessToken에서 사용자 정보 추출
       String email = jwtProvider.getEmailFromToken(accessToken);
       String provider = jwtProvider.getProviderFromToken(accessToken);
-      UserDto user = userDao.mtdFindByEmailAndProvider(email, provider);
+      UserDto user = userMapper.mtdFindByEmailAndProvider(email, provider);
       
       PostDto postDto = new PostDto();
       String post_id = UUID.randomUUID().toString();
