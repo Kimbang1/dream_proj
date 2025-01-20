@@ -249,3 +249,13 @@ drop table user_profile;
 
 desc user_profile;
 select * from user_profile order by create_at desc;
+
+SELECT u.uuid AS uuid, u.username, u.tag_id, u.email, u.phone, u.birthday, u.is_admin, u.provider, u.create_at, u.is_using, u.delete_at, u.is_delete, u.suspended_cnt, up.file_id AS file_id, up.is_using, f.up_filename AS up_filename
+		FROM user u
+		LEFT JOIN user_profile up ON u.uuid = up.user_id
+		LEFT JOIN file_list f ON up.file_id = f.file_id
+		WHERE (u.username LIKE CONCAT("%", "a", "%")
+		OR u.tag_id LIKE CONCAT("%", "a", "%")
+		OR u.introduce LIKE CONCAT("%", "a", "%"))
+		AND u.is_delete = false AND up.is_using = true
+		ORDER BY u.create_at DESC;
