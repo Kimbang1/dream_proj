@@ -57,7 +57,7 @@ function UserMainpage() {
               <div className="useDetails">
                 <div className="FirstLayer">
                   <div className="userName">@{user.user.tag_id}</div>
-
+                  
                   <FollowFC />
                   <button className="editProfileBtn" onClick={UserEditHandle}>
                     프로필 수정

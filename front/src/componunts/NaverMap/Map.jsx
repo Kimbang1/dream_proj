@@ -7,8 +7,8 @@ const Map = () => {
   useEffect(() => {
     const fetchPhotoData = async () => {
       try {
-        const response = await AxiosApi.get(`/contents/postView`); // DB에서 사진 데이터 가져오기
-        console.log("API 응답 데이터:", response.data); // 디버깅용 로그
+        const response = await AxiosApi.get(`/contents/mapLongLati`); // DB에서 사진 데이터 가져오기
+        console.log("Map.jsx API 응답 데이터:", response.data); // 디버깅용 로그
 
         const mapDiv = document.getElementById("map");
         const map = new window.naver.maps.Map(mapDiv, {
@@ -18,13 +18,13 @@ const Map = () => {
 
         // response.data 배열을 순회하여 CustomOverlay 생성
         response.data.forEach((item) => {
-          const { latitude, longtitude, imageUrl } = item;
+          const { latitude, longtitude, up_filename } = item;
           console.log("잘 가져오는 중인가?:", response.data);
           new window.naver.maps.CustomOverlay({
             position: new window.naver.maps.LatLng(latitude, longtitude),
             content: `
               <div class="pamplate">
-                <img src="${imageUrl}" alt="사진" style="width:30px;height:30px;" />
+                <img src='/contentImage/${up_filename}' alt="사진" style="width:30px;height:30px;" />
               </div>
             `,
             map: map,
