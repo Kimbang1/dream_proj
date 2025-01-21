@@ -2,33 +2,28 @@ import React, { useState } from "react";
 import AxiosApi from "../../servies/AxiosApi";
 
 function AdminFunction({ tag_id, uuid }) {
-
-  console.log("**********");
-  console.log("태그 ID:", tag_id);
-  console.log("UUID:", uuid);
-  console.log("**********");
-
   const [manager, setManager] = useState(""); // 관리자 이름
-  const [selectedOptions, setSelectedOptions] = useState([]); // 체크박스 선택 상태
+  const [selectedStopOption, setSelectedStopOption] = useState(""); // StopList 단일 선택
   const [Reason, setReason] = useState("");
   const [Duration, setDuration] = useState("");
   const [blockAccount, setBlockAccount] = useState(false); // 계정 정지 여부
   const [deleteAccount, setDeleteAccount] = useState(false); // 계정 삭제 여부
 
   const handleCheckboxChange = (e) => {
-    const { value, checked } = e.target;
+    const { name, value, checked } = e.target;
 
-    if (value === "block") {
-      setBlockAccount(checked);
-    } else if (value === "delete") {
-      setDeleteAccount(checked);
-    } else {
-      // Other duration checkboxes
-      setSelectedOptions((prevSelected) =>
-        checked
-          ? [...prevSelected, value]
-          : prevSelected.filter((option) => option !== value)
-      );
+    if (name === "action") {
+      // 계정 정지/삭제 Radio 버튼
+      if (value === "block") {
+        setBlockAccount(checked ? true : false);
+        setDeleteAccount(false);
+      } else if (value === "delete") {
+        setDeleteAccount(checked ? true : false);
+        setBlockAccount(false);
+      }
+    } else if (name === "stopList") {
+      // StopList 단일 선택
+      setSelectedStopOption((prev) => (prev === value ? "" : value));
     }
   };
 
@@ -37,10 +32,9 @@ function AdminFunction({ tag_id, uuid }) {
       action: blockAccount ? "block" : deleteAccount ? "delete" : "", // 계정 정지 또는 삭제 처리
       manager: manager,
       reason: Reason,
-      duration: Duration || selectedOptions.join(", "), // 기간 값
+      duration: Duration || selectedStopOption, // 기간 값
     };
 
-    // requestData 출력
     console.log("전송할 데이터:", requestData);
 
     try {
@@ -72,6 +66,7 @@ function AdminFunction({ tag_id, uuid }) {
             value="block"
             checked={blockAccount}
             onChange={handleCheckboxChange}
+            disabled={!tag_id} // 유저 선택이 없으면 비활성화
           />
           <div className="spanArea">
             <span>계정 정지</span>
@@ -84,6 +79,7 @@ function AdminFunction({ tag_id, uuid }) {
             value="delete"
             checked={deleteAccount}
             onChange={handleCheckboxChange}
+            disabled={!tag_id} // 유저 선택이 없으면 비활성화
           />
           <div className="spanArea">
             <span>계정 삭제</span>
@@ -91,9 +87,7 @@ function AdminFunction({ tag_id, uuid }) {
         </div>
       </div>
       <div className="AdminNameArea">
-        <h3>
-         {tag_id?`${tag_id}` : "관리자가 아닙니다."}
-        </h3>
+        <h3>{tag_id ? `${tag_id}` : "관리자가 아닙니다."}</h3>
       </div>
 
       <div className="RealName">
@@ -117,25 +111,50 @@ function AdminFunction({ tag_id, uuid }) {
 
       <div className="stopListArea">
         <div className="stopLsit">
-          <input type="checkbox" value={15} onChange={handleCheckboxChange} />
+          <input
+            type="radio"
+            name="stopList"
+            value="15"
+            onChange={handleCheckboxChange}
+            checked={selectedStopOption === "15"}
+          />
           <div className="List">정지 15일</div>
         </div>
         <div className="stopLsit">
-          <input type="checkbox" value={30} onChange={handleCheckboxChange} />
+          <input
+            type="radio"
+            name="stopList"
+            value="30"
+            onChange={handleCheckboxChange}
+            checked={selectedStopOption === "30"}
+          />
           <div className="List">정지 30일</div>
         </div>
         <div className="stopLsit">
-          <input type="checkbox" value={90} onChange={handleCheckboxChange} />
+          <input
+            type="radio"
+            name="stopList"
+            value="90"
+            onChange={handleCheckboxChange}
+            checked={selectedStopOption === "90"}
+          />
           <div className="List">정지 90일</div>
         </div>
         <div className="stopLsit">
-          <input type="checkbox" />
+          <input
+            type="radio"
+            name="stopList"
+            value="custom"
+            onChange={handleCheckboxChange}
+            checked={selectedStopOption === "custom"}
+          />
           <input
             id="giganArea"
             type="text"
             placeholder="기간을 입력해주세요"
             onChange={(e) => setDuration(e.target.value)}
             value={Duration}
+            disabled={selectedStopOption !== "custom"}
           />
         </div>
       </div>

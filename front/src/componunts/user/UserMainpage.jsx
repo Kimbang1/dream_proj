@@ -6,11 +6,13 @@ import FollowFC from "../../config/FollowFC";
 
 function UserMainpage() {
   const location = useLocation();
-  const { uuid } = location.state || {}; // 전달받은 uuid
-  const [isSameUser, setIsSameUser] = useState(true); // 기본적으로 내 계정으로 설정
+  const { uuid } = location.state || {}; // 전달받은 타겟 UUID
+  const loggedInUuid = localStorage.getItem("uuid"); // 로그인한 사용자의 UUID 가져오기
+  const [isSameUser, setIsSameUser] = useState(false); // 기본적으로 false로 설정
   const [user, setUser] = useState({
     profile_image: "",
     user: {
+      uuid: "",
       tag_id: "",
       username: "",
       introduce: "",
@@ -18,6 +20,7 @@ function UserMainpage() {
     },
     followerCount: 0,
     followingCount: 0,
+    isFollowing: false, // 팔로우 상태 추가
   }); // 불러올 데이터
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
   const navigate = useNavigate();
@@ -31,15 +34,12 @@ function UserMainpage() {
     setIsLoading(true); // 로딩 시작
     try {
       const response = await AxiosApi.get(`/user/info?uuid=${targetUuid}`); // API 호출
-      console.log("uuid가 잘 타겟팅 된건가?:", targetUuid);
+      console.log("API 응답 데이터:", response.data);
+
       setUser(response.data);
 
-      // 자신의 계정인지 확인
-      if (response.data.user.uuid === targetUuid) {
-        setIsSameUser(true);
-      } else {
-        setIsSameUser(false);
-      }
+      // 서버에서 받은 isSameUser 값으로 설정
+      setIsSameUser(response.data.isSameUser); // 서버 응답에서 제공되는 isSameUser 값 사용
     } catch (error) {
       console.error("데이터 가져오기 실패:", error);
     } finally {
@@ -47,35 +47,26 @@ function UserMainpage() {
     }
   };
 
+  // 팔로우 상태 업데이트 함수
+  const handleFollowChange = (isFollowing) => {
+    setUser((prevState) => ({
+      ...prevState,
+      isFollowing: isFollowing, // 팔로우 상태 업데이트
+      followerCount: isFollowing
+        ? prevState.followerCount + 1
+        : prevState.followerCount - 1,
+    }));
+  };
+
   // uuid 변경 시 데이터 로드
   useEffect(() => {
-    if (uuid) {
-      // 데이터를 불러오기 전에 상태를 초기화
-      setUser({
-        profile_image: "",
-        user: { tag_id: "", username: "", introduce: "", postCount: 0 },
-        followerCount: 0,
-        followingCount: 0,
-      });
-
-      fetchData(uuid); // 전달받은 uuid에 따라 데이터 로드
-    } else {
-      console.warn("UUID가 없습니다.");
+    if (!uuid) {
+      console.warn("UUID가 전달되지 않았습니다.");
+      return;
     }
-  }, [uuid]);
 
-  // 컴포넌트 언마운트 시 상태 초기화
-  useEffect(() => {
-    return () => {
-      setUser({
-        profile_image: "",
-        user: { tag_id: "", username: "", introduce: "", postCount: 0 },
-        followerCount: 0,
-        followingCount: 0,
-      });
-      setIsSameUser(true);
-    };
-  }, []);
+    fetchData(uuid); // 전달받은 uuid에 따라 데이터 로드
+  }, [uuid]);
 
   return (
     <div className="UserFrame">
@@ -100,7 +91,11 @@ function UserMainpage() {
                       <div className="userName">@{user.user.tag_id}</div>
                       {/* 내 프로필이 아니면 팔로우 버튼이 뜨게 */}
                       {!isSameUser && (
-                        <FollowFC setIsSameUser={setIsSameUser} />
+                        <FollowFC
+                          targetUuid={uuid}
+                          isFollowing={user.isFollowing} // 팔로우 상태 전달
+                          onFollowChange={handleFollowChange}
+                        />
                       )}
                       {/* 내 계정이라면 수정 버튼만 표시 */}
                       {isSameUser && (
@@ -118,10 +113,10 @@ function UserMainpage() {
                         게시물: {user.user.postCount}개
                       </div>
                       <div className="followerCount">
-                        팔로우 {user.followerCount}
+                        팔로워 {user.followerCount}
                       </div>
                       <div className="followingCount">
-                        팔로워 {user.followingCount}
+                        팔로우 {user.followingCount}
                       </div>
                     </div>
 
