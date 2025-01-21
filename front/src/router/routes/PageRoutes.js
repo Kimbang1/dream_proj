@@ -26,7 +26,7 @@ const pageRoutes = [
     element: <Gallery />,
   },
   {
-    path: "/Post",
+    path: "/Post/*",
     element: <Post />,
   },
   {
@@ -42,7 +42,7 @@ const pageRoutes = [
     element: <AlramPage />,
   },
   {
-    path: "/DetailsPage",
+    path: "/DetailsPage/",
     element: <DetailsPage />,
   },
   {
