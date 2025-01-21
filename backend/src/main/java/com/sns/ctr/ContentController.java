@@ -76,6 +76,9 @@ public class ContentController {
    public ResponseEntity<?> mtdMapLongLati() {
 	   
 	   List<JoinFilePostDto> joinFilePostList = filePostMapper.selectAllPost();
+	   for(JoinFilePostDto data : joinFilePostList) {
+		   System.out.println("link_id: " + data.getLink_id());
+	   }
 	   
 	   return ResponseEntity.ok(joinFilePostList);
    }
