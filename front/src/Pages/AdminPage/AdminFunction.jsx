@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import AxiosApi from "../../servies/AxiosApi";
 
-function AdminFunction({ tag_id, uuid }) {
+function AdminFunction({ tag_id, uuid, selectedUserIds }) {
 
   console.log("**********");
   console.log("태그 ID:", tag_id);
@@ -34,9 +34,11 @@ function AdminFunction({ tag_id, uuid }) {
 
   const handleBlockAction = async () => {
     const requestData = {
-      action: blockAccount ? "block" : deleteAccount ? "delete" : "", // 계정 정지 또는 삭제 처리
+      action: blockAccount ? "block" : deleteAccount ? "resign" : "", // 계정 정지 또는 삭제 처리
       manager: manager,
+      managerUuid: uuid,
       reason: Reason,
+      selectedUserIds: selectedUserIds,
       duration: Duration || selectedOptions.join(", "), // 기간 값
     };
 
@@ -53,6 +55,7 @@ function AdminFunction({ tag_id, uuid }) {
       if (response.status === 200) {
         const result = response.data;
         console.log("계정 처리 성공:", result);
+        alert("선택한 계정 정지/삭제에 성공했습니다.");
       } else {
         console.error("계정 처리 실패:", response.statusText);
       }

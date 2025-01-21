@@ -150,38 +150,50 @@ public class AdminController {
 	
 	// 회원 정지 / 탈퇴 처리
 	@RequestMapping("/userProc")
-	public ResponseEntity<?> mtdUserResign(@RequestBody HashMap<String, String> requestData) {
+	public ResponseEntity<?> mtdUserResign(@RequestBody HashMap<String, Object> requestData) {
 		Map<String, String> responseBody = new HashMap<>();
 		
-		String id = UUID.randomUUID().toString();
-		String procType = requestData.get("action");
-		String managerTagId = requestData.get("managerTagId");
-		String userId = requestData.get("userId");
-		String reason = requestData.get("reason");
-		String manager = requestData.get("manager");
-		String managerId = requestData.get("managerUuid");
+		String action = requestData.get("action").toString();
+		String manager = requestData.get("manager").toString();
+		String managerId = requestData.get("managerUuid").toString();
+		String reason = requestData.get("reason").toString();
+		List<String> userList = (List)requestData.get("selectedUserIds");
 		
-		if(procType.equals("block")) {
+		if(action.equals("block")) {
 			UserBlockListDto userBlockListDto = new UserBlockListDto();
-			userBlockListDto.setBlock_id(id);
-			userBlockListDto.setBlock_user(userId);
+			int duration = Integer.parseInt(requestData.get("duration").toString());
 			userBlockListDto.setManager(manager);
 			userBlockListDto.setManager_id(managerId);
 			userBlockListDto.setReason(reason);
+			userBlockListDto.setDuration(duration);
 			
-			userMapper.mtdUsingStatusFalse(userId);
-			userBlockListMapper.mtdUserBlock(userBlockListDto);
+			for(String userId : userList) {
+				if (userId != null) {
+					String id = UUID.randomUUID().toString();
+					userBlockListDto.setBlock_id(id);
+					userBlockListDto.setBlock_user(userId);
+					userMapper.mtdUsingStatusFalse(userId);
+					userBlockListMapper.mtdUserBlock(userBlockListDto);
+				}
+			}
+			
 			responseBody.put("message", "회원 정지 처리 완료");
-		} else if(procType.equals("resign")) {
+		} else if(action.equals("resign")) {
 			UserDelListDto userDelListDto = new UserDelListDto();
-			userDelListDto.setDel_id(id);
-			userDelListDto.setDel_user(userId);
 			userDelListDto.setManager(manager);
 			userDelListDto.setManager_id(managerId);
 			userDelListDto.setReason(reason);
 			
-			userMapper.mtdUserResign(userId);
-			userDelListMapper.mtdUserResign(userDelListDto);
+			for(String userId : userList) {
+				if (userId != null) {
+					String id = UUID.randomUUID().toString();
+					userDelListDto.setDel_id(id);
+					userDelListDto.setDel_user(userId);
+					userMapper.mtdUserResign(userId);
+					userDelListMapper.mtdUserResign(userDelListDto);
+				}
+			}
+			
 			responseBody.put("message", "회원 탈퇴 처리 완료");
 		} else {
 			responseBody.put("message", "존재하지 않는 처리 타입입니다.");

@@ -92,7 +92,9 @@ function UserList() {
                 />
                 <span>{user?.tag_id}</span>
                 <span>
-                  {user?.username} / {user.is_admin?"admin":"user"}
+                  {user?.username} / {user.is_admin ? "admin" : "user"} /
+                  정지상태: {user.is_using ? "false" : "true"} / 신고 횟수:{" "}
+                  {user.suspended_cnt}
                 </span>
               </div>
             ))
@@ -105,7 +107,11 @@ function UserList() {
         <AdminActions selectedUserIds={selectedUserIds} />
       </div>
 
-      <AdminFunction tag_id={managerTagId} uuid={managerUuid} />
+      <AdminFunction
+        tag_id={managerTagId}
+        uuid={managerUuid}
+        selectedUserIds={selectedUserIds}
+      />
     </div>
   );
 }

@@ -11,5 +11,6 @@ public class UserBlockListDto {
 	private String manager;
 	private String manager_id;
 	private String reason;
+	private int duration;
 	private Timestamp create_at;
 }

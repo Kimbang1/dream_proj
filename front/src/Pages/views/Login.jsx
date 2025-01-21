@@ -13,14 +13,15 @@ function Login() {
     navigate("/joinchoice");
   };
 
+  // Spring Boot 서버에 요청할 데이터 생성
+  const requestBody = {
+    email: email,
+    pwd: pwd,
+    provider: "local",
+  };
+  
   const handleLoginClick = async () => {
     try {
-      // Spring Boot 서버에 요청할 데이터 생성
-      const requestBody = {
-        email: email,
-        pwd: pwd,
-        provider: "local",
-      };
 
       // Axios를 통해 Spring Boot로 POST 요청
       const response = await AxiosApi.post("/auth/login", requestBody);
@@ -31,7 +32,19 @@ function Login() {
       const errorResponse = error.response;
       console.error("로그인 실패: ", errorResponse);
       console.error("로그인 실패 타입: ", errorResponse.data.falseType);
-      alert("로그인에 실패했습니다. 다시 시도해주세요.");
+      if(errorResponse.data.falseType == "block") {
+        const response = await AxiosApi.post("/auth/reason", requestBody);
+        const reason = response.data.reason;
+        const when = response.data.create_at;
+        const duration = response.data.duration;
+        alert(
+          `계정이 정지되었습니다.\n문의사항은 1234-5678으로 연락해주세요.\n\n정지 시작일: ${when}\n정지 일 수: ${duration}\n사유: ${reason}`
+        );
+      } else if (errorResponse.data.falseType == "resign") {
+        alert("삭제된 계정입니다.");
+      } else {
+        alert("로그인에 실패했습니다. 다시 시도해주세요.");
+      }
     }
   };
 
