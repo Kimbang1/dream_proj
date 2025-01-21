@@ -4,6 +4,7 @@ import AxiosApi from "../../servies/AxiosApi"; // 경로 확인
 const MapWithPhotos = () => {
   const [photoData, setPhotoData] = useState([]);
 
+  
   useEffect(() => {
     // 네이버 지도 API 로드 후 지도와 마커 설정
     const loadMapScript = () => {
@@ -33,7 +34,7 @@ const MapWithPhotos = () => {
 
         // 사진 데이터를 기반으로 마커 추가
         response.data.forEach((photo) => {
-          const { latitude, longitude, up_filename } = photo;
+          const { latitude, longitude, up_filename, link_id } = photo;
 
           if (!up_filename) {
             console.warn("up_filename이 없습니다:", photo); // up_filename이 없으면 경고
@@ -53,9 +54,16 @@ const MapWithPhotos = () => {
             },
           });
 
-          // 마커 클릭 시 이미지 정보를 표시하는 로직
+          // 마커 클릭 시 해당 게시물 페이지로 이동
           window.naver.maps.Event.addListener(marker, "click", () => {
-            alert(`선택된 사진:\n위도: ${latitude}\n경도: ${longitude}`);
+            if (link_id) {
+              console.log("이미지의 링크 아이디가 오나?",link_id);
+              window.location.href = `/DetailsPage/${link_id}`; // 해당 게시물 페이지로 이동
+            } else {
+              console.warn(
+                "link_id 없습니다. 게시물 링크로 이동할 수 없습니다."
+              );
+            }
           });
         });
       } catch (error) {
