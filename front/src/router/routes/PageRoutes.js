@@ -29,7 +29,7 @@ const pageRoutes = [
     element: <Post />,
   },
   {
-    path: "/SearchRes",
+    path: "/SearchRes/*",
     element: <SearchRes />,
   },
   {

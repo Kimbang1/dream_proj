@@ -1,11 +1,11 @@
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import AlarmComponent from "../modal/AlramModal"; // 알람 컴포넌트 임포트
-import useAccordion from "../../hook/useAccordion"; // 아코디언 훅
-import useSearchSubmit from "../../hook/useSearchSubmit"; // 검색어 제출 훅
-import { useFilterMonitors } from "../../hook/useFilterMonitors";// 연관 검색어 필터링 훅
-import useClickOutside from "../../hook/useClickOutside"; // 외부 클릭 훅
-import useAlarmModal from "../../hook/useAlarmModal"; // 알람 모달 훅
+import AlarmComponent from "../modal/AlramModal";
+import useAccordion from "../../hook/useAccordion";
+import useSearchSubmit from "../../hook/useSearchSubmit";
+import { useFilterMonitors } from "../../hook/useFilterMonitors";
+import useClickOutside from "../../hook/useClickOutside";
+import useAlarmModal from "../../hook/useAlarmModal";
 
 function Header() {
   const monitorsData = [];
@@ -16,13 +16,14 @@ function Header() {
     searchMonitor,
     setSearchMonitor,
     handleSearchSubmit,
+    handleSearchClick,
     recentSearch,
     setRecentSearch,
   } = useSearchSubmit();
 
   const { filteredMonitors } = useFilterMonitors(monitorsData, searchMonitor);
 
-  useClickOutside(inputRef, closeAccordion); // 외부 클릭 처리
+  useClickOutside(inputRef, closeAccordion);
 
   const { isAlramOpen, toggleAlarmModal } = useAlarmModal();
 
@@ -44,7 +45,7 @@ function Header() {
               setSearchMonitor(e.target.value);
               toggleAccordion(e);
             }}
-            onFocus={() => toggleAccordion()} // 포커스 시 아코디언 열림
+            onFocus={() => toggleAccordion()}
           />
         </form>
 
@@ -56,7 +57,12 @@ function Header() {
                 {recentSearch.length > 0 ? (
                   recentSearch.map((search, index) => (
                     <li key={index}>
-                      {search}
+                      <span
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleSearchClick(search)}
+                      >
+                        {search}
+                      </span>
                       <button
                         onClick={() =>
                           setRecentSearch((prev) =>
@@ -65,7 +71,7 @@ function Header() {
                         }
                         style={{ marginLeft: "10px", cursor: "pointer" }}
                       >
-                        &times; {/* X 버튼 */}
+                        &times;
                       </button>
                     </li>
                   ))
