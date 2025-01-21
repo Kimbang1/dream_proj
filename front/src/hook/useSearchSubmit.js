@@ -14,6 +14,7 @@ const useSearchSubmit = () => {
         const newSearches = [searchMonitor, ...prev];
         return newSearches.slice(0, 5);
       });
+      await performSearch(searchMonitor); // 검색어를 사용해 검색 수
       performSearch(searchMonitor);
       setSearchMonitor("");
     }

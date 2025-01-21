@@ -55,8 +55,39 @@ button.triplets {
 div.ListBox {
   border: 1px solid #000;
   border-radius: 7px;
+  justify-content: center;
+}
+img.profileImg{
+  border-radius: 10px;
+}
+div.userItem{
+  /* border: 1px solid #000; */
+  margin: 10px;
+  display: flex;
+  justify-content: center;
 }
 
+div.userInfoArea{
+  display: flex;
+  height: 60px;
+  padding: 5px;
+  justify-content: center;
+  border: 1px solid #f80;
+  border-radius: 10px;
+  margin: 10px;
+}
+
+div.userReftArea{
+  display: flex;
+  flex-direction: column;
+  /* border: 1px solid #000; */
+  margin-left: 5px;
+  gap: 10px;
+}
+span.userStatus{
+  gap: 10px;
+  font-size: 12px;
+}
 /* 관리자 등록 해제 버튼 작업 */
 
 div.AdminCommitClear {
