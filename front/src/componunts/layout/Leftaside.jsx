@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import AxiosApi from "../../servies/AxiosApi";
 import { useMediaQuery } from "react-responsive";
 import { useCookies } from "react-cookie";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Managerbutton from "../../Pages/AdminPage/Managerbutton";
 
 function Leftaside({ setIsChatting }) {
@@ -16,6 +16,16 @@ function Leftaside({ setIsChatting }) {
       uuid: "",
     },
   });
+
+  const location = useLocation(); // 페이지 경로 감지
+  const navigate = useNavigate();
+
+  //페이지 이동 시 채팅 상태 초기화
+  useEffect(() => {
+    if (location.pathname !== "/ChtingPage") {
+      setIsChatting(false); //채팅뷰 초기화
+    }
+  }, [location, setIsChatting]);
 
   //관리자 구분값이 왔으때 관리자 버튼 나오게
   useEffect(() => {
@@ -75,8 +85,6 @@ function Leftaside({ setIsChatting }) {
     }
   };
 
-  const navigate = useNavigate();
-
   const handleUserDetails = (event, uuid) => {
     event.preventDefault();
     console.log("UUID 전달 확인:", uuid, "Type:", typeof uuid);
@@ -119,7 +127,7 @@ function Leftaside({ setIsChatting }) {
                 alt="채팅"
                 onClick={() => {
                   console.log("채팅방 이동");
-                 setIsChatting(true); //채팅 상태로 변경
+                  setIsChatting(true); //채팅 상태로 변경
                 }}
               />
             </div>
@@ -139,9 +147,7 @@ function Leftaside({ setIsChatting }) {
                 src={
                   user.profile_image
                     ? `/profileImage/${user.profile_image}`
-                    : {
-                        /*"/profileImage/defaultProfile.png"*/
-                      }
+                    : "/profileImage/defaultProfile.png"
                 }
                 alt="프로필"
               />
