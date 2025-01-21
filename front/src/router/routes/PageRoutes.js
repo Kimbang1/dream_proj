@@ -42,7 +42,7 @@ const pageRoutes = [
     element: <AlramPage />,
   },
   {
-    path: "/DetailsPage/",
+    path: "/DetailsPage/*",
     element: <DetailsPage />,
   },
   {

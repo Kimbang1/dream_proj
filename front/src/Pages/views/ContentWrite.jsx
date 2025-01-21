@@ -4,16 +4,30 @@ import useImageTimeCheck from "../../hook/TimeCheck"; // 시간 체크 훅
 import useImageMetadata from "../../hook/UseMetadata"; // 메타데이터 전송 훅
 import { useNavigate } from "react-router-dom";
 
-function ContentWrite({ uuid }) {
+function ContentWrite() {
   const [file, setFile] = useState(null); // 사진 파일 상태
   const [content, setContent] = useState(""); // 입력란 텍스트 상태
   const [link_id, setLinkId] = useState(null);
   const [posts, setPosts] = useState([]); // 게시물 리스트 상태
+  const [uuid, setUuid] = useState("");
 
   const { validateImageTime, errorMessage: timeErrorMessage } =
     useImageTimeCheck(); // 시간 체크 훅 사용
   const { handleMetadataAndSend, errorMSG, previewURL } = useImageMetadata(); // 메타데이터 전송 훅 사용
   const [imagePreview, setImagePreview] = useState(null);
+
+  useEffect(() => {
+    const userProfile = async () => {
+      try {
+        const response = await AxiosApi.get("/user/leftBar"); // API 요청
+        console.log("API 응답 데이터:", response.data); // 응답 데이터 확인
+        setUuid(response.data.user.uuid);
+      } catch (error) {
+        
+      }
+    };
+    userProfile();
+  }, []);
 
   // 컴포넌트 언마운트 시 imagePreview 삭제
   useEffect(() => {
@@ -79,8 +93,7 @@ function ContentWrite({ uuid }) {
     if (!file || !content.trim()) {
       alert("사진과 내용을 모두 입력하세요.");
       navigate("/ContentWrite");
-    } else {
-      navigate("/user/UserMainpage");
+      return; // 빠른 종료료
     }
 
     try {
@@ -91,11 +104,19 @@ function ContentWrite({ uuid }) {
         longitude: previewURL.longitude || "", // 경도
       });
 
+      if(!response.data || !response.data.uuid) {
+        throw new Error("서버에서 유효한 응답을 받지 못했습니다.");
+      }
+
       setPosts([...posts, response.data]);
+
       setContent("");
       setFile(null);
       setLinkId(null);
-      URL.revokeObjectURL(imagePreview);
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+      navigate("/user/UserMainpage", { state: { uuid } });
       alert("게시물이 저장되었습니다.");
     } catch (error) {
       console.error("게시물 저장 실패: ", error);
