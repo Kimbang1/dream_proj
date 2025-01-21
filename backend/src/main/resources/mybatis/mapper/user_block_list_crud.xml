@@ -12,7 +12,7 @@
 	</insert>
 	
 	<select id="mtdSearchUser" resultType="com.sns.dto.UserBlockListDto">
-		select * from user_block_list where block_user = #{block_user}
+		SELECT * FROM user_block_list WHERE block_user = #{block_user} ORDER BY create_at DESC LIMIT 1
 	</select>
 
 </mapper>

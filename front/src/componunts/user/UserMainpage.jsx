@@ -53,7 +53,8 @@ function UserMainpage() {
       // 데이터를 불러오기 전에 상태를 초기화
       setUser({
         profile_image: "",
-        user: { tag_id: "", username: "", introduce: "", postCount: 0 },
+        user: { tag_id: "", username: "", introduce: "" },
+         postCount: 0,
         followerCount: 0,
         followingCount: 0,
       });
@@ -115,7 +116,7 @@ function UserMainpage() {
 
                     <div className="SecondLayer">
                       <div className="postCount">
-                        게시물: {user.user.postCount}개
+                        게시물: {user.postCount}개
                       </div>
                       <div className="followerCount">
                         팔로우 {user.followerCount}

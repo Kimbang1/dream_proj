@@ -32,6 +32,9 @@ public interface FilePostMapper {
 	// 특정 게시물 상세 정보 반환
 	public JoinFilePostDto selectOnePost(@Param("link_id") String linkId);
 	
+	// 특정 사용자의 게시글 목록 갯수 반환
+	public int selectUserUpCount(@Param("uuid") String uuid);
+	
 	// 특정 사용자의 게시글 목록 반환
 	public List<JoinFilePostDto> selectChoiceList(@Param("uuid") String uuid);
 	
