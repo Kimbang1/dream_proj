@@ -39,6 +39,7 @@ function Post() {
 
     try {
       const response = await AxiosApi.get("/contents/postView");
+      console.log("리스폰스의 데이터(이미지):",response)
       const newData = response.data;
       if (newData.length === 0) {
         setHasMore(false);

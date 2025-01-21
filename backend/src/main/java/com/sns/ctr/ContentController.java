@@ -5,11 +5,13 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.joda.time.DateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -75,7 +77,7 @@ public class ContentController {
    @RequestMapping("/mapLongLati")
    public ResponseEntity<?> mtdMapLongLati() {
 	   
-	   List<JoinFilePostDto> joinFilePostList = filePostMapper.selectAllPost();
+	   List<JoinFilePostDto> joinFilePostList = filePostMapper.selectTimePostList();
 	   
 	   return ResponseEntity.ok(joinFilePostList);
    }
@@ -207,6 +209,7 @@ public class ContentController {
    @RequestMapping("/userView")
    public ResponseEntity<?> mtdUserGalleryView(HttpServletRequest request, @RequestParam("uuid") String uuid) {
 	   log.info("/userView까지 왔어");
+	   log.info("uuid의 값은: {}", uuid);
 	   
 	   HashMap<String, String> responseBody = new HashMap<>();
 	  
@@ -482,6 +485,7 @@ public class ContentController {
       filePostMapper.addPostId(linkId, post_id);
       
       responseBody.put("message", "게시글 작성이 완료되었습니다.");
+      responseBody.put("uuid", user.getUuid());
       return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
    }
    

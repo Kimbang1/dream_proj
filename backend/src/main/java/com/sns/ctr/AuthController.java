@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sns.dao.RefreshTokenMapper;
+import com.sns.dao.UserBlockListMapper;
 import com.sns.dao.UserMapper;
 import com.sns.dto.RefreshTokenListDto;
+import com.sns.dto.UserBlockListDto;
 import com.sns.dto.UserDto;
 import com.sns.jwt.CustomAuthenticationToken;
 import com.sns.jwt.JwtProvider;
@@ -37,6 +39,21 @@ public class AuthController {
 	private final JwtProvider jwtProvider;
 	private final UserMapper userMapper;
 	private final RefreshTokenMapper refreshTokenMapper;
+	private final UserBlockListMapper userBlockListMapper;
+	
+	@RequestMapping("/reason")
+	public ResponseEntity<?> reason(@RequestBody HashMap<String, String> requestBody, HttpServletRequest request, HttpServletResponse response) {
+		HashMap<String, Object> responseBody = new HashMap<>();
+		String email = requestBody.get("email");
+		String provider = requestBody.get("provider");
+		UserDto user = userMapper.mtdFindByEmailAndProvider(email, provider);
+		UserBlockListDto userBlock = userBlockListMapper.mtdSearchUser(user.getUuid());
+		responseBody.put("reason", userBlock.getReason());
+		responseBody.put("duration", userBlock.getDuration());
+		responseBody.put("create_at", userBlock.getCreate_at());
+
+		return ResponseEntity.ok(responseBody);
+	}
 	
 	@PostMapping("/login")
 	public ResponseEntity<HashMap<String, String>> login(@RequestBody HashMap<String, String> requestBody, HttpServletRequest request, HttpServletResponse response) {

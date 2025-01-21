@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import AxiosApi from "../../servies/AxiosApi"; // 경로 확인
 
 const MapWithPhotos = () => {
   const [photoData, setPhotoData] = useState([]);
+  const navigate = useNavigate();
+  const handleDetails = (event, linkId) => {
+    console.log("Navigating to DetailsPage with linkId:", linkId);
+    navigate("/DetailsPage", { state: { linkId } });
+  };
 
-  
   useEffect(() => {
     // 네이버 지도 API 로드 후 지도와 마커 설정
     const loadMapScript = () => {
@@ -53,12 +58,13 @@ const MapWithPhotos = () => {
               anchor: new window.naver.maps.Point(25, 25), // 마커 앵커 설정
             },
           });
-
           // 마커 클릭 시 해당 게시물 페이지로 이동
-          window.naver.maps.Event.addListener(marker, "click", () => {
+          window.naver.maps.Event.addListener(marker, "click", (e) => {
             if (link_id) {
-              console.log("이미지의 링크 아이디가 오나?",link_id);
-              window.location.href = `/DetailsPage/${link_id}`; // 해당 게시물 페이지로 이동
+              console.log("이미지의 링크 아이디가 오나?", link_id);
+              console.log("event가 오나?", e);
+              handleDetails(e, link_id);
+              // window.location.href = `/DetailsPage/${link_id}`; // 해당 게시물 페이지로 이동
             } else {
               console.warn(
                 "link_id 없습니다. 게시물 링크로 이동할 수 없습니다."

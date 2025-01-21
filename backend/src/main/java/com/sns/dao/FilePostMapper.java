@@ -1,5 +1,6 @@
 package com.sns.dao;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -24,6 +25,9 @@ public interface FilePostMapper {
 	
 	// 모든 게시물의 상세 정보 목록 반환
 	public List<JoinFilePostDto> selectAllPost();
+	
+	// 업로드 한 지 2시간 전까지의 게시물 상세 정보 목록 반환
+	public List<JoinFilePostDto> selectTimePostList();
 	
 	// 특정 게시물 상세 정보 반환
 	public JoinFilePostDto selectOnePost(@Param("link_id") String linkId);

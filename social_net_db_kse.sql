@@ -225,6 +225,7 @@ block_user	char(36)		not null		,
 manager		varchar(20)		not null		,
 manager_id	char(36)		not null		,
 reason		varchar(300)					,
+duration	int				default 0		,
 create_at	timestamp		default now()	,
 # constraint fk_userBlockList_user_manager foreign key(manager_id) references user(uuid) on delete cascade,
 # constraint fk_userBlockList_user_user foreign key(del_user) references user(uuid) on delete cascade,
@@ -259,3 +260,11 @@ SELECT u.uuid AS uuid, u.username, u.tag_id, u.email, u.phone, u.birthday, u.is_
 		OR u.introduce LIKE CONCAT("%", "a", "%"))
 		AND u.is_delete = false AND up.is_using = true
 		ORDER BY u.create_at DESC;
+        
+SELECT p.post_id AS post_id, p.content, p.create_at, f.file_id AS file_id, f.up_filename, f.file_path, f.latitude, f.longitude, fp.link_id AS link_id, u.tag_id AS tag_id
+		FROM post p
+		LEFT JOIN file_post fp ON p.post_id = fp.post_id
+		LEFT JOIN file_list f ON fp.file_id = f.file_id
+		LEFT JOIN user u ON p.write_user = u.uuid
+		WHERE fp.is_using = true AND p.is_using = true AND fp.create_at > DATE_SUB(now(), INTERVAL 2 hour)
+		ORDER BY fp.create_at DESC
