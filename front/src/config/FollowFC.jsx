@@ -1,26 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AxiosApi from "../servies/AxiosApi";
 
-function FollowFC({ uuId, currentFollowStatus, userid }) {
-  const [isFollowing, setIsFollowing] = useState(currentFollowStatus); //팔로우 여부 상태
+function FollowFC({ uuId, currentFollowStatus }) {
+  const [isFollowing, setIsFollowing] = useState(currentFollowStatus); // 팔로우 여부 상태
+  const [isSameUser, setIsSameUser] = useState(false); // 동일 유저 여부 상태
 
-  //내 게시물인 아닌지
-  const isMyPost = Number(uuId) === Number(userid);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // 서버에서 동일 유저 여부를 가져옴
+        const response = await AxiosApi.get(`/user/info?uuid=${uuId}`);
 
-  console.log("uuId:", uuId); // uuId 값 출력
-  console.log("userid:", userid); // userid 값 출력
+        // 서버에서 받은 isSameUser 값으로 설정
+        setIsSameUser(response.data.isSameUser); // 서버 응답에서 제공되는 isSameUser 값 사용
+      } catch (error) {
+        console.error("유저 정보 가져오기 실패:", error);
+      }
+    };
+    if (uuId) {
+      fetchData(); // uuid가 있을 때만 데이터 요청
+    }
+  }, [uuId]);
 
-  console.log("::::::::::::::::");
-  console.log(isMyPost);
-  console.log("::::::::::::::::");
-  //왜 내 게시물이 아닌데 true로 뜨는거야? 그야 지금 데이터를 못가져와서 안뜨니까 그렇지
+  console.log("isSameUser:", isSameUser);
 
-  //팔로우 상태를 서버로 업데이트 하는 함수
+  // 팔로우 상태를 서버로 업데이트하는 함수
   const toggleFollowStatus = async () => {
     try {
       // 팔로우 상태를 변경하여 서버에 요청
       const response = await AxiosApi.post("/user/follow", {
-        uuId, // 상대의 uuId
+        uuId, // 상대방의 uuId
         followStatus: !isFollowing,
       });
 
@@ -31,18 +40,19 @@ function FollowFC({ uuId, currentFollowStatus, userid }) {
         console.log("팔로우 업데이트 실패");
       }
     } catch (error) {
-      console.log("팔로우가 되질 못했습니다", error);
+      console.error("팔로우 요청 실패:", error);
     }
   };
 
-  if (isMyPost) {
+  // 동일 유저일 경우 버튼 숨기기
+  if (isSameUser) {
     return null;
   }
 
   return (
     <>
       <button id="followBtn" onClick={toggleFollowStatus}>
-        {isFollowing ? "팔로우 워" : "팔로우"} {/* 버튼 텍스트 수정 */}
+        {isFollowing ? "팔로우 취소" : "팔로우"}
       </button>
     </>
   );
