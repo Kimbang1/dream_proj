@@ -104,7 +104,7 @@ function UserResign() {
         <div className="usercontent contentsBox">
           <span>{userInfo.introduce}</span>
         </div>
-
+{/* 여기까지는 태블릿 뷰일대 띄워주기 */}
         <div className="joinDay contentsBox">
           <span>{userInfo.create_at}</span>
         </div>

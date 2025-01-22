@@ -3,10 +3,10 @@ import axios from "axios";
 //액시오스 인스턴스 생성
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL, //환경변수 사용
-  timeout: 5000, //요청제한시간
+  timeout: 5000, //요청제한시간(5초)
   withCredentials: true, //쿠키를 요청에 포함하도록 설정
   headers: {
-    "Content-Type": "application/json",
+    "Content-Type": "application/json", //요청 데이터 형식을 json으로 설정
   },
 });
 
@@ -27,37 +27,18 @@ function subscribeTokenRefresh(callback) {
 }
 
 function onRefreshed() {
-  refreshSubscribers.forEach((callback) => callback());
-  refreshSubscribers = [];
+  refreshSubscribers.forEach((callback) => callback()); //갱신된 토크으로 대기 요청을 실행
+  refreshSubscribers = [];                              // 대기 목록 초기화
 }
 
 //요청 인터셉터
 instance.interceptors.request.use(
   (config) => {
-    // Authorization 헤더에 accessToken 추가(쿠키에서 자동으로 포함됨)
-    // axios는 'withCredentials' 설정을 통해 자동으로 쿠키를 포함 함.
-
-    // // 현재 경로 가져오기
-    // const location = window.location.pathname;
-
-    // // 요청을 차단할 경로 목록
-    // const excludePaths = [
-    //   "/",
-    //   "/login",
-    //   "/join",
-    //   "/joinchoice",
-    //   "/Agree",
-    //   "/Social",
-    // ];
-
-    // // 특정 페이지에서만 요청을 보내지 않음
-    // if (excludePaths.includes(location)) {
-    //   return Promise.reject("현재 페이지에서는 요청을 보내지 않음");
-    // }
-
+    //요청을 보내기 전에 실행되는 로직
     return config;
   },
   (error) => {
+    //요청을 보내는 중에 발생한 오류 처리
     console.error("Request Error:", error);
     return Promise.reject(error);
   }

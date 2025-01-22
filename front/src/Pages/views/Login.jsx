@@ -10,7 +10,7 @@ function Login() {
   //useNavigate를 사용하기 위한 선언 (나중에 정리할 것)
 
   const handleJoinClick = () => {
-    navigate("/joinchoice");
+    navigate("/Agree");
   };
 
   // Spring Boot 서버에 요청할 데이터 생성
