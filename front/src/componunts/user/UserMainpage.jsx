@@ -60,9 +60,19 @@ function UserMainpage() {
 
   // uuid 변경 시 데이터 로드
   useEffect(() => {
-    if (!uuid) {
-      console.warn("UUID가 전달되지 않았습니다.");
-      return;
+    if (uuid) {
+      // 데이터를 불러오기 전에 상태를 초기화
+      setUser({
+        profile_image: "",
+        user: { tag_id: "", username: "", introduce: "" },
+         postCount: 0,
+        followerCount: 0,
+        followingCount: 0,
+      });
+
+      fetchData(uuid); // 전달받은 uuid에 따라 데이터 로드
+    } else {
+      console.warn("UUID가 없습니다.");
     }
 
     fetchData(uuid); // 전달받은 uuid에 따라 데이터 로드
@@ -110,7 +120,7 @@ function UserMainpage() {
 
                     <div className="SecondLayer">
                       <div className="postCount">
-                        게시물: {user.user.postCount}개
+                        게시물: {user.postCount}개
                       </div>
                       <div className="followerCount">
                         팔로워 {user.followerCount}

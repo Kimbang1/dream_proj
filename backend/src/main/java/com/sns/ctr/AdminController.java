@@ -112,7 +112,6 @@ public class AdminController {
 	public ResponseEntity<?> mtdUserList(HttpServletRequest request) {
 		log.info("/admin/userList 도착");
 		List<UserDetailDto> userList = userMapper.mtdUserDetailList();
-		HashMap<String, String> userData = new HashMap<>();
 		
 		HashMap<String, Object> responseBody = takeOutATokenService.takeOutAToken(request);
 		UserDto user = (UserDto)responseBody.get("data");

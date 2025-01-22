@@ -1,5 +1,8 @@
 package com.sns.ctr;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashMap;
 
 import org.springframework.http.HttpStatus;
@@ -55,6 +58,30 @@ public class AuthController {
 		return ResponseEntity.ok(responseBody);
 	}
 	
+	// 계정 정지 체크 후 처리 메서드
+	private Boolean handleUserBlock(UserDto user) {
+		boolean res = false;
+		
+		UserBlockListDto userBlockListDto = userBlockListMapper.mtdSearchUser(user.getUuid());
+		
+		// 계정 정지 시작 날짜
+		Timestamp createAtTimestamp = userBlockListDto.getCreate_at();
+		LocalDate createAtDate = createAtTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		
+		// 정지 기간
+		int duration = userBlockListDto.getDuration();
+		LocalDate unblockDate = createAtDate.plusDays(duration);
+		
+		// 오늘 날짜와 비교
+		LocalDate today = LocalDate.now();
+		if (unblockDate.isBefore(today)) {
+			userMapper.mtdUsingStatusTrue(user.getUuid());
+			res = true;
+		}
+		
+		return res;
+	}
+	
 	@PostMapping("/login")
 	public ResponseEntity<HashMap<String, String>> login(@RequestBody HashMap<String, String> requestBody, HttpServletRequest request, HttpServletResponse response) {
 		// requestBody에서 email, password, provider값 가져옴
@@ -64,19 +91,31 @@ public class AuthController {
 		HashMap<String, String> responseBody = new HashMap<>();
 		String falseType = "no_users";
 		
+		// 사용자 조회
 		UserDto userDto = userMapper.mtdFindByEmailAndProvider(email, provider);
 		if (userDto == null) {
 			responseBody.put("message", "가입 정보가 없습니다.");
 			responseBody.put("falseType", falseType);
 			return new ResponseEntity<>(responseBody, HttpStatus.FORBIDDEN);	// 403			
-		} else {
-			if (userDto.getIs_using() == false) {
-				falseType = (userDto.getIs_delete() == false) ? "block" : "resign";
-				responseBody.put("message", "계정 정지/탈퇴한 회원입니다.");
+		}
+		
+		// 계정 상태 확인
+		if (userDto.getIs_using() == false) {
+			falseType = (userDto.getIs_delete() == false) ? "block" : "resign";
+			if(falseType.equals("block")) {
+				boolean isUnblocked = handleUserBlock(userDto);
+				if (!isUnblocked) {
+					responseBody.put("message", "계정 정지 회원입니다.");
+					responseBody.put("falseType", falseType);
+					return new ResponseEntity<>(responseBody, HttpStatus.FORBIDDEN);	// 403
+				}
+			} else {
+				responseBody.put("message", "탈퇴한 회원입니다.");
 				responseBody.put("falseType", falseType);
 				return new ResponseEntity<>(responseBody, HttpStatus.FORBIDDEN);	// 403
-			}			
-		}
+			}
+		}			
+		
 		
 		// 인증 토큰 생성
 		CustomAuthenticationToken authenticationToken =

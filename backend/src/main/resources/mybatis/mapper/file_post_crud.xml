@@ -61,6 +61,14 @@
 		WHERE fp.link_id = #{link_id}
 	</select>
 	
+	<!-- 특정 사용자의 게시글 목록 갯수 반환 -->
+	<select id="selectUserUpCount" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM file_post fp
+		LEFT JOIN post p ON p.post_id = fp.post_id
+		WHERE p.write_user = #{uuid} AND fp.is_using = 1
+	</select>
+	
 	<!-- 특정 사용자의 게시글 목록 반환 -->
 	<select id="selectChoiceList" resultType="com.sns.dto.JoinFilePostDto">
 		SELECT p.post_id AS post_id, p.content, p.create_at, f.file_id AS file_id, f.up_filename, f.file_path, fp.link_id AS link_id, u.tag_id AS tag_id

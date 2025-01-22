@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sns.dao.FileListMapper;
+import com.sns.dao.FilePostMapper;
 import com.sns.dao.UserMapper;
 import com.sns.dao.UserProfileMapper;
 import com.sns.dto.FileListDto;
@@ -41,6 +42,7 @@ public class UserController {
 	private final FileListMapper fileListMapper;
 	private final TakeOutATokenService takeOutATokenService;
 	private final UserProfileMapper userProfileMapper;
+	private final FilePostMapper filePostMapper;
 	
 	@GetMapping("/leftBar")
 	public ResponseEntity<?> mtdLeftBar(HttpServletRequest request) {
@@ -117,9 +119,12 @@ public class UserController {
 		
 		FileListDto fileListDto = fileListMapper.selectFileData(userProfileMapper.mtdSelectFileId(user.getUuid()));
 		
+		int postCnt = filePostMapper.selectUserUpCount(uuid);
+		
 		responseBody.put("user", user);
 		responseBody.put("isSameUser", isSameUser);
 		responseBody.put("profile_image", fileListDto.getUp_filename());
+		responseBody.put("postCount", postCnt);
 		
 		return ResponseEntity.ok(responseBody);
 	}
