@@ -47,7 +47,7 @@
 		LEFT JOIN file_post fp ON p.post_id = fp.post_id
 		LEFT JOIN file_list f ON fp.file_id = f.file_id
 		LEFT JOIN user u ON p.write_user = u.uuid
-		WHERE fp.is_using = true AND p.is_using = true AND fp.create_at > DATE_SUB(now(), INTERVAL 12 hour)
+		WHERE fp.is_using = true AND p.is_using = true AND fp.create_at > DATE_SUB(now(), INTERVAL 200 hour)
 		ORDER BY fp.create_at DESC
 	</select>
 	

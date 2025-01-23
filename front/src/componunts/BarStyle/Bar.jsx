@@ -18,7 +18,7 @@ function Bar() {
     { name: "알람", path: "/Alram" },
     { name: "채팅", path: "/Chating" },
     { name: "챗봇", path: "/whale" },
-    { name: "관리자", path: "/Manager" },
+    { name: "관리자", path: "/Manager"},
   ];
 
   const handleMenuClick = (path) => {

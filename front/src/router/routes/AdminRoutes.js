@@ -3,8 +3,13 @@
 
 import UserList from "../../Pages/AdminPage/UserList";
 import GalleryList from "../../Pages/AdminPage/GalleryList";
-
+import Manager from "../../Pages/AdminPage/Manager";
 const AdminRoutes = [
+
+  {
+    path:"/Manager",
+    element : <Manager/>,
+  },
   {
     path: "/UserList",
     element: <UserList />,

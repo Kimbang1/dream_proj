@@ -1,0 +1,27 @@
+div.ManagerBackground{
+    border: 1px solid #000;
+    width: 100%;
+    height: 100vh;
+    background-color:rgba(0,0,0,0.5);
+}
+
+div.ChoiceTwo{
+   display: flex;
+   flex-direction: column;
+   margin: 30% 25% ;
+  gap: 30px;  
+}
+
+div.buttonAreas{
+
+    width: 40lvh;
+    height: 10vh;
+}
+
+button.TwoButtons{
+    width: 100%;
+    height: 100%;
+    border: 1px solid #800;
+    border-radius: 10px;
+    cursor: pointer;
+}

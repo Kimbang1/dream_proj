@@ -125,10 +125,10 @@ function Leftaside({ setIsChatting }) {
               <img
                 src="/images/chating.png"
                 alt="채팅"
-                onClick={() => {
-                  console.log("채팅방 이동");
-                  setIsChatting(true); //채팅 상태로 변경
-                }}
+                // onClick={() => {
+                //   console.log("채팅방 이동");
+                //   setIsChatting(true); //채팅 상태로 변경
+                // }}
               />
             </div>
             <div className="menu">

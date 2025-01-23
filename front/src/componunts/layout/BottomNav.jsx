@@ -53,14 +53,14 @@ function Bottom() {
 
         <div className="Bottomicon">
           <img
-            onClick={changeSearchRes}
+            // onClick={changeSearchRes}
             src="/images/dodbogi.png"
             alt="돋보기"
           />
         </div>
 
         <div className="Bottomicon">
-          <img onClick={changeUserMain} src="/images/cat.jpg" alt="프로필" />
+          {/* <img onClick={changeUserMain} src="/images/cat.jpg" alt="프로필" /> */}
         </div>
       </nav>
     </div>
