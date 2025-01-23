@@ -59,6 +59,15 @@ button.loginBtn {
   font-weight: bold;
 }
 
+div.social{
+  border: 1px solid #000;
+  width: 20%;
+}
+
+div.social img{
+  width: 100%
+}
+
 /* 태블릿 스타일 (너비 391px ~ 770px) */
 @media screen and (max-width: 770px) and (min-width: 391px) {
   div#loginBox {

@@ -19,10 +19,9 @@ function Login() {
     pwd: pwd,
     provider: "local",
   };
-  
+
   const handleLoginClick = async () => {
     try {
-
       // Axios를 통해 Spring Boot로 POST 요청
       const response = await AxiosApi.post("/auth/login", requestBody);
       console.log(response.data);
@@ -32,7 +31,7 @@ function Login() {
       const errorResponse = error.response;
       console.error("로그인 실패: ", errorResponse);
       console.error("로그인 실패 타입: ", errorResponse.data.falseType);
-      if(errorResponse.data.falseType == "block") {
+      if (errorResponse.data.falseType == "block") {
         const response = await AxiosApi.post("/auth/reason", requestBody);
         const reason = response.data.reason;
         const when = response.data.create_at;
@@ -49,6 +48,12 @@ function Login() {
   };
 
   useEnter(handleLoginClick);
+
+  const handleKakaoClick = async () => {
+    // 카카오 로그인 페이지로 리다이렉트
+    const redirectUri = "http://localhost:8081/join/kakao";
+    window.location.href = redirectUri;
+  };
 
   return (
     <div id="Back">
@@ -82,6 +87,11 @@ function Login() {
         </div>
 
         <hr />
+
+        {/* <div className="social">
+          <img onClick={handleKakaoClick} src="/images/Kakao.png" alt="" />
+        </div>
+        <hr /> */}
         <div className="loginBtnArea">
           <button className="loginBtn" onClick={handleJoinClick}>
             새 계정 만들기

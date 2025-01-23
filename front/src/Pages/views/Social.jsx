@@ -45,7 +45,7 @@ function Social() {
     console.log("provider : ", provider);
     console.log("res : ", res);
     try {
-      const response = await AxiosApi.post("/auth/login", loginData);
+      const response = await AxiosApi.post("/join/local", loginData);
       console.log(response.data);
       // 로그인 후 메인뷰로 리다이렉트
       navigate("/Mainview");

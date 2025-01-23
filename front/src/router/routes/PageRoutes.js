@@ -10,6 +10,8 @@ import Map from "../../componunts/NaverMap/Map";
 import AlramPage from "../../Pages/views/AlramPage";
 import DetailsPage from "../../Pages/views/DetailsPage";
 import ChatingList from "../../Pages/chatingPage/ChatingList";
+import Social from "../../Pages/views/Social";
+
 
 const pageRoutes = [
   {
@@ -27,6 +29,10 @@ const pageRoutes = [
   {
     path: "/Post/*",
     element: <Post />,
+  },
+  {
+    path: "/Social",
+    element: <Social />,
   },
   {
     path: "/SearchRes/*",

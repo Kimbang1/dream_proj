@@ -30,7 +30,14 @@ const TimeCheck = () => {
           const [date, time] = dateTimeOriginal.split(" ");
           const [year, month, day] = date.split(":").map(Number);
           const [hour, minute, second] = time.split(":").map(Number);
-          const imageDate = new Date(year, month -1, day, hour, minute, second);
+          const imageDate = new Date(
+            year,
+            month - 1,
+            day,
+            hour,
+            minute,
+            second
+          );
           resolve(imageDate);
         } else {
           const lastModified = new Date(imageFile.lastModified);
@@ -53,9 +60,8 @@ const TimeCheck = () => {
     console.log("현재 시간: ", currentTime);
     console.log("이미지 촬영 시간: ", imageDate);
     console.log("시간 차이(밀리초): ", timeDifference);
-    return timeDifference <= 20 * 60 * 100000 && timeDifference >= 0; // 20분을 밀리초로 변환
+    return timeDifference <= 20 * 60 * 1000 && timeDifference >= 0; // 20분을 밀리초로 변환
   };
-
 
   // 이미지가 유효한지 검사하는 함수
   const validateImageTime = async (imageFile) => {
