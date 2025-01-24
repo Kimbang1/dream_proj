@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 
 import ViewChoice from "../../componunts/layout/ViewChoice";
-import AxiosApi from "../../servies/AxiosApi";
+import { WidthFull } from "@mui/icons-material";
+import { height } from "@mui/system";
 
-function Mainview({ setIsMainPage }) {
+
+function Mainview() {
 
   return (
     <>

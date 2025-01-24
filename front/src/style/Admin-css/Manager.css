@@ -8,7 +8,7 @@ div.ManagerBackground{
 div.ChoiceTwo{
    display: flex;
    flex-direction: column;
-   margin: 30% 25% ;
+   margin: 30% 16% 0 ; 
   gap: 30px;  
 }
 

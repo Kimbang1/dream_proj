@@ -115,9 +115,9 @@ public class ContentController {
 	   FilePostDto filePostDto = filePostMapper.selectOne(linkId);
 	   
 	   int isLike = postLikeMapper.mtdIsLike(user.getUuid(), filePostDto.getPost_id());
-	   
+	   System.out.println("////////////////////////");
 	   System.out.println("isLike: " + isLike);
-	   
+	   System.out.println("*********************");
 	   if (isLike > 0) {
 		   postLikeMapper.mtdDelete(user.getUuid(), filePostDto.getPost_id());
 		   responseBody.put("heartClicked", false);

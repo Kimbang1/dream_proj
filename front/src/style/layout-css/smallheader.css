@@ -1,6 +1,6 @@
 div#smallHeda {
   width: 100%; /* 전체 헤더의 너비 */
-  height: 10vh;
+  height: 20vh;
   margin: 0 auto;
   display: flex;
   box-sizing: border-box;

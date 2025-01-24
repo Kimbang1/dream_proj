@@ -34,3 +34,22 @@ div.rightUP{
 img.heart{
   width: 20px;
 }
+
+@media screen and (min-width:320px) {
+  div.PostView {
+  /* border: 1px solid #f80; */
+}
+
+div.PostArea{
+  overflow: hidden;
+}
+
+
+div.PostItem {
+  flex-direction: column;
+  border: 1px solid #000;
+  margin: 10px;
+  width: 95%;
+}
+
+}

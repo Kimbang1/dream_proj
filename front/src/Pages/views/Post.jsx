@@ -39,18 +39,15 @@ function Post() {
 
     try {
       const response = await AxiosApi.get("/contents/postView");
-      console.log("리스폰스의 데이터(이미지):",response)
-      const newData = response.data;
+      const newData = response.data.map((item) => ({
+        ...item,
+        heartClicked: item.likeCheck || false, // 서버에서 받은 상태 반영
+      }));
+
       if (newData.length === 0) {
         setHasMore(false);
       } else {
-        setItems((prevItems) => {
-          const uniqueItems = [...prevItems, ...newData].filter(
-            (value, index, self) =>
-              index === self.findIndex((t) => t.linkId === value.linkId)
-          );
-          return uniqueItems;
-        });
+        setItems((prevItems) => [...prevItems, ...newData]);
       }
     } catch (error) {
       console.error("데이터 로드 실패:", error);
@@ -60,62 +57,75 @@ function Post() {
 
   // 좋아요 클릭 시 서버로 업데이트 요청 및 로컬 상태 반영
   const handleHeartClick = async (linkId) => {
-    try {
-      // 백엔드로 좋아요 상태 업데이트 요청
-      const response = await AxiosApi.post(
-        `/contents/like?linkId=${linkId}`,
-        {}
-      );
+    const itemIndex = items.findIndex((item) => item.linkId === linkId);
+    if (itemIndex === -1) return;
 
-      // 서버에서 반환된 값 (참/거짓)
-      if (response.data) {
-        // 서버에서 true 반환 시, 하트를 빨간색으로 설정
-        setItems((prevItems) =>
-          prevItems.map((item) =>
-            item.linkId === linkId
-              ? { ...item, heartClicked: !item.heartClicked } // 상태 반전
-              : item
-          )
-        );
-      } else {
-        // 서버에서 false 반환 시, 하트를 기본 하트로 설정
-        setItems((prevItems) =>
-          prevItems.map((item) =>
-            item.linkId === linkId
-              ? { ...item, heartClicked: !item.heartClicked } // 상태 반전
-              : item
-          )
-        );
-      }
+    const updatedItem = {
+      ...items[itemIndex],
+      heartClicked: !items[itemIndex].heartClicked,
+      likeCount: items[itemIndex].heartClicked
+        ? items[itemIndex].likeCount - 1
+        : items[itemIndex].likeCount + 1,
+    };
+
+    setItems((prevItems) => [
+      ...prevItems.slice(0, itemIndex),
+      updatedItem,
+      ...prevItems.slice(itemIndex + 1),
+    ]);
+
+    try {
+      await AxiosApi.post(`/contents/like?linkId=${linkId}`, {});
     } catch (error) {
       console.error("좋아요 상태 업데이트 실패:", error);
+
+      // 상태 복구
+      const revertedItem = {
+        ...updatedItem,
+        heartClicked: !updatedItem.heartClicked,
+        likeCount: updatedItem.heartClicked
+          ? updatedItem.likeCount - 1
+          : updatedItem.likeCount + 1,
+      };
+
+      setItems((prevItems) => [
+        ...prevItems.slice(0, itemIndex),
+        revertedItem,
+        ...prevItems.slice(itemIndex + 1),
+      ]);
     }
   };
 
   useEffect(() => {
-    if (!linkId) return; // linkId가 없으면 실행하지 않음
+    if (!linkId) return;
 
     const fetchData = async () => {
       try {
-        const response = await AxiosApi.get(
-          `/contents/viewDetails?linkId=${linkId}`
-        );
+        const response = await AxiosApi.get(`/contents/linke?linkId=${linkId}`);
         const data = response.data || {};
-        setItems({
-          upFileName: data.postDeatils.up_filename || "",
-          create_at: data.postDetails.create_at || "",
-          tag_id: data.postDetails.tag_id || "",
-          content: data.postDetails.content || "",
-          heartClicked: data.likeCheck || false, // 좋아요 클릭 상태 추가
-          likeCount: data.likeCount || 0, // 좋아요 개수
-        });
+
+        setItems((prevItems) =>
+          prevItems.map((item) =>
+            item.linkId === linkId
+              ? {
+                  ...item,
+                  upFileName: data.postDetails?.up_filename || "",
+                  createAt: data.postDetails?.create_at || "",
+                  tagId: data.postDetails?.tag_id || "",
+                  content: data.postDetails?.content || "",
+                  heartClicked: data.likeCheck, // 기존 상태 유지
+                  likeCount: data.likeCount || 0, // 좋아요 개수
+                }
+              : item
+          )
+        );
       } catch (error) {
         console.error("데이터 로드 실패:", error);
       }
     };
 
-    fetchData(); // fetchData 호출
-  }, [linkId]); // linkId가 변경될 때마다 실행
+    fetchData();
+  }, [linkId]);
 
   // 스크롤 이벤트 처리
   const handleScroll = useCallback(() => {
@@ -136,7 +146,7 @@ function Post() {
 
   useEffect(() => {
     loadMoreItems();
-  }, []); // 처음 렌더링 시 데이터 로드
+  }, []); // 초기 렌더링 시 데이터 로드
 
   return (
     <div className="PostView">
@@ -170,12 +180,12 @@ function Post() {
                     className="heart"
                     src={
                       item.heartClicked
-                        ? "/images/redheart.png" // true -> 빨간 하트
-                        : "/images/heart.png" // false -> 기본 하트
+                        ? "/images/redheart.png"
+                        : "/images/heart.png"
                     }
                     alt="하트 아이콘"
                     onClick={(e) => {
-                      e.stopPropagation(); // 클릭 이벤트가 부모로 전파되지 않도록
+                      e.stopPropagation();
                       handleHeartClick(item.linkId);
                     }}
                     style={{ cursor: "pointer" }}

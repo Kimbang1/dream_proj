@@ -98,7 +98,9 @@ function UserMainpage() {
                 <div className="InfoArea">
                   <div className="useDetails">
                     <div className="FirstLayer">
-                      <div className="userName">@{user.user.tag_id}</div>
+                      <div className="userName">
+                        <span>@{user.user.tag_id}</span>
+                      </div>
                       {/* 내 프로필이 아니면 팔로우 버튼이 뜨게 */}
                       {!isSameUser && (
                         <FollowFC
@@ -131,7 +133,9 @@ function UserMainpage() {
                     </div>
 
                     <div className="ThirdLayer">
-                      <div className="userName">{user.user.username}</div>
+                      <div className="userName">
+                        <span>{user.user.username}</span>
+                      </div>
                       <div className="userContent">{user.user.introduce}</div>
                     </div>
                   </div>

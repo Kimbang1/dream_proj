@@ -5,7 +5,9 @@ div.GalleryList {
 }
 
 div.GalleryListView {
-  width: 75%;
+  /* overflow: scroll; */
+  /* width: 50%; */
+  margin-right: 10px;
 }
 div.AdminfunctionAreaG {
   border: 1px solid #31538f;
