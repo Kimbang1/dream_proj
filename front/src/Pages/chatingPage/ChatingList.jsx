@@ -1,42 +1,47 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useChatRooms } from "../../hook/Chating/bringChatId";
+import { useUserInfo } from "../../hook/useUserInfo";
 
-function ChatingList({ chatId }) {
+function ChatingList({ onChatSelect }) {
+  const { chatRooms, userTagid, loading, error } = useChatRooms();
+  const { userInfo } = useUserInfo(); //유저 정보 가져와서 사용하기
 
-    const navigator = useNavigate("");
-
+  if (loading) return <p>로딩중 ...</p>;
+  if (error) return <p>오류 발생 : {error.message}</p>;
 
   return (
-    <>
-      <div className="chatingList">
-        {/*설정과 광고가 들어가는 영역 */}
-        <div className="functionTools">
-            <div className="advertisement"></div>
-            <div className="Tools">
-                <img src="" alt="" />
-            </div>
-        </div>
-        <div className="chatingBoxes"
-            onClick={()=>{
-                console.log("채팅방 입장~");
-                navigator("/ChatRoom");
-            }}
-        >
-          <dib className="reftArea">
-            <img
-              className="chatingPro"
-              // src={`/profileImage/${user.up_filename}`}
-              // alt={`${user?.username} 이미지`}
-            />
-            <span className="chatinNames">{chatId}</span>
-          </dib>
-
-          <div className="CameraArea">
-            <img src="/camera.png" alt="카메라사진" />
-          </div>
+    <div className="chatingList">
+      {/* 설정과 광고가 들어가는 영역 */}
+      <div className="functionTools">
+        <div className="advertisement"></div>
+        <div className="Tools">
+          <img src="" alt="" />
         </div>
       </div>
-    </>
+
+      {/* 채팅방 리스트 */}
+      <div className="chatroomList">
+        {chatRooms.map((room) => (
+          <div
+            key={room.id || room.uuid}
+            className="chatingBoxes"
+            onClick={() => {
+              console.log(`${room.name} 클릭됨`);
+              onChatSelect(room.id); // 부모로 chatId 전달
+            }}
+          >
+            <div className="reftArea">
+              <img
+                className="chatingPro"
+                src={`/profileImage/${userInfo.profile_image}`}
+                alt={`${userInfo.username} 이미지`}
+              />
+              <span className="chatinNames">{room.name}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 

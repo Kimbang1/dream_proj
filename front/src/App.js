@@ -5,6 +5,7 @@ import "./style/Style.css"; // 글로벌 스타일 적용
 function App() {
   //환경변수 가져오기
   const apiBaseUrl = process.env.REACT_APP_BASE_URL;
+  
   // const [uuid, setUuid] = useState(null);
   // useEffect(() => {
   //   const fetchData = async () => {
